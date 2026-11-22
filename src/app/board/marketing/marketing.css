@@ -1,0 +1,42 @@
+/* Marketing (/board/marketing), the MarCom chair's page. Prefixed mk-. */
+.mk { max-width: 1100px; }
+.mk-panel { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+.mk-h2 { margin: 0; font-size: 17px; font-weight: 700; color: var(--base-blue, #0c0c31); }
+.mk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.mk-count { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+.mk-k { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+.mk-muted { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+.mk-warn { color: #b4441f; }
+.mk-link { display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 600; color: var(--eo-blue, #3d46f2); text-decoration: none; }
+
+.mk-goal { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px; }
+.mk-goal-n { margin: 2px 0 0; font-size: 34px; font-weight: 700; color: var(--base-blue, #0c0c31); line-height: 1.1; }
+.mk-goal-n span { font-size: 18px; font-weight: 600; color: var(--text-muted); }
+.mk-bar { height: 12px; border-radius: 999px; background: #eceefb; overflow: hidden; }
+.mk-bar span { display: block; height: 100%; border-radius: 999px; background: var(--eo-blue, #3d46f2); }
+
+.mk-funnel { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; padding: 0; }
+.mk-funnel li { position: relative; background: #f5f6fb; border-radius: 10px; padding: 12px 14px; }
+.mk-funnel li.is-goal { background: #eceefe; box-shadow: inset 0 0 0 1px #c7cafb; }
+.mk-n { margin: 4px 0 0; font-size: 24px; font-weight: 700; color: var(--base-blue, #0c0c31); font-variant-numeric: tabular-nums; }
+.mk-arrow { position: absolute; right: -11px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #b8bce0; z-index: 1; }
+
+.mk-sources { margin-top: 16px; }
+.mk-sources ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 8px 0 0; padding: 0; }
+.mk-sources li { display: inline-flex; gap: 8px; align-items: baseline; padding: 4px 12px; border-radius: 999px; background: #f5f6fb; font-size: 13px; color: #374151; }
+.mk-sources b { color: var(--base-blue, #0c0c31); }
+
+.mk-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; }
+.mk-rows { list-style: none; margin: 8px 0 0; padding: 0; }
+.mk-rows li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); font-size: 14px; color: #1f2937; }
+.mk-rows a { color: #1f2937; text-decoration: none; }
+.mk-rows a:hover { color: var(--eo-blue, #3d46f2); }
+.mk-rows li > span:last-child:not(:first-child) { flex-shrink: 0; color: var(--text-muted); font-size: 13px; }
+.mk-rows b { color: var(--base-blue, #0c0c31); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 760px) {
+  .mk-goal { grid-template-columns: 1fr; gap: 10px; }
+  .mk-funnel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-arrow { display: none; }
+  .mk-grid { grid-template-columns: 1fr; }
+}

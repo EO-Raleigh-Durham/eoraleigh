@@ -1,0 +1,63 @@
+{
+  "name": "eo-chapter-manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "node --test --experimental-strip-types \"src/lib/**/*.test.ts\" && vitest run",
+    "test:guardrails": "node --test scripts/guardrails/*.test.mjs",
+    "check:migrations": "node scripts/guardrails/migration-prefixes.mjs",
+    "ci:local": "node scripts/guardrails/local-ci.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.109.1",
+    "@hello-pangea/dnd": "^18.0.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "@supabase/ssr": "0.12.0",
+    "@supabase/supabase-js": "2.108.2",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/functions": "^3.9.11",
+    "@yudiel/react-qr-scanner": "2.5.1",
+    "hast-util-raw": "^9.1.0",
+    "hast-util-sanitize": "^5.0.2",
+    "hast-util-to-html": "^9.0.5",
+    "mdast-util-to-hast": "^13.2.1",
+    "next": "^16.4.6",
+    "postgres": "^3.4.9",
+    "qrcode": "^1.5.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-email": "^6.11.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-html": "^16.0.1",
+    "resend": "^6.12.4",
+    "sharp": "0.35.5",
+    "stripe": "^22.1.1",
+    "tus-js-client": "^4.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "postcss": "8.5.28",
+    "sharp": "0.35.5",
+    "source-map-js": "1.2.2",
+    "@vercel/cli-config": {
+      "zod": "$zod"
+    }
+  }
+}

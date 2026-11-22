@@ -1,0 +1,274 @@
+/* ============================================================
+   TRANSFORMATIONAL GROWTH PULSE DASHBOARD
+   Restyled to the admin design system so it matches
+   the other board dashboards (Membership Pipeline, Event Metrics).
+   Reuses admin chrome (admin-page-head, admin-section, admin-table);
+   the classes below cover the dashboard-specific pieces only.
+   ============================================================ */
+
+.pulse {
+  /* Data-viz palette, referenced inline from PulseDashboard.tsx. */
+  --p-blue: #287BE8;
+  --p-blue-soft: rgba(40, 123, 232, 0.62);
+  --p-teal: #1EA691;
+  --p-pink: #FF346E;
+  --p-pink-soft: rgba(255, 52, 110, 0.55);
+  --p-navy: #04102D;
+  --p-body: #374151;
+  --p-muted: #6B7280;
+  --p-faint: #9CA3AF;
+  --p-border: #E5E7EB;
+  --p-track: #F3F4F6;
+
+  color: var(--p-body);
+}
+
+/* TABS */
+.pulse-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--p-border);
+  margin-bottom: 28px;
+}
+.pulse-tab {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--p-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pulse-tab:hover { color: var(--p-navy); }
+.pulse-tab.is-active { color: var(--p-blue); border-bottom-color: var(--p-blue); }
+@media (max-width: 720px) { .pulse-tab { padding: 10px 12px; font-size: 12px; } }
+
+/* KPI STRIP (mirrors the admin dashboard KPI cards) */
+.pulse-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.pulse-kpi {
+  background: #fff;
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.pulse-kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--p-muted);
+}
+.pulse-kpi-val {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--p-navy);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+.pulse-kpi-note { font-size: 12px; color: var(--p-faint); margin-top: 6px; }
+
+/* RATING BREAKDOWN */
+.pulse-rating-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 720px) { .pulse-rating-layout { grid-template-columns: 1fr; gap: 28px; } }
+
+.pulse-bars { display: flex; flex-direction: column; gap: 10px; }
+.pulse-bar-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 44px;
+  align-items: center;
+  gap: 12px;
+}
+.pulse-bar-label { font-weight: 600; font-size: 13px; color: var(--p-muted); text-align: right; }
+.pulse-bar-track { height: 24px; background: var(--p-track); border-radius: 6px; overflow: hidden; }
+.pulse-bar-fill { height: 100%; border-radius: 6px; min-width: 3px; transition: width 0.8s cubic-bezier(.22,1,.36,1); }
+.pulse-bar-pct { font-weight: 700; font-size: 13px; color: var(--p-navy); font-variant-numeric: tabular-nums; }
+
+.pulse-rating-summary {
+  background: #F9FAFB;
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+.pulse-big-rating { font-weight: 700; font-size: 56px; color: var(--p-navy); line-height: 1; letter-spacing: -0.02em; }
+.pulse-big-rating span { font-size: 24px; color: var(--p-muted); }
+.pulse-big-rating-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--p-muted);
+  margin-top: 8px;
+}
+.pulse-mini-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+.pulse-mini { background: #fff; border: 1px solid var(--p-border); padding: 12px; border-radius: 6px; text-align: center; }
+.pulse-mini-val { font-weight: 700; font-size: 18px; color: var(--p-navy); }
+.pulse-mini-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--p-muted);
+  margin-top: 2px;
+}
+
+/* MEMBER VOICES */
+.pulse-quote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 720px) { .pulse-quote-grid { grid-template-columns: 1fr; } }
+.pulse-quote-card {
+  background: #fff;
+  border: 1px solid var(--p-border);
+  border-left: 3px solid var(--p-blue);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+.pulse-quote-theme {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p-blue);
+  margin-bottom: 8px;
+}
+.pulse-quote-text { font-size: 14px; line-height: 1.55; color: var(--p-navy); margin-bottom: 10px; font-style: italic; }
+.pulse-quote-stars { color: var(--p-blue); font-size: 13px; letter-spacing: 2px; }
+
+.pulse-quote-featured {
+  grid-column: 1 / -1;
+  background: #F5F8FE;
+  border-color: #C7DAF8;
+  border-left-width: 3px;
+  padding: 26px 24px;
+}
+.pulse-quote-featured .pulse-quote-text { font-size: 19px; font-style: normal; max-width: 760px; line-height: 1.4; }
+
+/* GOAL / PRIORITY BARS */
+.pulse-goals { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
+.pulse-goal-row { display: grid; grid-template-columns: 168px 1fr 44px; align-items: center; gap: 12px; }
+@media (max-width: 720px) { .pulse-goal-row { grid-template-columns: 110px 1fr 40px; } }
+.pulse-goal-name { font-size: 13px; font-weight: 600; text-align: right; color: var(--p-body); }
+.pulse-goal-track { height: 22px; background: var(--p-track); border-radius: 6px; overflow: hidden; }
+.pulse-goal-fill { height: 100%; border-radius: 6px; min-width: 3px; transition: width 0.8s cubic-bezier(.22,1,.36,1); }
+.pulse-goal-pct { font-weight: 700; font-size: 13px; color: var(--p-navy); font-variant-numeric: tabular-nums; }
+
+/* TRENDS: PERIOD CARDS */
+.pulse-period-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 980px) { .pulse-period-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .pulse-period-cards { grid-template-columns: 1fr; } }
+.pulse-period-card {
+  background: #fff;
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.pulse-period-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.pulse-period-card.is-blue::before { background: var(--p-blue); }
+.pulse-period-card.is-teal::before { background: var(--p-teal); }
+.pulse-period-card.is-pink::before { background: var(--p-pink); }
+.pulse-period-label {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p-muted);
+  margin-bottom: 8px;
+}
+.pulse-period-avg { font-weight: 700; font-size: 32px; color: var(--p-navy); line-height: 1; letter-spacing: -0.02em; }
+.pulse-period-avg span { font-size: 16px; color: var(--p-muted); }
+.pulse-period-meta { margin-top: 8px; font-size: 12px; color: var(--p-muted); line-height: 1.5; }
+
+/* TRENDS: CHART BLOCKS */
+.pulse-chart-block {
+  background: #fff;
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.pulse-chart-title { font-weight: 700; font-size: 16px; color: var(--p-navy); margin-bottom: 4px; }
+.pulse-chart-sub { font-size: 13px; color: var(--p-muted); margin-bottom: 20px; }
+.pulse-chart-svg { width: 100%; overflow: visible; }
+
+/* TRENDS: PRIORITY-SHIFT HEATMAP TABLE */
+.pulse-trend-table { width: 100%; border-collapse: collapse; }
+.pulse-trend-table th {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p-muted);
+  text-align: center;
+  padding: 8px 10px 12px;
+  border-bottom: 1px solid var(--p-border);
+}
+.pulse-trend-table th:first-child { text-align: left; }
+.pulse-trend-table td {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  border-bottom: 1px solid var(--p-track);
+}
+.pulse-trend-table tr:last-child td { border-bottom: 0; }
+.pulse-trend-table td:first-child { text-align: left; font-weight: 600; color: var(--p-body); }
+.pulse-cell-badge { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 12px; font-weight: 700; }
+.pulse-cell-hot { background: rgba(40, 123, 232, 0.16); color: #1e6ad6; }
+.pulse-cell-warm { background: rgba(40, 123, 232, 0.09); color: var(--p-blue); }
+.pulse-cell-neutral { background: var(--p-track); color: var(--p-muted); }
+.pulse-cell-cool { background: #F9FAFB; color: var(--p-faint); }
+
+.pulse-trend-arrow { font-size: 11px; margin-left: 2px; }
+.pulse-arrow-up { color: var(--p-blue); }
+.pulse-arrow-down { color: var(--p-pink); }
+
+/* FOOTNOTE */
+.pulse-foot { font-size: 12px; color: var(--p-faint); line-height: 1.6; margin-top: 28px; max-width: 760px; }
+
+/* PERIOD RANGE FILTER (this FY / last FY / rolling 12 months) */
+.pulse-range {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.pulse-range-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--p-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 4px;
+}
+.pulse-range-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--p-muted);
+  background: none;
+  border: 1px solid var(--p-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.pulse-range-link:hover { color: var(--p-navy); border-color: var(--p-navy); }
+.pulse-range-link.is-active {
+  color: #fff;
+  background: var(--p-blue);
+  border-color: var(--p-blue);
+}
+@media (max-width: 720px) { .pulse-range-link { padding: 5px 11px; font-size: 12px; } }

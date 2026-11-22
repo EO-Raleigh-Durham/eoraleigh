@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "crons": [
+    { "path": "/api/cron/deliverable-sweep", "schedule": "40 19 * * *" },
+    { "path": "/api/cron/event-survey-send", "schedule": "5 * * * *" },
+    { "path": "/api/cron/goals-monthly", "schedule": "0 1 1 * *" },
+    { "path": "/api/cron/release-unpaid-seat-holds", "schedule": "35 * * * *" },
+    { "path": "/api/cron/revenue-closed-cards", "schedule": "0 11 * * *" },
+    { "path": "/api/cron/revenue-content-sync", "schedule": "20 * * * *" },
+    { "path": "/api/cron/weekly-sprints", "schedule": "0 1 * * 1" }
+  ]
+}

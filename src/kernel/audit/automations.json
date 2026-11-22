@@ -1,0 +1,68 @@
+[
+  {
+    "path": "/api/cron/deliverable-sweep",
+    "entity": "boards",
+    "file": "entities/boards/crons/deliverable-sweep.ts",
+    "schedule": "40 19 * * *",
+    "name": "Deliverable sweep",
+    "description": "Daily at 02:40. Keeps the card-attachments bucket to what cards hold: uploads never confirmed after a day, deliverables archived over 30 days ago, and the files of cards deleted outright. A failed read deletes nothing.",
+    "content": [
+      "Board cards",
+      "Deliverables"
+    ],
+    "apps": [
+      "Supabase"
+    ]
+  },
+  {
+    "path": "/api/cron/revenue-closed-cards",
+    "entity": "boards",
+    "file": "entities/boards/crons/revenue-closed-cards.ts",
+    "schedule": "0 11 * * *",
+    "name": "Revenue closed cards",
+    "description": "Daily at 18:00. Lists every card closed in the last day on the boards that report to the Revenue chat, each linking to its card, and the notification router holds the post to 08:30 the next working morning. A quiet day posts nothing.",
+    "content": [
+      "Boards",
+      "Board cards"
+    ],
+    "apps": [
+      "Supabase",
+      "Lark"
+    ]
+  },
+  {
+    "path": "/api/cron/revenue-content-sync",
+    "entity": "campaigns",
+    "file": "entities/campaigns/crons/revenue-content-sync.ts",
+    "schedule": "20 * * * *",
+    "name": "Revenue content sync",
+    "description": "Hourly. Keeps the Revenue board in step with the content calendar: a card per day of posts for the board's owner with a subtask per post, and a card per campaign the writer agent runs, moved as the writer moves. A post the agent publishes ticks itself.",
+    "content": [
+      "Boards",
+      "Board cards",
+      "Marketing content",
+      "Marketing campaigns"
+    ],
+    "apps": [
+      "Supabase"
+    ]
+  },
+  {
+    "path": "/api/cron/weekly-sprints",
+    "entity": "boards",
+    "file": "entities/boards/crons/weekly-sprints.ts",
+    "schedule": "0 1 * * 1",
+    "name": "Weekly sprints",
+    "description": "Mondays. Opens next week's sprint (Wednesday to Tuesday) on every board with weekly sprints switched on, drafts its name and goal from the open cards, and sends each board's team chat the sprint planning board with a link to every new sprint.",
+    "content": [
+      "Boards",
+      "Sprints",
+      "Board cards"
+    ],
+    "apps": [
+      "Supabase",
+      "Anthropic",
+      "Lark"
+    ]
+  }
+]

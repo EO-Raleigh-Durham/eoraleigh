@@ -1,0 +1,107 @@
+/* The chapter's Strategy and Goals pages (EO-owned, hand-written).
+   They sit on edge8-web's Company section design (talent-ats.css, generated)
+   and add the pieces that design has no rule for: the strategy's identity
+   statements, its "We are not" band and pillar cards, and the priority cards
+   above the goals editor. Every colour is a token: EO primaries from
+   globals.css, edge8's neutrals from tokens.css. */
+
+/* ── Strategy ─────────────────────────────────────────────────────────── */
+
+/* The headline band carries the brand's four primaries along its foot. */
+.e8 .ats .eo-strat-hero { overflow: hidden; padding-bottom: 26px; }
+.e8 .ats .eo-strat-hero::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px;
+  background: linear-gradient(90deg, var(--eo-blue) 0 25%, var(--eo-pink) 25% 50%, var(--eo-green) 50% 75%, var(--eo-orange) 75% 100%);
+}
+.e8 .ats .eo-strat-headline { max-width: 860px; font-size: 34px; }
+.e8 .ats .eo-strat-hero .ats-sub b { color: var(--color-primary-dark); }
+
+.e8 .eo-strat-ids { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.e8 .eo-strat-id {
+  position: relative; display: flex; flex-direction: column; gap: 8px; padding: 18px 18px 20px;
+  border: 1px solid var(--color-card-border); border-radius: 14px; background: var(--color-bg-primary);
+  box-shadow: var(--color-elevation-1); transition: transform .15s ease, box-shadow .15s ease;
+}
+.e8 .eo-strat-id:hover { transform: translateY(-2px); box-shadow: var(--color-elevation-2); }
+.e8 .eo-strat-id-mark {
+  display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px;
+  background: color-mix(in srgb, var(--tint) 12%, transparent); color: var(--tint); font-size: 17px;
+}
+.e8 .eo-strat-id-label { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--tint); }
+.e8 .eo-strat-id-body { margin: 0; font-size: 16px; line-height: 1.5; font-weight: 500; color: var(--color-primary-dark); }
+
+/* "We are not": the one dark band on the page, so it reads as a line drawn. */
+.e8 .eo-strat-not {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 18px 22px; border-radius: 14px;
+  background: var(--base-blue); color: var(--color-bg-primary);
+}
+.e8 .eo-strat-not-label { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--eo-pink); }
+.e8 .eo-strat-not-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.e8 .eo-strat-not-list li {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--eo-blue-light) 40%, transparent); font-size: 15px; font-weight: 700;
+}
+.e8 .eo-strat-not-list li::before { content: "✕"; font-size: 11px; color: var(--eo-pink); }
+.e8 .eo-strat-not-body { margin: 0; font-size: 15px; font-weight: 600; }
+
+/* Two across, so four pillars read as a square, never three and an orphan. */
+.e8 .eo-pillars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.e8 .eo-pillar {
+  border: 1px solid var(--color-card-border); border-top: 4px solid var(--tint); border-radius: 14px;
+  background: var(--color-bg-primary); box-shadow: var(--color-elevation-1); overflow: hidden;
+}
+.e8 .eo-pillar-head {
+  display: flex; align-items: center; gap: 12px; padding: 16px 20px 12px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 7%, transparent), transparent);
+}
+.e8 .eo-pillar-num { font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -.03em; color: var(--tint); font-variant-numeric: tabular-nums; }
+.e8 .eo-pillar-title { flex: 1; margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -.01em; color: var(--color-primary-dark); }
+.e8 .eo-pillar-count {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--tint) 14%, transparent); color: var(--color-primary-dark); font-size: 12px; font-weight: 800;
+}
+.e8 .eo-pillar-list { margin: 0; padding: 4px 20px 18px; list-style: none; counter-reset: pillar; }
+.e8 .eo-pillar-list li {
+  position: relative; padding: 10px 0 10px 36px; font-size: 15px; line-height: 1.5; color: var(--color-grey-600); counter-increment: pillar;
+}
+.e8 .eo-pillar-list li + li { border-top: 1px solid var(--color-grey-150); }
+.e8 .eo-pillar-list li::before {
+  content: counter(pillar); position: absolute; left: 0; top: 11px; display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 999px; background: var(--tint); color: var(--color-bg-primary); font-size: 11.5px; font-weight: 800;
+}
+.e8 .eo-pillar-list b { display: block; font-weight: 800; color: var(--color-primary-dark); }
+
+@media (max-width: 720px) {
+  .e8 .ats .eo-strat-headline { font-size: 26px; }
+  .e8 .eo-pillars { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Goals ────────────────────────────────────────────────────────────── */
+
+.e8 .eo-prio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.e8 .eo-prio {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "code code" "title title" "pct pct" "bar bar" "meta meta";
+  gap: 6px; padding: 16px 18px; border: 1px solid var(--color-card-border); border-top: 4px solid var(--prio); border-radius: 14px;
+  background: var(--color-bg-primary); box-shadow: var(--color-elevation-1); color: inherit; text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.e8 .eo-prio:hover { transform: translateY(-2px); border-color: var(--prio); }
+.e8 .eo-prio:focus-visible { outline: 2px solid var(--prio); outline-offset: 2px; }
+.e8 .eo-prio-code { grid-area: code; font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--prio); }
+.e8 .eo-prio-title { grid-area: title; font-size: 16px; font-weight: 800; line-height: 1.3; color: var(--color-primary-dark); }
+.e8 .eo-prio-pct { grid-area: pct; margin-top: 4px; font-size: 30px; font-weight: 900; line-height: 1.1; letter-spacing: -.02em; color: var(--color-primary-dark); font-variant-numeric: tabular-nums; }
+.e8 .eo-prio-none { font-size: 15px; font-weight: 700; letter-spacing: 0; color: var(--color-grey-500); }
+.e8 .eo-prio-bar { grid-area: bar; position: relative; height: 8px; border-radius: 999px; background: var(--color-grey-150); }
+.e8 .eo-prio-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--prio); }
+.e8 .eo-prio-bar b { position: absolute; top: -3px; width: 2px; height: 14px; border-radius: 1px; background: var(--color-primary-dark); opacity: .55; }
+.e8 .eo-prio-meta { grid-area: meta; font-size: 13px; font-weight: 600; color: var(--color-grey-600); }
+
+/* The owner chips: a name and the count of key results waiting on them. */
+.e8 .eo-owed { margin-top: 0; }
+.e8 .eo-owed b {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px;
+  background: var(--color-bg-primary); color: var(--color-primary-dark); font-size: 11px; font-weight: 800;
+}
+
+/* A jump from a priority card lands with the card below the sticky top. */
+.e8 .eo-prio-anchor { scroll-margin-top: 24px; }

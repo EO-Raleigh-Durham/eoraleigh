@@ -1,0 +1,42 @@
+/* My board (/board): the role-based board home. Plan 35, phase 5. */
+.bh { max-width: 1100px; }
+.bh-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.bh-tiles--small { margin-bottom: 0; }
+.bh-tile {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bh-k { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+.bh-big { margin: 0; font-size: 24px; font-weight: 700; color: var(--base-blue, #0c0c31); }
+.bh-line { margin: 0; font-size: 14px; color: #374151; }
+.bh-link { margin-top: auto; font-size: 13px; font-weight: 600; color: var(--eo-blue); text-decoration: none; }
+.bh-link:hover { text-decoration: underline; }
+.bh-panel { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+.bh-h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; color: var(--base-blue, #0c0c31); }
+.bh-sub { margin: 0 0 12px; font-size: 13px; color: var(--text-muted); }
+.bh-muted { color: var(--text-muted); font-size: 12px; }
+.bh-overdue { color: var(--eo-pink); font-weight: 600; }
+.bh-pill { display: inline-block; align-self: flex-start; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.bh-pill--on_track, .bh-pill--done { background: #e6f6f3; color: #0e7a69; }
+.bh-pill--at_risk { background: #fff1e8; color: #b4441f; }
+.bh-pill--off_track { background: #ffe8ef; color: #c41a4d; }
+.bh-pill--none { background: #f3f4f6; color: #4b5563; }
+.bh-table-wrap { overflow-x: auto; }
+.bh-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.bh-table th { text-align: left; font-size: 12px; font-weight: 600; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.bh-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.bh-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.bh-toggle a { padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--text-muted); text-decoration: none; }
+.bh-toggle a.is-on { background: var(--eo-blue); color: #fff; }
+
+.bh-meetings { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 10px 0 4px; }
+.bh-meeting { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: #1f2937; transition: border-color .15s ease, background .15s ease; }
+.bh-meeting:hover { border-color: #c7cafb; background: #f8f8ff; }
+.bh-meeting b { font-size: 17px; color: var(--base-blue, #0c0c31); }
+.bh-meeting span:last-child { font-size: 13px; color: var(--text-muted); }
+.bh-meeting.is-next { border-color: var(--eo-blue, #3d46f2); background: #f4f5ff; }

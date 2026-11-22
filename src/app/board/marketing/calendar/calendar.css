@@ -1,0 +1,33 @@
+/* Marketing calendar: board first, forms behind buttons, five columns fit */
+.e8 .cal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin: 4px 0 16px;
+}
+.e8 .cal-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.e8 .cal-filter { display: flex; flex-direction: column; gap: 4px; min-width: 200px; }
+.e8 .cal-filter > span {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #4f5270;
+}
+.e8 .cal-count { font-size: 13px; color: #4f5270; padding-bottom: 10px; }
+.e8 .cal-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.e8 .cal-actions .admin-btn.is-active { border-color: var(--eo-blue); color: var(--eo-blue); }
+.e8 .cal-panel { margin-bottom: 16px; }
+.e8 .cal-empty {
+  margin-bottom: 16px; padding: 14px 18px; border: 1px dashed #d5d8fc; border-radius: 14px;
+  background: #f7f8ff; color: #4f5270; font-size: 14px;
+}
+.e8 .cal-empty-link {
+  background: none; border: 0; padding: 0; font: inherit; font-weight: 700; color: var(--eo-blue); cursor: pointer;
+}
+.e8 .cal-empty-link:hover { text-decoration: underline; }
+@media (min-width: 1100px) {
+  .e8 .admin-kanban.cal-board { overflow-x: visible; }
+  .e8 .admin-kanban.cal-board .admin-kanban-col { flex: 1 1 0; min-width: 0; max-width: none; }
+}
+/* Narrow columns: let the card's chips wrap instead of squashing to one letter */
+.e8 .cal-board .admin-kanban-card-meta { flex-wrap: wrap; row-gap: 6px; }
+.e8 .cal-board .admin-kanban-card-meta > * { flex-shrink: 0; }

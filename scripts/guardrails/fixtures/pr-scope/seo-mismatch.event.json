@@ -1,0 +1,6 @@
+{
+  "pull_request": {
+    "title": "fix: improve event SEO",
+    "body": "## Intent\n\nImprove event metadata.\n\n- [x] None of the above"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "pull_request": {
+    "title": "feat: add paid event registration review",
+    "body": "## Sensitive surfaces\n\n- [x] Migrations\n- [x] Payments\n- [ ] Auth or security\n- [x] Public or API data mutations"
+  }
+}

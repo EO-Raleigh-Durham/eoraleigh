@@ -1,0 +1,4 @@
+src/app/events/[slug]/page.tsx
+src/app/admin/events/actions.ts
+src/app/api/stripe/webhook/route.ts
+supabase/074_event_registration_review.sql

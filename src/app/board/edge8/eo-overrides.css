@@ -1,0 +1,5 @@
+/* The chapter app's adjustments to edge8's screens (EO-owned; edge8's own rules are
+   in admin.css, generated). Kept to features the chapter app does not use. */
+
+/* Cards link to GitHub pull requests on edge8; the chapter app has none. */
+.e8 .wb-core-row:has(.wb-pill-pr-group) { display: none; }

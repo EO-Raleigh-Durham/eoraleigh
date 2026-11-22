@@ -1,0 +1,370 @@
+/* ============================================================
+   STATE OF THE CHAPTER — FISCAL YEAR DASHBOARD
+   Restyled to the chapter admin design system so it matches
+   the other admin pages (light page head, white KPI/cards, admin
+   palette). Charts are inline SVG + CSS bars (no chart library).
+   ============================================================ */
+
+.cdash {
+  --c-navy: #04102D;
+  --c-blue: #287BE8;
+  --c-blue-soft: #9DBDF2;
+  --c-pink: #FF346E;
+  --c-green: #1EA691;
+  --c-orange: #FA653C;
+  --c-yellow: #EFB82E;
+  --c-ink: #374151;
+  --c-muted: #6B7280;
+  --c-border: #E5E7EB;
+  --c-track: #F3F4F6;
+  --c-bg-soft: #F9FAFB;
+
+  color: var(--c-ink);
+}
+
+/* Meta line under the page-head title (president / window / comparison) */
+.cdash-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--c-muted);
+}
+.cdash-hero-meta b {
+  color: var(--c-navy);
+  font-weight: 600;
+}
+
+/* KPI STRIP — admin KPI cards */
+.cdash-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.cdash-kpi {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.cdash-kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin-bottom: 6px;
+}
+.cdash-kpi-val {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-navy);
+  line-height: 1.1;
+}
+.cdash-kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.cdash-kpi-delta.is-up { color: var(--c-green); }
+.cdash-kpi-delta.is-down { color: var(--c-pink); }
+.cdash-kpi-delta.is-flat { color: var(--c-muted); }
+.cdash-kpi-delta .cdash-arrow { font-size: 10px; }
+.cdash-kpi-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--c-muted);
+}
+.cdash-kpi-new {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-blue);
+  background: rgba(40, 123, 232, 0.1);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+
+/* SECTIONS */
+.cdash-section { margin-top: 40px; }
+.cdash-section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin-bottom: 8px;
+}
+.cdash-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  color: var(--c-navy);
+}
+.cdash-section-desc {
+  font-size: 14px;
+  color: var(--c-muted);
+  line-height: 1.6;
+  margin: 0 0 20px;
+  max-width: 70ch;
+}
+
+/* CHART GRID */
+.cdash-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+.cdash-chart {
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 20px 20px 12px;
+  background: #fff;
+}
+.cdash-chart-title { font-size: 15px; font-weight: 700; color: var(--c-navy); }
+.cdash-chart-sub {
+  font-size: 13px;
+  color: var(--c-muted);
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+.cdash-chart-svg { width: 100%; height: auto; display: block; }
+
+/* SPLIT + FUNNEL */
+.cdash-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .cdash-split { grid-template-columns: 1fr; gap: 28px; }
+}
+.cdash-funnel-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 42px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.cdash-funnel-label { font-size: 13px; font-weight: 600; color: var(--c-ink); }
+.cdash-funnel-track {
+  height: 24px;
+  background: var(--c-track);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.cdash-funnel-fill { height: 100%; border-radius: 6px; min-width: 3px; }
+.cdash-funnel-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-navy);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* WON PARTNERS */
+.cdash-won-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cdash-won-secured { font-size: 13px; color: var(--c-muted); }
+.cdash-won-secured b { color: var(--c-green); font-size: 15px; }
+.cdash-won-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--c-border);
+}
+.cdash-won-name { font-size: 14px; font-weight: 600; color: var(--c-ink); }
+.cdash-tier {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.cdash-tier.is-platinum { background: #e7e9f6; color: #3c3e50; }
+.cdash-tier.is-gold { background: #fcefcb; color: #8a6400; }
+.cdash-tier.is-silver { background: #eef0f3; color: #5e617d; }
+.cdash-won-amt {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-navy);
+  text-align: right;
+  min-width: 64px;
+}
+.cdash-won-amt.is-discount { color: var(--c-muted); font-weight: 600; font-size: 12px; }
+
+/* EVENTS LIST */
+.cdash-evt-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--c-border);
+}
+.cdash-evt-title { font-size: 14px; font-weight: 600; color: var(--c-ink); line-height: 1.3; }
+.cdash-evt-date { font-size: 12px; color: var(--c-muted); margin-top: 2px; }
+.cdash-evt-type {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--c-track);
+  white-space: nowrap;
+}
+.cdash-evt-att {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-navy);
+  text-align: right;
+  min-width: 44px;
+}
+
+/* MARKETING */
+.cdash-link { color: var(--c-blue); font-weight: 600; text-decoration: none; }
+.cdash-link:hover { text-decoration: underline; }
+.cdash-mkt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.cdash-mkt-card {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.cdash-mkt-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin-bottom: 12px;
+}
+.cdash-mkt-primary {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-navy);
+  line-height: 1.1;
+}
+.cdash-mkt-primary-label { font-size: 13px; color: var(--c-muted); margin-top: 6px; }
+.cdash-mkt-secondary {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--c-border);
+}
+.cdash-mkt-sec-val { font-size: 18px; font-weight: 700; color: var(--c-ink); }
+.cdash-mkt-sec-label { font-size: 12px; color: var(--c-muted); margin-left: 8px; }
+
+/* TILES */
+.cdash-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.cdash-tile {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+.cdash-tile-val {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-navy);
+  line-height: 1.1;
+}
+.cdash-tile-val span { font-size: 16px; color: var(--c-muted); font-weight: 600; }
+.cdash-tile-label { font-size: 12px; color: var(--c-muted); margin-top: 8px; }
+.cdash-tile.is-feature {
+  background: #F5F8FE;
+  border-color: #C7DAF8;
+}
+
+/* PENDING CALLOUT */
+.cdash-pending {
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+.cdash-pending h3 { font-size: 15px; font-weight: 700; color: var(--c-navy); margin: 0 0 4px; }
+.cdash-pending p { font-size: 14px; color: var(--c-muted); margin: 0 0 16px; }
+.cdash-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.cdash-chip {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-ink);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 7px 14px;
+}
+
+/* FOOTER */
+.cdash-footer {
+  margin-top: 40px;
+  padding: 20px 0;
+  border-top: 1px solid var(--c-border);
+  font-size: 12px;
+  color: var(--c-muted);
+  text-align: center;
+}
+
+/* HISTORICAL METRICS TABLE */
+.cdash-histtable-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+}
+.cdash-histtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 480px;
+}
+.cdash-histtable th,
+.cdash-histtable td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--c-border);
+  white-space: nowrap;
+}
+.cdash-histtable thead th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+  background: var(--c-bg-soft);
+  font-weight: 700;
+}
+.cdash-histtable tbody th { font-weight: 600; color: var(--c-ink); }
+.cdash-histtable .num { text-align: right; font-variant-numeric: tabular-nums; }
+.cdash-histtable tbody tr:last-child th,
+.cdash-histtable tbody tr:last-child td { border-bottom: none; }

@@ -1,0 +1,53 @@
+/* One look for every /board page, taken from the Chapter Strategy page.
+   Loaded by the board layout after the admin stylesheet, so it wins over
+   both the EO admin rules and the Edge8 ones (body.e8). Keep page-specific
+   styling in each page's own stylesheet; this file only sets the shared
+   headline band, section labels and card surfaces. */
+
+/* The headline band: soft EO blue, rounded, with the four EO primaries
+   along its foot. Covers PageHead, plain admin-page-head and row heads. */
+body .admin-shell .admin-page-head:not(.admin-page-head--row .admin-page-head),
+body .admin-shell .admin-page-head--row {
+  position: relative; overflow: hidden; max-width: none; margin-bottom: 20px;
+  padding: 22px 24px 28px; border-radius: 16px; border: 1px solid #D5D8FC;
+  background: #ECEEFF; box-shadow: 0 1px 2px rgba(12, 12, 49, 0.06), 0 1px 3px rgba(12, 12, 49, 0.08);
+}
+body .admin-shell .admin-page-head:not(.admin-page-head--row .admin-page-head)::after,
+body .admin-shell .admin-page-head--row::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px;
+  background: linear-gradient(90deg, var(--eo-blue, #3d46f2) 0 25%, var(--eo-pink, #ff346e) 25% 50%, var(--eo-green, #1ea691) 50% 75%, var(--eo-orange, #fa653c) 75% 100%);
+}
+body .admin-shell .admin-page-head--row .admin-page-head { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+body .admin-shell .admin-page-head .admin-eyebrow {
+  margin: 0 0 6px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #2B33D9;
+}
+body .admin-shell .admin-page-head .admin-page-title {
+  margin: 0; font-size: 30px; line-height: 1.15; font-weight: 800; letter-spacing: -.02em; color: #0C0C31;
+}
+body .admin-shell .admin-page-head .admin-page-sub { margin: 8px 0 0; max-width: 720px; font-size: 15px; line-height: 1.5; color: #4F5270; }
+
+/* Section labels: small uppercase label over a bold title, as on Strategy. */
+body .admin-shell .cdash-section-label {
+  font-size: 11px; font-weight: 800; letter-spacing: .1em; color: #63667F;
+}
+
+/* Cards: one surface everywhere. */
+body .admin-shell .admin-card,
+body .admin-shell .cdash-tile,
+body .admin-shell .cdash-chart,
+body .admin-shell .bh-tile,
+body .admin-shell .bh-panel,
+body .admin-shell .mt-panel,
+body .admin-shell .mk-panel,
+body .admin-shell .ltp-panel {
+  border-color: #E4E6F2; border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(12, 12, 49, 0.06), 0 1px 3px rgba(12, 12, 49, 0.08);
+}
+
+/* The Chapter Dashboard's old link blue becomes EO Blue. */
+body .admin-shell .cdash { --c-blue: var(--eo-blue, #3d46f2); }
+
+/* Buttons and the EO accent: the older pages still carried #287BE8. */
+body .admin-shell .admin-btn--primary { background: var(--eo-blue, #3d46f2); border-color: var(--eo-blue, #3d46f2); color: #fff; }
+body .admin-shell .admin-btn--primary:hover:not(:disabled) { background: #2b33d9; border-color: #2b33d9; }
+body .admin-shell .admin-btn--ghost:hover { border-color: var(--eo-blue, #3d46f2); color: var(--eo-blue, #3d46f2); }

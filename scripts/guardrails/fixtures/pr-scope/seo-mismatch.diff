@@ -1,0 +1,6 @@
+diff --git a/src/app/admin/events/actions.ts b/src/app/admin/events/actions.ts
+index 1111111..2222222 100644
+--- a/src/app/admin/events/actions.ts
++++ b/src/app/admin/events/actions.ts
+@@ -1,0 +2 @@
++const checkout = await stripe.checkout.sessions.create(input);
