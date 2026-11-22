@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { PasswordInput } from "@/components/PasswordInput";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
+import { DemoLoginHint } from "@/components/DemoLoginHint";
 
 function AdminLoginForm() {
   const searchParams = useSearchParams();
@@ -111,6 +112,8 @@ function AdminLoginForm() {
             </form>
           )
         ) : (
+          <>
+          <DemoLoginHint />
           <form onSubmit={handleSignIn} className="auth-form">
             <label className="auth-field">
               <span className="auth-label">Email</span>
@@ -138,6 +141,7 @@ function AdminLoginForm() {
             </button>
             <Link href={`/admin/login?reset=1${nextSuffix}`} className="auth-link">Forgot password?</Link>
           </form>
+          </>
         )}
       </div>
     </div>

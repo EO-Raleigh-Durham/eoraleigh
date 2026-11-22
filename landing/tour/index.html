@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EO Chapter Manager tour</title>
-<meta name="description" content="A click-through tour of EO Chapter Manager: the public site, the member portal and the board workspace, shown with a fictional demo chapter.">
+<meta name="description" content="A click-through tour of EO Chapter Manager: the external website, the member portal and the board portal, shown with a fictional demo chapter.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -233,7 +233,7 @@
   </a>
   <nav class="top-links" aria-label="Links">
     <a class="pill" href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
-    <a class="pill pill--solid" href="/">Live demo</a>
+    <a class="pill pill--solid" href="https://app.eochapterdemo.com">Live demo</a>
   </nav>
 </header>
 
@@ -272,9 +272,9 @@
 <script>
 (function () {
   var SECTIONS = [
-    { id: "public", label: "Public site", title: "What anyone can see" },
+    { id: "public", label: "External website", title: "What anyone can see" },
     { id: "member", label: "Member portal", title: "What members use" },
-    { id: "board", label: "Board workspace", title: "How the board runs the chapter" }
+    { id: "board", label: "Board portal", title: "How the board runs the chapter" }
   ];
 
   // Hotspot boxes are in screenshot pixels (1280 x 800) and become percentages.
@@ -456,10 +456,10 @@
     el.innerHTML =
       '<div class="end-kicker">Open source and free</div>' +
       '<h2>Run it for <span>your chapter</span></h2>' +
-      '<p>EO Chapter Manager is the website, member portal and board workspace in this tour. Fork it, add your chapter\'s name and data, and deploy it on your own Vercel and Supabase accounts.</p>' +
+      '<p>EO Chapter Manager is the external website, member portal and board portal in this tour. An AI agent installs it for your chapter from one README, on your own GitHub, Supabase and Vercel accounts.</p>' +
       '<div class="end-actions">' +
         '<a class="btn-big btn-big--primary" href="https://github.com/dhajdu/eo-chapter-manager">Get the code on GitHub</a>' +
-        '<a class="btn-big btn-big--ghost" href="/">Try the live demo</a>' +
+        '<a class="btn-big btn-big--ghost" href="https://app.eochapterdemo.com">Try the live demo</a>' +
       '</div>';
     attachSwipe(el);
     return el;
@@ -486,7 +486,7 @@
     var st = STEPS[i];
     screen.innerHTML = "";
     screen.appendChild(st.end ? renderEnd() : renderShot(st));
-    $("url").textContent = "eochapterdemo.com" + st.path;
+    $("url").textContent = "app.eochapterdemo.com" + st.path;
 
     var sec = SECTIONS.filter(function (s) { return s.id === st.s; })[0];
     $("sectionName").textContent = sec ? sec.label : "Next step";

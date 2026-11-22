@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EO Chapter Manager</title>
+<meta name="description" content="Run your EO chapter on one platform instead of eight apps: a public website, a member portal and a board portal. Free and open source, installed by an AI agent from one README.">
+<meta property="og:title" content="EO Chapter Manager">
+<meta property="og:description" content="One platform for your EO chapter: public website, member portal, board portal. Open source.">
+<meta property="og:image" content="https://eochapterdemo.com/tour/img/09-chapter-dashboard.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --eo-blue: #3D46F2; --base-blue: #0C0C31; --ink: #1d1d3a; --muted: #5d6075;
+    --line: #e2e4ee; --soft: #f5f6fb; --pink: #EE396F; --orange: #F2653E; --yellow: #EEB829; --green: #1AA691;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: Roboto, system-ui, sans-serif; color: var(--ink); background: #fff; line-height: 1.55; }
+  a { color: var(--eo-blue); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; border: 2px solid transparent; cursor: pointer; }
+  .btn--solid { background: var(--eo-blue); color: #fff; }
+  .btn--light { background: #fff; color: var(--base-blue); }
+  .btn--ghost { border-color: rgba(255,255,255,.4); color: #fff; }
+  .btn--outline { border-color: var(--eo-blue); color: var(--eo-blue); background: #fff; }
+  .btn:hover { filter: brightness(1.08); }
+
+  /* top bar */
+  .top { background: var(--base-blue); color: #fff; }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #fff; text-decoration: none; }
+  .brand-mark { width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(var(--eo-blue), var(--pink), var(--orange), var(--yellow), var(--green), var(--eo-blue)); position: relative; }
+  .brand-mark::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--base-blue); }
+  .top nav a { color: #d6d8f5; text-decoration: none; margin-left: 22px; font-size: 14px; }
+  .top nav a:hover { color: #fff; }
+
+  /* hero: the problem */
+  .hero { background: var(--base-blue); color: #fff; padding: 56px 0 72px; }
+  .eyebrow { color: #aeb3ff; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; margin: 0 0 14px; }
+  .hero h1 { font-size: clamp(34px, 5.4vw, 60px); line-height: 1.05; margin: 0 0 20px; font-weight: 900; max-width: 860px; }
+  .hero h1 em { font-style: normal; color: #8f95ff; }
+  .hero .lede { font-size: clamp(17px, 2vw, 20px); color: #d6d8f5; max-width: 720px; margin: 0 0 28px; }
+  .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .apps { display: flex; flex-wrap: wrap; gap: 8px; margin: 34px 0 0; padding: 0; list-style: none; }
+  .apps li { border: 1px dashed rgba(255,255,255,.35); color: #c9ccf2; border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+  .apps li.arrow { border: 0; color: #fff; font-weight: 700; }
+  .apps li.one { border: 0; background: var(--eo-blue); color: #fff; font-weight: 700; }
+
+  section { padding: 72px 0; }
+  section h2 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; margin: 0 0 12px; color: var(--base-blue); }
+  section .sub { color: var(--muted); font-size: 17px; max-width: 720px; margin: 0 0 36px; }
+  .alt { background: var(--soft); }
+
+  /* problem cards */
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
+  .card h3 { margin: 0 0 8px; font-size: 18px; color: var(--base-blue); }
+  .card p { margin: 0; color: var(--muted); }
+  .num { display: inline-block; width: 30px; height: 30px; border-radius: 50%; background: var(--eo-blue); color: #fff; font-weight: 700; text-align: center; line-height: 30px; margin-bottom: 10px; }
+
+  /* surfaces */
+  .surface { display: grid; grid-template-columns: 1fr 1.25fr; gap: 32px; align-items: center; padding: 28px 0; border-top: 1px solid var(--line); }
+  .surface:first-of-type { border-top: 0; }
+  .surface .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--eo-blue); background: #e8e9ff; border-radius: 999px; padding: 3px 10px; margin-bottom: 10px; }
+  .surface h3 { font-size: 26px; margin: 0 0 8px; color: var(--base-blue); }
+  .surface ul { margin: 12px 0 20px; padding-left: 20px; color: var(--ink); }
+  .surface li { margin: 4px 0; }
+  .surface .who { color: var(--muted); margin: 0; }
+  .shot { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(12,12,49,.14); background: #fff; }
+  .shot .bar { height: 26px; background: #eef0f7; display: flex; align-items: center; gap: 6px; padding: 0 10px; }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: #cfd3e6; }
+  .shot img { display: block; width: 100%; height: auto; }
+
+  /* video */
+  .video-box { border-radius: 14px; overflow: hidden; background: var(--base-blue); box-shadow: 0 18px 40px rgba(12,12,49,.18); }
+  .video-box video { display: block; width: 100%; height: auto; }
+  .below-video { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+
+  /* install */
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px; }
+  .prompt { background: var(--base-blue); color: #fff; border-radius: 12px; padding: 20px 22px; font-size: 16px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .prompt code { font-family: ui-monospace, Menlo, monospace; font-size: 15px; color: #e3e5ff; }
+  .copy { background: var(--eo-blue); color: #fff; border: 0; border-radius: 6px; padding: 9px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--soft); font-weight: 500; }
+  .scroll { overflow-x: auto; }
+
+  footer { background: var(--base-blue); color: #aeb3ff; padding: 36px 0; font-size: 14px; }
+  footer a { color: #fff; }
+
+  @media (max-width: 760px) {
+    .top nav { display: none; }
+    .surface { grid-template-columns: 1fr; }
+    .surface .shot { order: -1; }
+    section { padding: 52px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
+    <nav>
+      <a href="#problem">Why</a>
+      <a href="#surfaces">What you get</a>
+      <a href="#video">Video</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">For EO chapter boards and chapter managers</p>
+    <h1>Your chapter runs on eight apps. <em>Next year's board will pick eight different ones.</em></h1>
+    <p class="lede">
+      EO Chapter Manager puts the website, events, tickets, member directory, CRM, dues, surveys and board planning into one platform your chapter owns, so the next board inherits a working system instead of starting again.
+    </p>
+    <div class="ctas">
+      <a class="btn btn--solid" href="#video">Watch the video</a>
+      <a class="btn btn--light" href="/tour">Click through the demo</a>
+      <a class="btn btn--ghost" href="#surfaces">Log in to the live demo</a>
+    </div>
+    <ul class="apps" aria-label="The tools it replaces">
+      <li>Website builder</li><li>Event tool</li><li>Payment links</li><li>Spreadsheets</li><li>CRM</li><li>Survey forms</li><li>Chat groups</li><li>Shared drives</li>
+      <li class="arrow" aria-hidden="true">&rarr;</li><li class="one">One platform</li>
+    </ul>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="wrap">
+    <h2>The problem every chapter knows</h2>
+    <p class="sub">Running an EO chapter is a volunteer job done by busy founders. The tools around it make it harder than it needs to be.</p>
+    <div class="grid3">
+      <div class="card"><span class="num">1</span><h3>Too many apps</h3><p>Events in one tool, payments in another, members in a spreadsheet, partners in a CRM, feedback in forms. Nothing talks to anything, and someone copies data between them by hand.</p></div>
+      <div class="card"><span class="num">2</span><h3>Reset every year</h3><p>Each new board brings its own favourite tools. Logins, history and how-tos leave with the outgoing chairs, and the chapter manager rebuilds the stack again.</p></div>
+      <div class="card"><span class="num">3</span><h3>No single picture</h3><p>Nobody can answer simple questions quickly: who is at risk of not renewing, which events members value, how the pipeline is tracking against this year's goal.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="surfaces" class="alt">
+  <div class="wrap">
+    <h2>One platform, three surfaces</h2>
+    <p class="sub">Everything below is the live demo, filled with a made-up chapter. Open any surface; the portals sign you in with one click.</p>
+
+    <div class="surface">
+      <div>
+        <span class="tag">For everyone</span>
+        <h3>External website</h3>
+        <p class="who">What prospects, guests and partners see.</p>
+        <ul>
+          <li>Chapter story, board and partners</li>
+          <li>Event calendar with tickets, RSVPs and QR check-in</li>
+          <li>Membership applications that land in the board's pipeline</li>
+          <li>Blog, newsletters and podcast pages</li>
+        </ul>
+        <a class="btn btn--outline" href="https://app.eochapterdemo.com/">Open the website</a>
+      </div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="/tour/img/01-home.jpg" alt="The chapter's public home page" loading="lazy" width="1280" height="800"></div>
+    </div>
+
+    <div class="surface">
+      <div>
+        <span class="tag">For members</span>
+        <h3>Member portal</h3>
+        <p class="who">What every member sees after signing in.</p>
+        <ul>
+          <li>Their upcoming events, tickets and past attendance</li>
+          <li>Member directory, searchable by company and industry</li>
+          <li>Newsletters and the board's priorities for the year</li>
+          <li>Annual re-qualification, done in a few minutes</li>
+        </ul>
+        <a class="btn btn--solid" href="https://app.eochapterdemo.com/login?demo=member">Open the member portal</a>
+      </div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="/tour/img/05-my-events.jpg" alt="A member's events and tickets" loading="lazy" width="1280" height="800"></div>
+    </div>
+
+    <div class="surface">
+      <div>
+        <span class="tag">For the board</span>
+        <h3>Board portal</h3>
+        <p class="who">Where the board and chapter manager run the chapter.</p>
+        <ul>
+          <li>Chapter dashboard: members, revenue, events and partners against last year</li>
+          <li>Member roster with engagement pulse and renewal status</li>
+          <li>Prospects pipeline, partners (SAP) and dues</li>
+          <li>Event attendance, feedback and surveys</li>
+          <li>Goals, board meetings and shared workboards</li>
+          <li>Optional AI assistant that answers questions about the chapter</li>
+        </ul>
+        <a class="btn btn--solid" href="https://app.eochapterdemo.com/login?demo=board">Open the board portal</a>
+      </div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="/tour/img/09-chapter-dashboard.jpg" alt="The board's chapter dashboard" loading="lazy" width="1280" height="800"></div>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <h2>See it in three minutes</h2>
+    <p class="sub">Why a chapter manager asked for this, and how strategy, events, members and growth come together in one place.</p>
+    <div class="video-box">
+      <video controls preload="metadata" playsinline poster="/video/poster.jpg">
+        <source src="/video/eo-chapter-manager.mp4" type="video/mp4">
+        Your browser cannot play this video. <a href="/video/eo-chapter-manager.mp4">Download it</a>.
+      </video>
+    </div>
+    <div class="below-video">
+      <a class="btn btn--outline" href="/tour">Click through it at your own pace</a>
+      <a class="btn btn--solid" href="https://app.eochapterdemo.com/login">Log in to the live demo</a>
+    </div>
+  </div>
+</section>
+
+<section id="install" class="alt">
+  <div class="wrap">
+    <h2>Install it for your chapter</h2>
+    <p class="sub">It is free and open source. Your chapter owns its copy, its data and its accounts. An AI coding agent does the setup from one README; plan on about an hour.</p>
+    <div class="steps">
+      <div class="card"><span class="num">1</span><h3>Open an AI agent</h3><p>Claude Code, Codex, Cursor or similar, in an empty folder on your computer.</p></div>
+      <div class="card"><span class="num">2</span><h3>Paste one sentence</h3><p>The agent reads the README, asks a few questions about your chapter, and builds the database and website.</p></div>
+      <div class="card"><span class="num">3</span><h3>Log in when asked</h3><p>You sign in to GitHub, Supabase and Vercel and approve the costs. At the end you get your site's link and an admin login.</p></div>
+    </div>
+    <div class="prompt">
+      <code id="prompt">Follow the README at https://github.com/dhajdu/eo-chapter-manager and set it up for EO &lt;your chapter&gt;.</code>
+      <button class="copy" type="button" id="copy">Copy</button>
+    </div>
+    <div class="scroll">
+      <table>
+        <tr><th>You need</th><th>Cost</th><th>What for</th></tr>
+        <tr><td>GitHub</td><td>Free</td><td>Your chapter's copy of the code</td></tr>
+        <tr><td>Supabase</td><td>Free to start</td><td>Database, sign-ins and file storage</td></tr>
+        <tr><td>Vercel Pro</td><td>About US$20 a month</td><td>Hosting, and the hourly background jobs</td></tr>
+        <tr><td>Stripe, Resend, Anthropic</td><td>Optional, pay as you go</td><td>Paid tickets and dues, email, the board's AI assistant</td></tr>
+      </table>
+    </div>
+    <p style="margin-top:24px"><a class="btn btn--outline" href="https://github.com/dhajdu/eo-chapter-manager">Read the README on GitHub</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    EO Chapter Manager is MIT-licensed and built by an EO chapter for every chapter. It follows the EO brand guidelines but is not an official EO Global product.
+    The demo uses a made-up chapter and resets every night.
+    <a href="https://github.com/dhajdu/eo-chapter-manager">github.com/dhajdu/eo-chapter-manager</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("copy").addEventListener("click", function () {
+    var text = document.getElementById("prompt").textContent;
+    var btn = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1600); },
+      function () { btn.textContent = "Select and copy"; }
+    );
+  });
+</script>
+</body>
+</html>

@@ -66,3 +66,7 @@ The assistant reads through a restricted `chatbot_reader` Postgres role (`CHATBO
 - EO Blue `#3D46F2`, Base Blue `#0C0C31`, tokens in `src/app/globals.css`, Roboto.
 - No em dashes. No full stops at the end of headings or titles.
 - EO logos are in `public/logo/`: full colour on light backgrounds, white on dark.
+
+## The demo site
+
+`landing/` is the static landing page for eochapterdemo.com (its own Vercel project, root directory `landing`). It is not part of the app; a chapter can ignore or delete it. The demo sign-in panel and guide (`src/components/DemoLoginHint.tsx`, `DemoGuide.tsx`) appear only when `NEXT_PUBLIC_DEMO_MEMBER_LOGIN` / `NEXT_PUBLIC_DEMO_BOARD_LOGIN` are set; never set them on a real chapter.

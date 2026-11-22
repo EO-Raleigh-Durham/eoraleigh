@@ -4,7 +4,7 @@ Run your EO chapter on one platform: a public website, events and ticketing, a m
 
 Next.js 16 · Supabase · Vercel · Stripe · Resend. MIT licence. Built by an EO chapter and shared with every chapter.
 
-- **See it running:** https://eochapterdemo.com (a fictional chapter) and the click-through tour at https://eochapterdemo.com/tour
+- **See it running:** https://eochapterdemo.com explains it, with a two-minute video and a click-through tour. The live demo of a made-up chapter is at https://app.eochapterdemo.com; its login page signs you in to the member portal or the board portal with one click.
 - **Not an official EO Global product.** It uses the EO brand guidelines so it looks right for a chapter. Check with your region before you launch.
 
 ---

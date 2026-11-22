@@ -19,6 +19,7 @@ import { loadMyRoleKeys } from "@/lib/board-home";
 import "../admin/admin.css";
 import "./board-shell.css";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
+import { DemoGuide } from "@/components/DemoGuide";
 
 export const metadata: Metadata = {
   title: {
@@ -81,7 +82,10 @@ export default async function BoardLayout({
           role: sessionUser.role,
         }}
       />
-      <div className="admin-main">{children}</div>
+      <div className="admin-main">
+        <DemoGuide area="board" />
+        {children}
+      </div>
       <ChatWidget />
     </div>
   );

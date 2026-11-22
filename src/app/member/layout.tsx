@@ -4,6 +4,7 @@ import { robotsFor } from "@/lib/access-map";
 import { SideNav } from "@/components/internal/SideNav";
 import "../admin/admin.css";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
+import { DemoGuide } from "@/components/DemoGuide";
 
 export const metadata: Metadata = {
   title: {
@@ -31,7 +32,10 @@ export default async function PortalLayout({
           role: sessionUser.role,
         }}
       />
-      <div className="admin-main">{children}</div>
+      <div className="admin-main">
+        <DemoGuide area="member" />
+        {children}
+      </div>
     </div>
   );
 }

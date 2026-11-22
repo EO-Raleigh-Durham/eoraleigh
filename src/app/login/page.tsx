@@ -7,6 +7,7 @@ import { getLoginRedirect } from "./actions";
 import { useSearchParams } from "next/navigation";
 import { PasswordInput } from "@/components/PasswordInput";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
+import { DemoLoginHint } from "@/components/DemoLoginHint";
 
 function LoginTabs() {
   const searchParams = useSearchParams();
@@ -82,6 +83,8 @@ function SignInForm() {
   return (
     <>
       {error && <div className="auth-error">{error}</div>}
+
+      <DemoLoginHint />
 
       <form onSubmit={handleSignIn} className="auth-form">
         <label className="auth-field">
