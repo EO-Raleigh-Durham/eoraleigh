@@ -1,4 +1,4 @@
-import { CHAPTER_COUNTRY } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE } from "@/kernel/config/chapter";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { HOME_OUTDOOR_COPY } from "@/content/home";
@@ -83,7 +83,7 @@ export function ProgramsGrid() {
             <div className="bento-mark"><span className="mono">06</span></div>
             <h3 className="heading-2">Podcast</h3>
             <p className="body" style={{ color: "var(--text-muted)", marginTop: 8 }}>
-              Seven-figure playbooks from {CHAPTER_COUNTRY}&apos;s leading entrepreneurs, recorded weekly.
+              Seven-figure playbooks from {CHAPTER_PLACE}&apos;s leading entrepreneurs, recorded weekly.
             </p>
             <Link href="/podcast" className="bento-link">
               Listen <span className="arrow">→</span>

@@ -1,4 +1,4 @@
-import { CHAPTER_COUNTRY, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE, CHAPTER_NAME } from "@/kernel/config/chapter";
 import Link from "next/link";
 
 export function HeroEditorial() {
@@ -14,7 +14,7 @@ export function HeroEditorial() {
           <div className="hero-eyebrow">
             <span className="live-dot"></span>
             <span className="eyebrow eyebrow--on-dark">
-              Entrepreneurs&apos; Organization · {CHAPTER_COUNTRY} Chapter
+              Entrepreneurs&apos; Organization · {CHAPTER_PLACE} Chapter
             </span>
           </div>
 

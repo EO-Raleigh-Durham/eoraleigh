@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
-import { CHAPTER_CITY, CHAPTER_COUNTRY, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_CITY, CHAPTER_PLACE, CHAPTER_NAME } from "@/kernel/config/chapter";
 
 // The chapter design system — a living styleguide rendered straight from the
 // real tokens in globals.css, so it can never drift from production. Internal
@@ -157,7 +157,7 @@ export default function StyleguidePage() {
         {/* 01 BRAND */}
         <Section id="brand" n="01" title="Brand & logo">
           <p className="lead" style={{ maxWidth: 640, marginBottom: 32 }}>
-            {CHAPTER_NAME} is the {CHAPTER_COUNTRY} chapter of Entrepreneurs&apos; Organization: a trusted
+            {CHAPTER_NAME} is the {CHAPTER_PLACE} chapter of Entrepreneurs&apos; Organization: a trusted
             community of founders, part of a global network of 20,000+ across 61 countries. The
             voice is confident, peer-to-peer, and plain-spoken.
           </p>

@@ -3,7 +3,7 @@ import { pageMeta } from "@/lib/page-metadata";
 import { BlogIndex } from "./BlogIndex";
 import { BlogUpcomingEvents } from "@/components/blog/BlogUpcomingEvents";
 import { getBlogIndexData } from "./blog-index-data";
-import { CHAPTER_COUNTRY, CHAPTER_DOMAIN, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE, CHAPTER_DOMAIN, CHAPTER_NAME } from "@/kernel/config/chapter";
 
 export const metadata = pageMeta({
   title: "Blog · Stories & playbooks",
@@ -28,7 +28,7 @@ export default async function BlogPage() {
               <br />
               from the people
               <br />
-              <span style={{ color: "var(--accent)" }}>building {CHAPTER_COUNTRY}</span>
+              <span style={{ color: "var(--accent)" }}>building {CHAPTER_PLACE}</span>
             </h1>
             <p className="lead blog-hero-sub">
               No thought leadership. No SEO bait. Just members, writing about what they actually did, what worked, and what they wish they had known earlier.

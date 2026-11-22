@@ -4,14 +4,14 @@ import { Reveal } from "@/components/Reveal";
 import { EventsList } from "@/components/events/EventsList";
 import { eventScope, getViewableEvents } from "@/lib/events";
 import { getSessionUser } from "@/lib/auth";
-import { CHAPTER_COUNTRY } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE } from "@/kernel/config/chapter";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = pageMeta({
-  title: `Global Events · EO Beyond ${CHAPTER_COUNTRY}`,
+  title: `Global Events · EO Beyond ${CHAPTER_PLACE}`,
   description:
-    `EO global and regional events for ${CHAPTER_COUNTRY} members: APAC retreats, leadership summits, and the worldwide EO calendar. Travel beyond the chapter and meet founders across 61 countries.`,
+    `EO global and regional events for ${CHAPTER_PLACE} members: APAC retreats, leadership summits, and the worldwide EO calendar. Travel beyond the chapter and meet founders across 61 countries.`,
   path: "/global-events",
 });
 
@@ -34,7 +34,7 @@ export default async function GlobalEventsPage() {
               className="display-1"
               style={{ marginTop: 16, marginBottom: 24, color: "#fff" }}
             >
-              EO beyond {CHAPTER_COUNTRY}
+              EO beyond {CHAPTER_PLACE}
               <br />
               <span style={{ color: "var(--accent)" }}>
                 a network of 20,000+
@@ -93,7 +93,7 @@ export default async function GlobalEventsPage() {
                 margin: "0 auto 24px",
               }}
             >
-              Forum reformations, signature programs, retreats, and member-only learning here in {CHAPTER_COUNTRY} are on the main events page.
+              Forum reformations, signature programs, retreats, and member-only learning here in {CHAPTER_PLACE} are on the main events page.
             </p>
             <div
               className="row"

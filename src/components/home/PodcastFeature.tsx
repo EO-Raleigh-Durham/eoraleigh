@@ -1,4 +1,4 @@
-import { CHAPTER_CITY, CHAPTER_COUNTRY, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_CITY, CHAPTER_PLACE, CHAPTER_NAME } from "@/kernel/config/chapter";
 import { getLatestEpisode } from "@/lib/podcast-episodes";
 import { EPISODES } from "@/lib/podcast-episodes";
 import Link from "next/link";
@@ -18,7 +18,7 @@ export function PodcastFeature() {
                 Share your seven-figure playbook
               </h2>
               <p className="lead" style={{ marginBottom: 28 }}>
-                Proven growth playbooks and unfiltered stories from {CHAPTER_COUNTRY}&apos;s leading entrepreneurs. Hosted by {CHAPTER_NAME}, recorded in {CHAPTER_CITY}.
+                Proven growth playbooks and unfiltered stories from {CHAPTER_PLACE}&apos;s leading entrepreneurs. Hosted by {CHAPTER_NAME}, recorded in {CHAPTER_CITY}.
               </p>
               <div className="row" style={{ gap: 12 }}>
                 <a

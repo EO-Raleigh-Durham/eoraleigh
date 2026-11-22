@@ -5,9 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EO Chapter Manager</title>
 <meta name="description" content="Run your EO chapter on one platform instead of eight apps: a public website, a member portal and a board portal. Free and open source, installed by an AI agent from one README.">
-<meta property="og:title" content="EO Chapter Manager">
-<meta property="og:description" content="One platform for your EO chapter: public website, member portal, board portal. Open source.">
-<meta property="og:image" content="https://eochapterdemo.com/tour/img/09-chapter-dashboard.jpg">
+<link rel="canonical" href="https://eochapterdemo.com/">
+<meta name="theme-color" content="#0C0C31">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EO Chapter Manager">
+<meta property="og:url" content="https://eochapterdemo.com/">
+<meta property="og:title" content="EO Chapter Manager: run your chapter on one platform, not eight apps">
+<meta property="og:description" content="A public website, a member portal and a board portal that your EO chapter owns, so the next board inherits a working system. Free and open source. Watch the video or try the live demo.">
+<meta property="og:image" content="https://eochapterdemo.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="EO Chapter Manager: your chapter runs on eight apps, run it on one. External website, member portal, board portal.">
+<meta property="og:video" content="https://eochapterdemo.com/video/eo-chapter-manager.mp4">
+<meta property="og:video:type" content="video/mp4">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EO Chapter Manager: run your chapter on one platform, not eight apps">
+<meta name="twitter:description" content="Public website, member portal and board portal for your EO chapter. Free and open source.">
+<meta name="twitter:image" content="https://eochapterdemo.com/og.jpg">
+<meta name="twitter:image:alt" content="EO Chapter Manager: your chapter runs on eight apps, run it on one.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -44,6 +62,13 @@
   .hero h1 em { font-style: normal; color: #8f95ff; }
   .hero .lede { font-size: clamp(17px, 2vw, 20px); color: #d6d8f5; max-width: 720px; margin: 0 0 28px; }
   .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1.08fr; gap: 44px; align-items: center; }
+  .hero h1 { font-size: clamp(32px, 4.4vw, 54px); }
+  .hero-video { position: relative; border-radius: 14px; overflow: hidden; background: #000; box-shadow: 0 24px 60px rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.12); }
+  .hero-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+  .sound { position: absolute; left: 14px; bottom: 56px; display: inline-flex; align-items: center; gap: 8px; background: var(--eo-blue); color: #fff; border: 0; border-radius: 999px; padding: 10px 16px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+  .sound[hidden] { display: none; }
+  .video-note { color: #aeb3ff; font-size: 13px; margin: 10px 2px 0; }
   .apps { display: flex; flex-wrap: wrap; gap: 8px; margin: 34px 0 0; padding: 0; list-style: none; }
   .apps li { border: 1px dashed rgba(255,255,255,.35); color: #c9ccf2; border-radius: 999px; padding: 6px 12px; font-size: 13px; }
   .apps li.arrow { border: 0; color: #fff; font-weight: 700; }
@@ -92,6 +117,9 @@
   footer { background: var(--base-blue); color: #aeb3ff; padding: 36px 0; font-size: 14px; }
   footer a { color: #fff; }
 
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 760px) {
     .top nav { display: none; }
     .surface { grid-template-columns: 1fr; }
@@ -108,7 +136,6 @@
     <nav>
       <a href="#problem">Why</a>
       <a href="#surfaces">What you get</a>
-      <a href="#video">Video</a>
       <a href="#install">Install</a>
       <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
     </nav>
@@ -117,15 +144,29 @@
 
 <div class="hero">
   <div class="wrap">
-    <p class="eyebrow">For EO chapter boards and chapter managers</p>
-    <h1>Your chapter runs on eight apps. <em>Next year's board will pick eight different ones.</em></h1>
-    <p class="lede">
-      EO Chapter Manager puts the website, events, tickets, member directory, CRM, dues, surveys and board planning into one platform your chapter owns, so the next board inherits a working system instead of starting again.
-    </p>
-    <div class="ctas">
-      <a class="btn btn--solid" href="#video">Watch the video</a>
-      <a class="btn btn--light" href="/tour">Click through the demo</a>
-      <a class="btn btn--ghost" href="#surfaces">Log in to the live demo</a>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">For EO chapter boards and chapter managers</p>
+        <h1>Your chapter runs on eight apps. <em>Next year's board will pick eight different ones.</em></h1>
+        <p class="lede">
+          EO Chapter Manager puts the website, events, tickets, member directory, CRM, dues, surveys and board planning into one platform your chapter owns, so the next board inherits a working system instead of starting again.
+        </p>
+        <div class="ctas">
+          <a class="btn btn--solid" href="#surfaces">Log in to the live demo</a>
+          <a class="btn btn--light" href="/tour">Click through the demo</a>
+          <a class="btn btn--ghost" href="#install">Install it</a>
+        </div>
+      </div>
+      <div>
+        <div class="hero-video">
+          <video id="hero-video" autoplay muted playsinline controls preload="auto" poster="/video/poster.jpg">
+            <source src="/video/eo-chapter-manager.mp4" type="video/mp4">
+            Your browser cannot play this video. <a href="/video/eo-chapter-manager.mp4">Download it</a>.
+          </video>
+          <button class="sound" type="button" id="sound">&#128266; Play with sound</button>
+        </div>
+        <p class="video-note">Three minutes: why a chapter manager asked for this, and how it works.</p>
+      </div>
     </div>
     <ul class="apps" aria-label="The tools it replaces">
       <li>Website builder</li><li>Event tool</li><li>Payment links</li><li>Spreadsheets</li><li>CRM</li><li>Survey forms</li><li>Chat groups</li><li>Shared drives</li>
@@ -203,23 +244,6 @@
   </div>
 </section>
 
-<section id="video">
-  <div class="wrap">
-    <h2>See it in three minutes</h2>
-    <p class="sub">Why a chapter manager asked for this, and how strategy, events, members and growth come together in one place.</p>
-    <div class="video-box">
-      <video controls preload="metadata" playsinline poster="/video/poster.jpg">
-        <source src="/video/eo-chapter-manager.mp4" type="video/mp4">
-        Your browser cannot play this video. <a href="/video/eo-chapter-manager.mp4">Download it</a>.
-      </video>
-    </div>
-    <div class="below-video">
-      <a class="btn btn--outline" href="/tour">Click through it at your own pace</a>
-      <a class="btn btn--solid" href="https://app.eochapterdemo.com/login">Log in to the live demo</a>
-    </div>
-  </div>
-</section>
-
 <section id="install" class="alt">
   <div class="wrap">
     <h2>Install it for your chapter</h2>
@@ -255,6 +279,15 @@
 </footer>
 
 <script>
+  (function () {
+    var v = document.getElementById("hero-video");
+    var b = document.getElementById("sound");
+    // Browsers only autoplay muted video; one click restarts it with sound.
+    b.addEventListener("click", function () {
+      v.muted = false; v.currentTime = 0; v.play(); b.hidden = true;
+    });
+    v.addEventListener("volumechange", function () { if (!v.muted) b.hidden = true; });
+  })();
   document.getElementById("copy").addEventListener("click", function () {
     var text = document.getElementById("prompt").textContent;
     var btn = this;

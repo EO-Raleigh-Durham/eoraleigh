@@ -11,7 +11,7 @@ import {
   CHAPTER_CHAT_URL,
   CHAPTER_CITY,
   CHAPTER_CONTACT_EMAIL,
-  CHAPTER_COUNTRY,
+  CHAPTER_PLACE,
   CHAPTER_COUNTRY_CODE,
   CHAPTER_NAME,
 } from "@/kernel/config/chapter";
@@ -47,7 +47,7 @@ const ORGANIZATION_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: CHAPTER_NAME,
-  alternateName: `Entrepreneurs' Organization ${CHAPTER_COUNTRY}`,
+  alternateName: `Entrepreneurs' Organization ${CHAPTER_PLACE}`,
   url: SITE_URL,
   logo: `${SITE_URL}/logo/primary.svg`,
   description:
@@ -81,15 +81,15 @@ export const metadata: Metadata = {
   applicationName: CHAPTER_NAME,
   authors: [{ name: CHAPTER_NAME }],
   creator: CHAPTER_NAME,
-  publisher: `Entrepreneurs' Organization ${CHAPTER_COUNTRY} Chapter`,
+  publisher: `Entrepreneurs' Organization ${CHAPTER_PLACE} Chapter`,
   keywords: [
     CHAPTER_NAME,
-    `Entrepreneurs Organization ${CHAPTER_COUNTRY}`,
-    `${CHAPTER_COUNTRY} founders network`,
-    `founder community ${CHAPTER_COUNTRY}`,
+    `Entrepreneurs Organization ${CHAPTER_PLACE}`,
+    `${CHAPTER_PLACE} founders network`,
+    `founder community ${CHAPTER_PLACE}`,
     "EO Forum",
     "EO membership",
-    `${CHAPTER_CITY} entrepreneurs`,
+    ...(CHAPTER_CITY ? [`${CHAPTER_CITY} entrepreneurs`] : []),
     "business peer group",
   ],
   openGraph: {
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     siteName: CHAPTER_NAME,
     title: `${CHAPTER_NAME} · Master Growth, Multiply Impact`,
     description:
-      `A private community of 7-figure founders in ${CHAPTER_COUNTRY}, part of a 20,000-member global network across 61 countries.`,
+      `A private community of 7-figure founders in ${CHAPTER_PLACE}, part of a 20,000-member global network across 61 countries.`,
     url: SITE_URL,
     locale: "en_US",
     images: [{ url: DEFAULT_OG_IMAGE }],
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${CHAPTER_NAME} · Master Growth, Multiply Impact`,
     description:
-      `A private community of 7-figure founders in ${CHAPTER_COUNTRY}, part of a 20,000-member global network.`,
+      `A private community of 7-figure founders in ${CHAPTER_PLACE}, part of a 20,000-member global network.`,
     images: [DEFAULT_OG_IMAGE],
   },
   robots: robotsFor("public"),

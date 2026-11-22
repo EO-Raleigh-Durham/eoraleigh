@@ -4,7 +4,7 @@ import { Reveal } from "@/components/Reveal";
 import { EventsList } from "@/components/events/EventsList";
 import { Testimonials } from "@/components/Testimonials";
 import { eventScope, getViewableEvents } from "@/lib/events";
-import { CHAPTER_CITY, CHAPTER_COUNTRY, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_CITY, CHAPTER_PLACE, CHAPTER_NAME } from "@/kernel/config/chapter";
 import { SOCIALS_TESTIMONIALS } from "@/content/testimonials";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +46,7 @@ export default async function CommunityEventsPage() {
               className="lead"
               style={{ color: "var(--text-on-dark-muted)", maxWidth: 680 }}
             >
-              Most EO events are members-only. These are the ones we open to the broader founder community in {CHAPTER_COUNTRY}, mixers, pitch nights, working sessions, and Forum demos. Free to attend, RSVP appreciated.
+              Most EO events are members-only. These are the ones we open to the broader founder community in {CHAPTER_PLACE}, mixers, pitch nights, working sessions, and Forum demos. Free to attend, RSVP appreciated.
             </p>
           </Reveal>
         </div>

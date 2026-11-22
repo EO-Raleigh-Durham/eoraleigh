@@ -2,12 +2,12 @@ import { EPISODES } from "@/lib/podcast-episodes";
 import { Reveal } from "@/components/Reveal";
 import { PodcastGuestForm } from "@/components/PodcastGuestForm";
 import { pageMeta } from "@/lib/page-metadata";
-import { CHAPTER_COUNTRY, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE, CHAPTER_NAME } from "@/kernel/config/chapter";
 
 export const metadata = pageMeta({
   title: "Podcast, Seven-Figure Founders",
   description:
-    `${CHAPTER_COUNTRY}'s leading entrepreneurs, in their own words. Proven growth playbooks and unfiltered stories from the founders building ${CHAPTER_COUNTRY}.`,
+    `${CHAPTER_PLACE}'s leading entrepreneurs, in their own words. Proven growth playbooks and unfiltered stories from the founders building ${CHAPTER_PLACE}.`,
   path: "/podcast",
 });
 
@@ -25,12 +25,12 @@ export default function PodcastPage() {
               <Reveal className="podcast-hero-text">
                 <span className="eyebrow eyebrow--accent">Seven-Figure Founders</span>
                 <h1 className="display-2 podcast-hero-title">
-                  {CHAPTER_COUNTRY}&apos;s leading entrepreneurs,
+                  {CHAPTER_PLACE}&apos;s leading entrepreneurs,
                   <br />
                   in their own words
                 </h1>
                 <p className="lead podcast-hero-sub">
-                  Proven growth playbooks and unfiltered stories from the founders who have built and scaled {CHAPTER_COUNTRY}&apos;s most interesting companies. Hosted by {CHAPTER_NAME}.
+                  Proven growth playbooks and unfiltered stories from the founders who have built and scaled {CHAPTER_PLACE}&apos;s most interesting companies. Hosted by {CHAPTER_NAME}.
                 </p>
                 <div className="row" style={{ gap: 12, flexWrap: "wrap" }}>
                   <a href={featured.url} target="_blank" rel="noreferrer" className="btn btn--dark">
@@ -123,12 +123,12 @@ export default function PodcastPage() {
                 Share your seven-figure playbook
               </h2>
               <p className="lead" style={{ color: "var(--text-on-dark-muted)", marginBottom: 24 }}>
-                We interview founders running 7-figure businesses in {CHAPTER_COUNTRY}. The bar is high: real numbers, real lessons, no PR speak. If you have a story other founders need to hear, we want it on the record.
+                We interview founders running 7-figure businesses in {CHAPTER_PLACE}. The bar is high: real numbers, real lessons, no PR speak. If you have a story other founders need to hear, we want it on the record.
               </p>
               <ul className="podcast-criteria">
                 <li>Be the founder, co-founder, or majority owner of a business</li>
                 <li>Have a business generating over US$1 million in annual revenue</li>
-                <li>Be based in {CHAPTER_COUNTRY} and actively leading your company</li>
+                <li>Be based in {CHAPTER_PLACE} and actively leading your company</li>
               </ul>
             </Reveal>
 

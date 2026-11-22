@@ -28,6 +28,10 @@ export const CHAPTER_CITY = env(process.env.NEXT_PUBLIC_CHAPTER_CITY, "");
 /** Country or region, e.g. "Exampleland". */
 export const CHAPTER_COUNTRY = env(process.env.NEXT_PUBLIC_CHAPTER_COUNTRY, "");
 
+/** Where the chapter is, for sentences like "founders in X": the country, or
+ *  the city when no country is set. */
+export const CHAPTER_PLACE = CHAPTER_COUNTRY || CHAPTER_CITY;
+
 /** IANA timezone the chapter's calendar runs on, e.g. "Asia/Singapore". */
 export const CHAPTER_TIME_ZONE = env(process.env.NEXT_PUBLIC_CHAPTER_TIME_ZONE, "UTC");
 

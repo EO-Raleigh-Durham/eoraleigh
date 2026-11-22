@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { CHAPTER_COUNTRY, CHAPTER_DOMAIN, CHAPTER_NAME } from "@/kernel/config/chapter";
+import { CHAPTER_PLACE, CHAPTER_DOMAIN, CHAPTER_NAME } from "@/kernel/config/chapter";
 
 export const alt = `${CHAPTER_NAME}, a private community of 7-figure founders`;
 export const size = { width: 1200, height: 630 };
@@ -72,7 +72,7 @@ export default function Image() {
               maxWidth: "900px",
             }}
           >
-            A private community of 7-figure founders in {CHAPTER_COUNTRY}, part of a 20,000-member global network.
+            A private community of 7-figure founders in {CHAPTER_PLACE}, part of a 20,000-member global network.
           </div>
         </div>
 

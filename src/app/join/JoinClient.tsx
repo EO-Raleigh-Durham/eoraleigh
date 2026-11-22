@@ -6,7 +6,7 @@ import { Reveal } from "@/components/Reveal";
 import { Field } from "@/components/Field";
 import { readFirstTouch } from "@/lib/attribution-client";
 import { useSpamTrap } from "@/components/SpamTrap";
-import { CHAPTER_CHAT_APP, CHAPTER_CITIES, CHAPTER_COUNTRY, CHAPTER_NAME, CHAPTER_PHONE_PLACEHOLDER } from "@/kernel/config/chapter";
+import { CHAPTER_CHAT_APP, CHAPTER_CITIES, CHAPTER_PLACE, CHAPTER_NAME, CHAPTER_PHONE_PLACEHOLDER } from "@/kernel/config/chapter";
 import { JOIN_TESTIMONIAL } from "@/content/testimonials";
 
 type FormState = {
@@ -76,10 +76,10 @@ export function JoinClient() {
           <Reveal>
             <span className="eyebrow eyebrow--accent">Apply for membership</span>
             <h1 className="display-2" style={{ marginTop: 16, marginBottom: 24 }}>
-              Where {CHAPTER_COUNTRY}&apos;s entrepreneurs grow into world-class leaders
+              Where {CHAPTER_PLACE}&apos;s entrepreneurs grow into world-class leaders
             </h1>
             <p className="lead">
-              EO membership is exclusive, not elitist. We accept about 25% of applicants because we are looking for founders who share our core values and pursue growth across their personal life, business, family, and community. Eligibility: founder, co-founder, or majority owner of a {CHAPTER_COUNTRY ? `${CHAPTER_COUNTRY}-based ` : ""}business with over US$1 million in annual revenue.
+              EO membership is exclusive, not elitist. We accept about 25% of applicants because we are looking for founders who share our core values and pursue growth across their personal life, business, family, and community. Eligibility: founder, co-founder, or majority owner of a {CHAPTER_PLACE ? `${CHAPTER_PLACE}-based ` : ""}business with over US$1 million in annual revenue.
             </p>
             <ol className="review-steps" style={{ marginTop: 32 }}>
               <li>
@@ -137,7 +137,7 @@ export function JoinClient() {
               <div className="bento-mark"><span className="mono">05</span></div>
               <h3 className="heading-2" style={{ marginTop: 12 }}>Tight-knit local chapter</h3>
               <p className="body" style={{ color: "var(--text-muted)" }}>
-                Built on trust, learning, and shared values, with the {CHAPTER_COUNTRY} founders shaping the next era.
+                Built on trust, learning, and shared values, with the {CHAPTER_PLACE} founders shaping the next era.
               </p>
             </Reveal>
           </div>
