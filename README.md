@@ -35,6 +35,8 @@ supabase projects list
 vercel whoami </dev/null
 ```
 
+`supabase projects list` may first print "Cannot find project ref. Have you run supabase link?"; that is harmless if the list follows.
+
 Install missing tools with the operator's package manager (`brew install gh supabase/tap/supabase`, `npm i -g vercel`). `supabase login`, `vercel login` and `gh auth login` open a browser, so **ask the operator to run any that fail**, all at once. At the same time, confirm they are happy for you to create a Supabase project and a Vercel project on their accounts (both can cost money), and tell them the names you will use.
 
 Every `vercel` command below ends in `</dev/null`. Without it, the CLI waits for keyboard input forever when an agent runs it.
@@ -43,14 +45,16 @@ You also need Node.js 20.9 or later (`node --version`).
 
 ### Step 1: the chapter's details
 
-Ask the operator these six questions in one message:
+Ask the operator these questions in one message:
 
-1. The chapter's full name, as members say it (for example `EO Berlin`)
-2. The website address it will use (for example `https://www.eoberlin.org`), or "none yet" to use the Vercel address for now
-3. The main city and country
-4. The time zone (offer the IANA name you think fits, for example `Europe/Berlin`)
+1. The chapter's full name, as members say it (for example `EO Berlin`), and a short label for tight spaces (offer one, for example `EOBER`)
+2. The website address it will use (for example `https://www.eoberlin.org`), or "none yet". If none, use `https://<chapter-slug>-chapter-manager.vercel.app`, which is the address Vercel will give the project in Step 5; check it there
+3. The main city, country and two-letter country code
+4. The time zone (offer the IANA name you think fits, for example `Europe/Berlin`) and its short label (`CET`)
 5. The public contact email (for example `hello@eoberlin.org`)
 6. The first admin: name and email address
+
+`<chapter-slug>` below means the chapter name in lowercase with dashes, for example `eo-berlin`.
 
 Then create the repo copy and the settings file:
 
@@ -61,9 +65,13 @@ cp .env.local.example .env.local
 npm ci
 ```
 
-Fill in the "required: your chapter" block of `.env.local` from the answers. Quote any value with a space in it (`NEXT_PUBLIC_ORG_NAME="EO Berlin"`). Generate the four random secrets with `openssl rand -hex 32`.
+`.env.local.example` lists every setting with a comment line above it. Fill in the "required" block of `.env.local` from the answers: write the value straight after the `=`, and quote any value with a space in it (`NEXT_PUBLIC_ORG_NAME="EO Berlin"`). Generate the four random secrets with `openssl rand -hex 32`. Leave the Supabase lines for Step 2.
 
-**Check:** `grep -c '=$' .env.local` still shows blanks only in the optional section.
+**Check:** this lists the required settings still empty; only the Supabase ones should remain:
+
+```bash
+node -e 'const t=require("fs").readFileSync(".env.local","utf8");const req=t.split("---------------------------------------------------------------- optional")[0];console.log(req.split("\n").filter(l=>/^[A-Z0-9_]+=\s*$/.test(l)).join("\n")||"all required settings filled")'
+```
 
 ### Step 2: Supabase
 
@@ -81,7 +89,15 @@ Record the project ref and fill in `.env.local`:
 - Keys: `supabase projects api-keys --project-ref <ref> --reveal -o json`. Use `anon` for `NEXT_PUBLIC_SUPABASE_ANON_KEY`, the `sb_publishable_` key for `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and the `sb_secret_` key for `SUPABASE_SECRET_KEY`. **Without `--reveal` the secret key comes back masked and every request fails with 401.** The legacy `service_role` key also works as `SUPABASE_SECRET_KEY`.
 - `SUPABASE_DB_URL`: the **session pooler** address, `postgres://postgres.<ref>:<password>@aws-1-<region>.pooler.supabase.com:5432/postgres?sslmode=require`. Some projects are on `aws-0-` instead of `aws-1-`; if one says "tenant not found", try the other. Do not use `db.<ref>.supabase.co`: it is IPv6 only and fails on many networks. Do not use port 6543.
 
-Finally, in the Supabase dashboard (ask the operator if you cannot reach it), set **Authentication > URL Configuration**: Site URL to `NEXT_PUBLIC_SITE_URL`, and add `<site url>/**` and `http://localhost:3000/**` to Redirect URLs. Password-reset links break without this.
+Finally, tell Supabase the site's address, or password-reset links break. If `SUPABASE_ACCESS_TOKEN` is set (a personal token from supabase.com > Account > Access Tokens), do it with the API:
+
+```bash
+curl -s -X PATCH "https://api.supabase.com/v1/projects/<ref>/config/auth" \
+  -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+  -d '{"site_url":"<site url>","uri_allow_list":"<site url>/**,http://localhost:3000/**"}' -o /dev/null -w '%{http_code}\n'
+```
+
+`200` means done. Otherwise ask the operator to set it in the dashboard: **Authentication > URL Configuration**, Site URL to the site address, and `<site url>/**` and `http://localhost:3000/**` under Redirect URLs.
 
 ### Step 3: the database
 
@@ -102,34 +118,32 @@ npm run build
 npm run dev
 ```
 
-Open http://localhost:3000. The home page should show the chapter's name. Stop the server.
+Open http://localhost:3000. The home page should show the chapter's name. Stop the server with Ctrl+C in its own terminal (not a broad `pkill`, which can stop other projects' servers).
 
 ### Step 5: Vercel
 
+Your settings live in `.env.local`, which is never committed (`.gitignore` covers `.env*`); Vercel gets them separately. Create the Vercel project; this also connects it to the GitHub copy:
+
 ```bash
-git add .
-git commit -m "Chapter settings"     # .env.local is never committed; .gitignore covers .env*
-git push
 vercel link --yes --project <chapter-slug>-chapter-manager </dev/null
-vercel git connect </dev/null
 ```
 
 Add every non-empty value from `.env.local` to the project, for production and preview, except `SUPABASE_DB_URL` (only the setup script uses it):
 
 ```bash
-while IFS='=' read -r key value; do
-  case "$key" in ''|\#*|SUPABASE_DB_URL) continue ;; esac
-  value="${value%\"}"; value="${value#\"}"
+grep -E '^[A-Z0-9_]+=' .env.local | while IFS='=' read -r key value; do
+  [ "$key" = SUPABASE_DB_URL ] && continue
+  value=$(printf '%s' "$value" | sed -E 's/[[:space:]]+#.*$//; s/[[:space:]]+$//; s/^"(.*)"$/\1/')
   [ -z "$value" ] && continue
-  for target in production preview; do
-    # The value arrives on stdin, so no </dev/null here. --force replaces an existing value.
-    printf '%s' "$value" | vercel env add "$key" "$target" --force >/dev/null
-  done
-done < <(grep -E '^[A-Z0-9_]+=' .env.local)
+  # The value arrives on stdin, so no </dev/null here. --force replaces an existing value;
+  # the empty "" after preview means all preview branches.
+  printf '%s' "$value" | vercel env add "$key" production --force || echo "FAILED production $key"
+  printf '%s' "$value" | vercel env add "$key" preview "" --force || echo "FAILED preview $key"
+done
 vercel env ls </dev/null
 ```
 
-Deploy by pushing to GitHub; Vercel builds every push to `main`. Do not use `vercel deploy`.
+Every key should appear twice, once for Production and once for Preview. Deploy by pushing to GitHub; Vercel builds every push to `main`. Do not use `vercel deploy`.
 
 ```bash
 git commit --allow-empty -m "First deploy" && git push
@@ -147,7 +161,7 @@ If the chapter has its own domain: `vercel domains add <domain> </dev/null`, the
 node --env-file=.env.local scripts/create-admin.mjs <admin email> "<Admin Name>"
 ```
 
-It prints a one-time link. Give it to the operator: opening it lets the admin set a password, then sign in at `/login` and reach `/admin` and `/board`.
+It prints a one-time link. Give it to the operator: opening it lets the admin set a password. After that they sign in at `/login` (or `/admin/login`, where `/admin` and `/board` send signed-out visitors) and reach `/admin` and `/board`.
 
 ### Step 7: hand over
 
