@@ -223,7 +223,9 @@
   @media (max-width: 640px) {
     .top { padding: 12px 16px; }
     .brand-sub { display: none; }
-    .top-links .pill:not(.pill--solid) { display: none; }
+    .brand-name { display: none; }
+    .top-links { gap: 6px; }
+    .pill { padding: 7px 11px; font-size: 13px; white-space: nowrap; }
     .wrap { padding: 12px 16px 32px; }
     .sections { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .section { padding: 8px; }
@@ -250,8 +252,8 @@
     <span class="brand-name">EO Chapter Manager<span class="brand-sub">Product tour</span></span>
   </a>
   <nav class="top-links" aria-label="Links">
-    <a class="pill" href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
-    <a class="pill pill--solid" href="https://app.eochapterdemo.com">Live demo</a>
+    <a class="pill pill--solid" href="https://app.eochapterdemo.com/login">Try the live demo</a>
+    <a class="pill" href="/#install">Install it</a>
   </nav>
 </header>
 
@@ -476,8 +478,8 @@
       '<h2>Run it for <span>your chapter</span></h2>' +
       '<p>EO Chapter Manager is the external website, member portal and board portal in this tour. An AI agent installs it for your chapter from one README, on your own GitHub, Supabase and Vercel accounts.</p>' +
       '<div class="end-actions">' +
-        '<a class="btn-big btn-big--primary" href="https://github.com/dhajdu/eo-chapter-manager">Get the code on GitHub</a>' +
-        '<a class="btn-big btn-big--ghost" href="https://app.eochapterdemo.com">Try the live demo</a>' +
+        '<a class="btn-big btn-big--primary" href="https://app.eochapterdemo.com/login">Try the live demo</a>' +
+        '<a class="btn-big btn-big--ghost" href="/#install">Install it</a>' +
       '</div>';
     attachSwipe(el);
     return el;
