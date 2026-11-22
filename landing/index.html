@@ -56,22 +56,26 @@
   .top nav a:hover { color: #fff; }
 
   /* hero: the problem */
-  .hero { background: var(--base-blue); color: #fff; padding: 56px 0 72px; }
+  .hero { background: radial-gradient(900px 520px at 50% 115%, #23289a 0%, var(--base-blue) 62%); color: #fff; padding: 56px 0 80px; }
+  .hero-center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .hero-center .lede { margin-left: auto; margin-right: auto; }
+  .hero-center .ctas { justify-content: center; margin-bottom: 48px; }
+  .hero-center .hero-video { width: 100%; max-width: 960px; }
+  .hero .hero-center h1 { max-width: none; font-size: clamp(32px, 5.2vw, 64px); }
+  .sound { white-space: nowrap; }
+  @media (max-width: 560px) { .sound { font-size: 14px; padding: 10px 16px; } }
   .eyebrow { color: #aeb3ff; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; margin: 0 0 14px; }
-  .hero h1 { font-size: clamp(34px, 5.4vw, 60px); line-height: 1.05; margin: 0 0 20px; font-weight: 900; max-width: 860px; }
+  .hero h1 { font-size: clamp(36px, 6vw, 68px); line-height: 1.04; margin: 0 0 18px; font-weight: 900; max-width: 900px; letter-spacing: -0.01em; }
   .hero h1 em { font-style: normal; color: #8f95ff; }
-  .hero .lede { font-size: clamp(17px, 2vw, 20px); color: #d6d8f5; max-width: 720px; margin: 0 0 28px; }
+  .hero .lede { font-size: clamp(17px, 2vw, 21px); color: #d6d8f5; max-width: 620px; margin: 0 0 30px; }
   .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-  .hero-grid { display: grid; grid-template-columns: 1fr 1.08fr; gap: 44px; align-items: center; }
-  .hero h1 { font-size: clamp(32px, 4.4vw, 54px); }
   .hero-video { position: relative; border-radius: 14px; overflow: hidden; background: #000; box-shadow: 0 24px 60px rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.12); }
   .hero-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
-  .sound { position: absolute; left: 14px; bottom: 56px; display: inline-flex; align-items: center; gap: 8px; background: var(--eo-blue); color: #fff; border: 0; border-radius: 999px; padding: 10px 16px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+  .sound { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 8px; background: var(--eo-blue); color: #fff; border: 0; border-radius: 999px; padding: 14px 24px; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
   .sound[hidden] { display: none; }
-  .video-note { color: #aeb3ff; font-size: 13px; margin: 10px 2px 0; }
-  .apps { display: flex; flex-wrap: wrap; gap: 8px; margin: 34px 0 0; padding: 0; list-style: none; }
-  .apps li { border: 1px dashed rgba(255,255,255,.35); color: #c9ccf2; border-radius: 999px; padding: 6px 12px; font-size: 13px; }
-  .apps li.arrow { border: 0; color: #fff; font-weight: 700; }
+  .apps { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; padding: 0; list-style: none; }
+  .apps li { border: 1px dashed #b9bdd6; color: var(--muted); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+  .apps li.arrow { border: 0; color: var(--base-blue); font-weight: 700; }
   .apps li.one { border: 0; background: var(--eo-blue); color: #fff; font-weight: 700; }
 
   section { padding: 72px 0; }
@@ -118,8 +122,7 @@
   footer a { color: #fff; }
 
   @media (max-width: 900px) {
-    .hero-grid { grid-template-columns: 1fr; }
-  }
+    }
   @media (max-width: 760px) {
     .top nav { display: none; }
     .surface { grid-template-columns: 1fr; }
@@ -143,42 +146,32 @@
 </header>
 
 <div class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div>
-        <p class="eyebrow">For EO chapter boards and chapter managers</p>
-        <h1>Your chapter runs on eight apps. <em>Next year's board will pick eight different ones.</em></h1>
-        <p class="lede">
-          EO Chapter Manager puts the website, events, tickets, member directory, CRM, dues, surveys and board planning into one platform your chapter owns, so the next board inherits a working system instead of starting again.
-        </p>
-        <div class="ctas">
-          <a class="btn btn--solid" href="#surfaces">Log in to the live demo</a>
-          <a class="btn btn--light" href="/tour">Click through the demo</a>
-          <a class="btn btn--ghost" href="#install">Install it</a>
-        </div>
-      </div>
-      <div>
-        <div class="hero-video">
-          <video id="hero-video" autoplay muted playsinline controls preload="auto" poster="/video/poster.jpg">
-            <source src="/video/eo-chapter-manager.mp4" type="video/mp4">
-            Your browser cannot play this video. <a href="/video/eo-chapter-manager.mp4">Download it</a>.
-          </video>
-          <button class="sound" type="button" id="sound">&#128266; Play with sound</button>
-        </div>
-        <p class="video-note">Three minutes: why a chapter manager asked for this, and how it works.</p>
-      </div>
+  <div class="wrap hero-center">
+    <p class="eyebrow">For EO chapter boards and chapter managers</p>
+    <h1>Your chapter runs on eight apps.<br><em>Run it on one.</em></h1>
+    <p class="lede">A website, member portal and board portal your chapter owns, so the next board inherits a working system.</p>
+    <div class="ctas">
+      <a class="btn btn--solid" href="#surfaces">Try the live demo</a>
+      <a class="btn btn--ghost" href="/tour">Click through it</a>
     </div>
-    <ul class="apps" aria-label="The tools it replaces">
-      <li>Website builder</li><li>Event tool</li><li>Payment links</li><li>Spreadsheets</li><li>CRM</li><li>Survey forms</li><li>Chat groups</li><li>Shared drives</li>
-      <li class="arrow" aria-hidden="true">&rarr;</li><li class="one">One platform</li>
-    </ul>
+    <div class="hero-video">
+      <video id="hero-video" autoplay muted playsinline controls preload="auto" poster="/video/poster.jpg">
+        <source src="/video/eo-chapter-manager.mp4" type="video/mp4">
+        Your browser cannot play this video. <a href="/video/eo-chapter-manager.mp4">Download it</a>.
+      </video>
+      <button class="sound" type="button" id="sound">&#128266; Play with sound</button>
+    </div>
   </div>
 </div>
 
 <section id="problem">
   <div class="wrap">
     <h2>The problem every chapter knows</h2>
-    <p class="sub">Running an EO chapter is a volunteer job done by busy founders. The tools around it make it harder than it needs to be.</p>
+    <p class="sub">Running an EO chapter is a volunteer job done by busy founders, and every new board picks a new mix of tools. EO Chapter Manager puts the website, events, tickets, member directory, CRM, dues, surveys and board planning into one place.</p>
+    <ul class="apps" aria-label="The tools it replaces">
+      <li>Website builder</li><li>Event tool</li><li>Payment links</li><li>Spreadsheets</li><li>CRM</li><li>Survey forms</li><li>Chat groups</li><li>Shared drives</li>
+      <li class="arrow" aria-hidden="true">&rarr;</li><li class="one">One platform</li>
+    </ul>
     <div class="grid3">
       <div class="card"><span class="num">1</span><h3>Too many apps</h3><p>Events in one tool, payments in another, members in a spreadsheet, partners in a CRM, feedback in forms. Nothing talks to anything, and someone copies data between them by hand.</p></div>
       <div class="card"><span class="num">2</span><h3>Reset every year</h3><p>Each new board brings its own favourite tools. Logins, history and how-tos leave with the outgoing chairs, and the chapter manager rebuilds the stack again.</p></div>
