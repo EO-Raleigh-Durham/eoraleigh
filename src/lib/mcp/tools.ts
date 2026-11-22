@@ -17,6 +17,7 @@ import type { McpCaller } from "./caller";
 import { NO_INPUT, type Tool } from "./tools-core.ts";
 import { sapTools } from "./sap-tools.ts";
 import { membershipTools } from "./membership-tools.ts";
+import { workboardTools } from "./workboard-tools.ts";
 import { ownTools } from "./own-tools.ts";
 import { dataTools } from "./data-tools.ts";
 
@@ -58,6 +59,7 @@ function allTools(caller: McpCaller, origin: string): Tool[] {
     ...ownTools(caller),
     ...sapTools(caller, origin),
     ...membershipTools(caller, origin),
+    ...workboardTools(caller),
     ...dataTools(),
   ];
 }

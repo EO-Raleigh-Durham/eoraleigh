@@ -1,0 +1,48 @@
+name: Demo reset
+
+# Puts the public demo (EO Demo Chapter) back to its fictional demo data
+# every night. Runs only in the demo's own repository.
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo-reset
+  cancel-in-progress: false
+
+jobs:
+  reset:
+    name: Reset the demo database
+    if: github.repository == 'dhajdu/eo-chapter-manager'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Write .env.local
+        env:
+          DEMO_SUPABASE_DB_URL: ${{ secrets.DEMO_SUPABASE_DB_URL }}
+          DEMO_SUPABASE_URL: ${{ secrets.DEMO_SUPABASE_URL }}
+          DEMO_SUPABASE_SECRET_KEY: ${{ secrets.DEMO_SUPABASE_SECRET_KEY }}
+          DEMO_MEMBER_PASSWORD: ${{ secrets.DEMO_MEMBER_PASSWORD }}
+          DEMO_BOARD_PASSWORD: ${{ secrets.DEMO_BOARD_PASSWORD }}
+        run: |
+          {
+            echo 'NEXT_PUBLIC_ORG_NAME="EO Demo Chapter"'
+            echo "SUPABASE_DB_URL=$DEMO_SUPABASE_DB_URL"
+            echo "SUPABASE_URL=$DEMO_SUPABASE_URL"
+            echo "SUPABASE_SECRET_KEY=$DEMO_SUPABASE_SECRET_KEY"
+            echo "DEMO_MEMBER_PASSWORD=$DEMO_MEMBER_PASSWORD"
+            echo "DEMO_BOARD_PASSWORD=$DEMO_BOARD_PASSWORD"
+          } > .env.local
+      - run: node --env-file=.env.local scripts/demo-reset.mjs
+      - if: always()
+        run: rm -f .env.local

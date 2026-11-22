@@ -168,6 +168,16 @@ Report to the operator:
 - **Privacy policy:** `src/content/privacy-policy.tsx` is a generic draft. Have it reviewed for your country before launch.
 - **People and events:** add board members, members, forums and events in `/admin` and `/board`.
 
+## Practice install with sample data
+
+To try everything before using real data, do a separate install whose `NEXT_PUBLIC_ORG_NAME` is exactly `"EO Demo Chapter"`, then load the fictional chapter that runs on the demo site:
+
+```bash
+DEMO_MEMBER_PASSWORD=<choose one> DEMO_BOARD_PASSWORD=<choose one> node --env-file=.env.local scripts/demo-reset.mjs
+```
+
+It refuses to run on any other chapter name, because it empties the database first. Sign in as `demo-board@example.com` or `demo-member@example.com` with the passwords you chose. Never load sample data into your real chapter.
+
 ## Optional features
 
 | Feature | What to add |

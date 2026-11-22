@@ -71,7 +71,7 @@ test("write tools run only through writeTool's receipt check", () => {
   assert.match(src, /const problem = receiptProblem\(subject, fields, receipt\);\s*if \(problem\) return \{ error: problem \};/);
   // Area tool files may build writes only with writeTool(): a hand-made tool
   // marked readOnly: false would skip the preview and its receipt.
-  for (const file of ["src/lib/mcp/tools.ts", "src/lib/mcp/sap-tools.ts", "src/lib/mcp/membership-tools.ts"]) {
+  for (const file of ["src/lib/mcp/tools.ts", "src/lib/mcp/sap-tools.ts", "src/lib/mcp/membership-tools.ts", "src/lib/mcp/workboard-tools.ts"]) {
     assert.doesNotMatch(read(file), /readOnly:\s*false/, `${file} builds a write without writeTool`);
   }
 });

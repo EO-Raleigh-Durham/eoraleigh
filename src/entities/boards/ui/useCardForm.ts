@@ -33,6 +33,7 @@ export function useCardForm({
   startSaving,
   run,
   viewerPersonId = null,
+  newCardAssigneeId = null,
 }: {
   data: WorkboardData;
   sprintFilter: string;
@@ -44,6 +45,8 @@ export function useCardForm({
   run: RunAction;
   /** Who is editing: handing a card to somebody else waits for its line (W.60). */
   viewerPersonId?: string | null;
+  /** Who a new card starts assigned to; My Commitments makes it the viewer, so the card lands in their own lanes. */
+  newCardAssigneeId?: string | null;
 }) {
   const [form, setForm] = useState<Form | null>(null);
   // The form as the drawer last took it from the live card; null for a new card.
@@ -210,7 +213,7 @@ export function useCardForm({
       laneId,
       title,
       priority: template?.priority ?? "p3",
-      assigneeId: "",
+      assigneeId: newCardAssigneeId ?? "",
       origAssigneeId: "",
       handoverNote: "",
       dueDate: overrides?.dueDate ?? "",

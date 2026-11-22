@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EO Chapter Manager tour</title>
+<meta name="description" content="A click-through tour of EO Chapter Manager: the public site, the member portal and the board workspace, shown with a fictional demo chapter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --eo-blue: #3D46F2;
+    --base-blue: #0C0C31;
+    --surface: #FFFFFF;
+    --page: #F4F5FA;
+    --ink: #0C0C31;
+    --muted: #5B5F7A;
+    --line: #E2E4EE;
+    --blue-soft: #ECEDFE;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--eo-blue); }
+  button { font: inherit; }
+
+  .top {
+    background: var(--base-blue);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--eo-blue);
+    display: grid; place-items: center;
+    font-weight: 900; font-size: 14px; letter-spacing: .02em;
+  }
+  .brand-name { font-weight: 700; font-size: 17px; }
+  .brand-sub { font-size: 13px; color: #B9BCE6; font-weight: 400; margin-left: 6px; }
+  .top-links { display: flex; gap: 10px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 999px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    border: 1px solid rgba(255,255,255,.35); color: #fff;
+  }
+  .pill--solid { background: var(--eo-blue); border-color: var(--eo-blue); }
+
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; }
+
+  /* Section steps */
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .section[aria-current="true"] { border-color: var(--eo-blue); box-shadow: 0 0 0 1px var(--eo-blue) inset; }
+  .section-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .section[aria-current="true"] .section-label { color: var(--eo-blue); }
+  .section-title { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .dots { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 0; padding: 0; cursor: pointer;
+    background: #D3D5E6;
+  }
+  .dot.is-seen { background: #A9ADF8; }
+  .dot[aria-current="step"] { background: var(--eo-blue); transform: scale(1.25); }
+  .section--end { display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--eo-blue); }
+
+  /* Stage */
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 20px;
+    align-items: start;
+  }
+  .viewer {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(12,12,49,.08);
+  }
+  .chrome {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: #F0F1F7;
+    border-bottom: 1px solid var(--line);
+  }
+  .chrome-dots { display: flex; gap: 6px; }
+  .chrome-dots i { width: 10px; height: 10px; border-radius: 50%; background: #D3D5E6; display: block; }
+  .chrome-url {
+    flex: 1; min-width: 0;
+    background: #fff; border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 12px; font-size: 13px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .shot { position: relative; aspect-ratio: 1280 / 800; background: #E9EAF2; touch-action: pan-y; }
+  .shot img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+  .hotspot {
+    position: absolute;
+    border: 2px solid var(--eo-blue);
+    border-radius: 8px;
+    background: rgba(61,70,242,.08);
+    cursor: pointer;
+    padding: 0;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  .hotspot:hover, .hotspot:focus-visible { background: rgba(61,70,242,.18); outline: none; animation: none; box-shadow: 0 0 0 4px rgba(61,70,242,.25); }
+  .hotspot-tip {
+    position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
+    background: var(--base-blue); color: #fff;
+    font-size: 12px; font-weight: 500; line-height: 1.3;
+    padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+    pointer-events: none; opacity: 0; transition: opacity .15s;
+  }
+  .hotspot.tip-below .hotspot-tip { bottom: auto; top: calc(100% + 8px); }
+  .hotspot:hover .hotspot-tip, .hotspot:focus-visible .hotspot-tip { opacity: 1; }
+  .shots-off .hotspot { display: none; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(61,70,242,.35); }
+    50% { box-shadow: 0 0 0 6px rgba(61,70,242,0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .hotspot { animation: none; } }
+
+  /* End screen */
+  .end {
+    aspect-ratio: 1280 / 800;
+    background: var(--base-blue);
+    color: #fff;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6% 8%;
+  }
+  .end-kicker { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9EA3FF; }
+  .end h2 { font-size: clamp(30px, 5vw, 60px); font-weight: 900; line-height: 1.02; margin: 12px 0 14px; letter-spacing: -.01em; }
+  .end h2 span { color: var(--eo-blue); }
+  .end p { font-size: clamp(15px, 1.6vw, 18px); color: #CFD1F2; max-width: 620px; line-height: 1.5; margin: 0 0 24px; }
+  .end-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-big {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 22px; border-radius: 999px;
+    font-weight: 700; font-size: 16px; text-decoration: none;
+  }
+  .btn-big--primary { background: var(--eo-blue); color: #fff; }
+  .btn-big--ghost { border: 1px solid rgba(255,255,255,.45); color: #fff; }
+
+  /* Caption panel */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    position: sticky; top: 16px;
+  }
+  .panel-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .panel-section { font-weight: 700; color: var(--eo-blue); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+  .panel h1 { font-size: 24px; line-height: 1.2; margin: 10px 0 8px; font-weight: 700; }
+  .who { display: inline-block; font-size: 12px; font-weight: 500; background: var(--blue-soft); color: var(--eo-blue); padding: 4px 10px; border-radius: 999px; }
+  .caption { font-size: 16px; line-height: 1.55; color: #2A2D4A; margin: 12px 0 0; }
+  .tries { margin: 16px 0 0; padding: 12px 14px; background: var(--page); border-radius: 10px; font-size: 14px; color: var(--muted); }
+  .tries strong { color: var(--ink); font-weight: 500; }
+  .tries ul { margin: 6px 0 0; padding: 0; list-style: none; }
+  .tries li { margin: 4px 0; }
+  .tries button { background: none; border: 0; padding: 0; color: var(--eo-blue); cursor: pointer; text-align: left; font-size: 14px; }
+  .tries button:hover { text-decoration: underline; }
+  .nav { display: flex; gap: 10px; margin-top: 18px; }
+  .nav button {
+    flex: 1;
+    padding: 12px 14px; border-radius: 10px; cursor: pointer;
+    font-weight: 700; font-size: 15px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .nav button.next { background: var(--eo-blue); border-color: var(--eo-blue); color: #fff; }
+  .nav button:disabled { opacity: .4; cursor: default; }
+  .hint { margin-top: 12px; font-size: 12px; color: var(--muted); text-align: center; }
+  .toggle { margin-top: 10px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; justify-content: center; }
+  .note { margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center; }
+
+  @media (max-width: 1000px) {
+    .stage { grid-template-columns: 1fr; }
+    .panel { position: static; }
+  }
+  @media (max-width: 640px) {
+    .top { padding: 12px 16px; }
+    .brand-sub { display: none; }
+    .top-links .pill:not(.pill--solid) { display: none; }
+    .wrap { padding: 12px 16px 32px; }
+    .sections { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .section { padding: 8px; }
+    .section-title { display: none; }
+    .section-label { font-size: 10px; letter-spacing: .04em; }
+    .section--end { display: none; }
+    .dot { width: 8px; height: 8px; }
+    .chrome { padding: 6px 8px; }
+    .chrome-dots { display: none; }
+    .chrome-url { font-size: 11px; }
+    .hotspot-tip { display: none; }
+    .panel { padding: 16px; }
+    .panel h1 { font-size: 20px; }
+    .caption { font-size: 15px; }
+    .hint { display: none; }
+    .end { aspect-ratio: auto; padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#1" aria-label="Start the tour">
+    <span class="brand-mark" aria-hidden="true">EO</span>
+    <span class="brand-name">EO Chapter Manager<span class="brand-sub">Product tour</span></span>
+  </a>
+  <nav class="top-links" aria-label="Links">
+    <a class="pill" href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+    <a class="pill pill--solid" href="/">Live demo</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="sections" id="sections" role="tablist" aria-label="Tour sections"></div>
+
+  <div class="stage">
+    <section class="viewer" aria-label="Screen">
+      <div class="chrome" aria-hidden="true">
+        <div class="chrome-dots"><i></i><i></i><i></i></div>
+        <div class="chrome-url" id="url"></div>
+      </div>
+      <div id="screen"></div>
+    </section>
+
+    <aside class="panel" aria-live="polite">
+      <div class="panel-meta">
+        <span class="panel-section" id="sectionName"></span>
+        <span id="counter"></span>
+      </div>
+      <h1 id="title"></h1>
+      <span class="who" id="who"></span>
+      <p class="caption" id="caption"></p>
+      <div class="tries" id="tries"></div>
+      <div class="nav">
+        <button type="button" id="prev">Previous</button>
+        <button type="button" class="next" id="next">Next</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="showSpots" checked> Show clickable areas</label>
+      <p class="hint">Use the arrow keys, or click the highlighted areas on the screen</p>
+      <p class="note">Every name, company and number here is fictional demo data</p>
+    </aside>
+  </div>
+</main>
+
+<script>
+(function () {
+  var SECTIONS = [
+    { id: "public", label: "Public site", title: "What anyone can see" },
+    { id: "member", label: "Member portal", title: "What members use" },
+    { id: "board", label: "Board workspace", title: "How the board runs the chapter" }
+  ];
+
+  // Hotspot boxes are in screenshot pixels (1280 x 800) and become percentages.
+  var STEPS = [
+    { s: "public", img: "01-home.jpg", path: "/", title: "Chapter home page", who: "Prospective members",
+      cap: "The chapter's public website. It explains what the chapter is, who it is for and how to apply.",
+      spots: [
+        { x: 1072, y: 26, w: 65, h: 35, to: 5, label: "Sign in to the member portal" }
+      ] },
+    { s: "public", img: "02-events.jpg", path: "/events", title: "Events calendar", who: "Members and guests",
+      cap: "Every upcoming chapter event, filtered by type. Events appear here the moment the board publishes them.",
+      spots: [
+        { x: 48, y: 498, w: 1184, h: 137, to: 3, label: "Open Negotiation Lab" },
+        { x: 48, y: 361, w: 1184, h: 137, to: 3, label: "Open an event" }
+      ] },
+    { s: "public", img: "03-event-rsvp.jpg", path: "/events/negotiation-lab", title: "Event page with tickets", who: "Members and guests",
+      cap: "Each event has its own page where people pick a ticket and RSVP. Paid tickets go through Stripe and free ones confirm straight away.",
+      spots: [
+        { x: 208, y: 324, w: 560, h: 76, to: 6, label: "See the ticket you get" },
+        { x: 1072, y: 26, w: 65, h: 35, to: 5, label: "Sign in" }
+      ] },
+    { s: "public", img: "04-board-of-directors.jpg", path: "/board-of-directors", title: "Board of directors", who: "Everyone",
+      cap: "The current board, built from the board appointments in the database, so it updates itself when the term changes.",
+      spots: [
+        { x: 1072, y: 26, w: 65, h: 35, to: 5, label: "Sign in as a member" }
+      ] },
+
+    { s: "member", img: "05-my-events.jpg", path: "/member/events", title: "My events", who: "Members",
+      cap: "A member's home after signing in: the next event to sign up for, their tickets and their past events.",
+      spots: [
+        { x: 1076, y: 534, w: 143, h: 45, to: 6, label: "View ticket" },
+        { x: 280, y: 262, w: 960, h: 167, to: 3, label: "View event and RSVP" },
+        { x: 16, y: 311, w: 208, h: 42, to: 7, label: "Member directory" }
+      ] },
+    { s: "member", img: "06-ticket.jpg", path: "/t/D4C0EE1F304B", title: "Event ticket", who: "Members and guests",
+      cap: "Every RSVP gets a ticket with a QR code. The board scans it at the door to check people in, with or without email set up.",
+      spots: [
+        { x: 1105, y: 27, w: 32, h: 32, to: 5, label: "Back to my events", below: true }
+      ] },
+    { s: "member", img: "07-directory.jpg", path: "/member/directory", title: "Member directory", who: "Members",
+      cap: "Every active member, searchable by name, company, industry or city. Contact details stay private and Connect passes a note along.",
+      spots: [
+        { x: 16, y: 93, w: 208, h: 42, to: 5, label: "My events" }
+      ] },
+
+    { s: "board", img: "08-board-home.jpg", path: "/board", title: "Board home", who: "Board members",
+      cap: "Each board member lands on their own commitments: their goal, the next board meeting, their open cards and how every chair is tracking.",
+      spots: [
+        { x: 16, y: 147, w: 216, h: 37, to: 9, label: "Chapter dashboard" },
+        { x: 16, y: 187, w: 216, h: 37, to: 15, label: "Goals" },
+        { x: 299, y: 341, w: 100, h: 22, to: 15, label: "All chapter goals" }
+      ] },
+    { s: "board", img: "09-chapter-dashboard.jpg", path: "/board/chapter-dashboard", title: "Chapter dashboard", who: "Board members",
+      cap: "The state of the chapter for the fiscal year: members, revenue, forums and partner income, compared with last year and calculated live.",
+      spots: [
+        { x: 16, y: 96, w: 208, h: 36, to: 8, label: "My commitments" },
+        { x: 16, y: 183, w: 208, h: 36, to: 15, label: "Goals" }
+      ] },
+    { s: "board", img: "10-members.jpg", path: "/board/members", title: "Member roster", who: "Board members",
+      cap: "The full roster with status, company, pulse score and re-qualification. Click any row to open that member's details.",
+      spots: [
+        { x: 281, y: 575, w: 958, h: 102, to: 11, label: "Open Amaya's profile" },
+        { x: 45, y: 512, w: 179, h: 36, to: 17, label: "Surveys" }
+      ] },
+    { s: "board", img: "11-member-profile.jpg", path: "/board/members", title: "Member profile", who: "Board members",
+      cap: "One member at a glance: contact, company, membership history, latest pulse, re-qualification answers and forum placement.",
+      spots: [
+        { x: 1222, y: 18, w: 36, h: 36, to: 10, label: "Close and go back", below: true }
+      ] },
+    { s: "board", img: "12-events-manage.jpg", path: "/board/events", title: "Event management", who: "Learning and event chairs",
+      cap: "Create and edit every event in one place, with live RSVP counts against capacity. Saving here updates the public calendar.",
+      spots: [
+        { x: 281, y: 685, w: 958, h: 52, to: 13, label: "Open Autumn Chapter Gala" }
+      ] },
+    { s: "board", img: "13-event-attendance.jpg", path: "/board/events/e0000000-0000-4000-8000-000000000008", title: "Event RSVPs and attendance", who: "Learning and event chairs",
+      cap: "After an event the board sees who registered, who paid, who checked in, the feedback score and the revenue collected.",
+      spots: [
+        { x: 302, y: 55, w: 46, h: 20, to: 12, label: "Back to all events", below: true }
+      ] },
+    { s: "board", img: "14-prospects.jpg", path: "/board/prospects", title: "Prospects pipeline", who: "Membership chair",
+      cap: "Every prospective member moving through the joining funnel, ranked by who to contact next, with progress against the year's target.",
+      spots: [
+        { x: 16, y: 183, w: 208, h: 36, to: 15, label: "Chapter goals" }
+      ] },
+    { s: "board", img: "15-goals.jpg", path: "/board/goals", title: "Chapter goals", who: "The whole board",
+      cap: "The chapter's priorities and key results, with the ones at risk or off track pulled to the top for a check-in.",
+      spots: [
+        { x: 16, y: 108, w: 216, h: 36, to: 8, label: "My commitments" }
+      ] },
+    { s: "board", img: "16-workboards.jpg", path: "/board/workboards", title: "Workboards", who: "The whole board",
+      cap: "Shared task boards for the board's work, with owners, due dates and priorities, in board, list or calendar view.",
+      spots: [
+        { x: 16, y: 187, w: 216, h: 37, to: 15, label: "Goals" }
+      ] },
+    { s: "board", img: "17-survey-results.jpg", path: "/board/surveys/a0000000-0000-4000-8000-000000000002/results", title: "Survey results", who: "Member engagement chair",
+      cap: "The board builds surveys, sends them to members and reads the results here, from multiple choice to written answers.",
+      spots: [
+        { x: 45, y: 474, w: 179, h: 36, to: 10, label: "Member roster" }
+      ] },
+    { s: "end", end: true, path: "/", title: "Run it for your chapter", who: "Chapter boards", cap: "" }
+  ];
+
+  var W = 1280, H = 800;
+  var cur = 0;
+  var seen = {};
+  var $ = function (id) { return document.getElementById(id); };
+  var screen = $("screen");
+
+  function pct(n, total) { return (n / total * 100).toFixed(3) + "%"; }
+
+  function buildSections() {
+    var box = $("sections");
+    SECTIONS.forEach(function (sec) {
+      var b = document.createElement("div");
+      b.className = "section";
+      b.setAttribute("role", "tab");
+      b.setAttribute("tabindex", "0");
+      b.dataset.sec = sec.id;
+      b.innerHTML = '<div class="section-label"></div><div class="section-title"></div><div class="dots"></div>';
+      b.querySelector(".section-label").textContent = sec.label;
+      b.querySelector(".section-title").textContent = sec.title;
+      var dots = b.querySelector(".dots");
+      STEPS.forEach(function (st, i) {
+        if (st.s !== sec.id) return;
+        var d = document.createElement("button");
+        d.type = "button";
+        d.className = "dot";
+        d.dataset.i = i;
+        d.setAttribute("aria-label", "Step " + (i + 1) + ": " + st.title);
+        d.addEventListener("click", function (e) { e.stopPropagation(); go(i); });
+        dots.appendChild(d);
+      });
+      function jump() {
+        for (var i = 0; i < STEPS.length; i++) if (STEPS[i].s === sec.id) return go(i);
+      }
+      b.addEventListener("click", jump);
+      b.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); jump(); } });
+      box.appendChild(b);
+    });
+    var end = document.createElement("button");
+    end.type = "button";
+    end.className = "section section--end";
+    end.textContent = "Get started";
+    end.addEventListener("click", function () { go(STEPS.length - 1); });
+    box.appendChild(end);
+  }
+
+  function renderShot(st) {
+    var wrap = document.createElement("div");
+    wrap.className = "shot";
+    var img = document.createElement("img");
+    img.src = "img/" + st.img;
+    img.alt = st.title + " screen of the EO Chapter Manager demo";
+    img.width = W; img.height = H;
+    wrap.appendChild(img);
+    (st.spots || []).forEach(function (sp) {
+      var h = document.createElement("button");
+      h.type = "button";
+      h.className = "hotspot" + (sp.below ? " tip-below" : "");
+      h.style.left = pct(sp.x, W);
+      h.style.top = pct(sp.y, H);
+      h.style.width = pct(sp.w, W);
+      h.style.height = pct(sp.h, H);
+      h.setAttribute("aria-label", sp.label + " (goes to step " + sp.to + ")");
+      var tip = document.createElement("span");
+      tip.className = "hotspot-tip";
+      tip.textContent = sp.label;
+      h.appendChild(tip);
+      h.addEventListener("click", function () { go(sp.to - 1); });
+      wrap.appendChild(h);
+    });
+    attachSwipe(wrap);
+    return wrap;
+  }
+
+  function renderEnd() {
+    var el = document.createElement("div");
+    el.className = "end";
+    el.innerHTML =
+      '<div class="end-kicker">Open source and free</div>' +
+      '<h2>Run it for <span>your chapter</span></h2>' +
+      '<p>EO Chapter Manager is the website, member portal and board workspace in this tour. Fork it, add your chapter\'s name and data, and deploy it on your own Vercel and Supabase accounts.</p>' +
+      '<div class="end-actions">' +
+        '<a class="btn-big btn-big--primary" href="https://github.com/dhajdu/eo-chapter-manager">Get the code on GitHub</a>' +
+        '<a class="btn-big btn-big--ghost" href="/">Try the live demo</a>' +
+      '</div>';
+    attachSwipe(el);
+    return el;
+  }
+
+  function attachSwipe(el) {
+    var x0 = null, y0 = null;
+    el.addEventListener("touchstart", function (e) {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    el.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  }
+
+  function go(i) {
+    if (i < 0 || i >= STEPS.length) return;
+    cur = i;
+    seen[i] = true;
+    var st = STEPS[i];
+    screen.innerHTML = "";
+    screen.appendChild(st.end ? renderEnd() : renderShot(st));
+    $("url").textContent = "eochapterdemo.com" + st.path;
+
+    var sec = SECTIONS.filter(function (s) { return s.id === st.s; })[0];
+    $("sectionName").textContent = sec ? sec.label : "Next step";
+    $("counter").textContent = st.end ? "The end" : (i + 1) + " of " + (STEPS.length - 1);
+    $("title").textContent = st.title;
+    $("who").textContent = st.end ? "For chapter boards" : "Used by: " + st.who;
+    $("caption").textContent = st.end
+      ? "Everything you just saw ships in one open source repository. Read the setup guide on GitHub, or click around the live demo with the demo sign-ins."
+      : st.cap;
+
+    var tries = $("tries");
+    tries.innerHTML = "";
+    if (st.spots && st.spots.length) {
+      tries.innerHTML = "<strong>Try clicking</strong><ul></ul>";
+      var ul = tries.querySelector("ul");
+      st.spots.forEach(function (sp) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.textContent = sp.label + " →";
+        b.addEventListener("click", function () { go(sp.to - 1); });
+        li.appendChild(b);
+        ul.appendChild(li);
+      });
+      tries.style.display = "";
+    } else {
+      tries.style.display = "none";
+    }
+
+    $("prev").disabled = i === 0;
+    $("next").disabled = i === STEPS.length - 1;
+    $("next").textContent = i === STEPS.length - 2 ? "Finish" : "Next";
+
+    document.querySelectorAll(".section[data-sec]").forEach(function (el) {
+      el.setAttribute("aria-current", el.dataset.sec === st.s ? "true" : "false");
+    });
+    document.querySelectorAll(".dot").forEach(function (d) {
+      var n = Number(d.dataset.i);
+      if (n === i) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+      d.classList.toggle("is-seen", !!seen[n]);
+    });
+
+    if (location.hash !== "#" + (i + 1)) history.replaceState(null, "", "#" + (i + 1));
+
+    var nxt = STEPS[i + 1];
+    if (nxt && nxt.img) { var p = new Image(); p.src = "img/" + nxt.img; }
+  }
+
+  buildSections();
+  $("prev").addEventListener("click", function () { go(cur - 1); });
+  $("next").addEventListener("click", function () { go(cur + 1); });
+  $("showSpots").addEventListener("change", function (e) {
+    screen.classList.toggle("shots-off", !e.target.checked);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+  });
+  window.addEventListener("hashchange", function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n >= 1 && n <= STEPS.length && n - 1 !== cur) go(n - 1);
+  });
+  var start = parseInt(location.hash.slice(1), 10);
+  go(start >= 1 && start <= STEPS.length ? start - 1 : 0);
+})();
+</script>
+</body>
+</html>

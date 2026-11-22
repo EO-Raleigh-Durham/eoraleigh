@@ -110,9 +110,13 @@ export default async function MyBoard({ searchParams }: { searchParams: Promise<
             <Link href={`?${new URLSearchParams({ ...(as ? { as } : {}), cards: "list" }).toString()}`} className={listView ? "is-on" : ""} scroll={false}>List</Link>
           </nav>
         </div>
-        {cards.length === 0 ? (
+        {!listView && myBoard ? (
+          <Edge8Frame>
+            <Workboard data={myBoard} onMove={moveCardColumn} viewerPersonId={viewer.personId} bare />
+          </Edge8Frame>
+        ) : cards.length === 0 ? (
           <p className="bh-sub">No cards assigned to you.</p>
-        ) : listView ? (
+        ) : (
           <ul className="bh-cards">
             {cards.map((c) => (
               <li key={c.id}>
@@ -123,12 +127,6 @@ export default async function MyBoard({ searchParams }: { searchParams: Promise<
               </li>
             ))}
           </ul>
-        ) : (
-          myBoard && (
-            <Edge8Frame>
-              <Workboard data={myBoard} onMove={moveCardColumn} viewerPersonId={viewer.personId} canAdd={false} bare />
-            </Edge8Frame>
-          )
         )}
       </section>
 

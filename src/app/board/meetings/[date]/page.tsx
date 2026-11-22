@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LinkedText } from "@/kernel/ui/LinkedText";
 import { notFound } from "next/navigation";
 import { requireBoardOrAbove } from "@/lib/auth";
 import { canRunMeetings, getMeeting, loadMeetingPage, rolesHeld } from "@/lib/board-meetings";
@@ -233,8 +234,8 @@ export default async function MeetingPage({ params }: { params: Promise<{ date: 
                 </header>
                 {c.update ? (
                   <details className="mt-body">
-                    <summary className="mt-clamp">{c.update.body_md}</summary>
-                    <p>{c.update.body_md}</p>
+                    <summary className="mt-clamp"><LinkedText text={c.update.body_md} /></summary>
+                    <p><LinkedText text={c.update.body_md} /></p>
                   </details>
                 ) : (
                   <p className="mt-muted">{mine ? "Write your update below." : "Not written yet."}</p>
@@ -253,7 +254,7 @@ export default async function MeetingPage({ params }: { params: Promise<{ date: 
                 {c.comments.length > 0 && (
                   <ul className="mt-comments">
                     {c.comments.map((cm) => (
-                      <li key={cm.id}><b>{cm.author}</b> {cm.body}</li>
+                      <li key={cm.id}><b>{cm.author}</b> <LinkedText text={cm.body} /></li>
                     ))}
                   </ul>
                 )}

@@ -103,7 +103,7 @@ export function Workboard({
   const [tab, setTab] = useState<WorkboardTab>("stories");
   const { saving, startSaving, run } = useBoardActionRunner(setBanner);
 
-  const { form, setForm, openCard, openCreate, save, archive, close, drafts, autosave } = useCardForm({ data, sprintFilter: f.sprintFilter, epicFilter: f.epicFilter, setBanner, router, startSaving, run, viewerPersonId });
+  const { form, setForm, openCard, openCreate, save, archive, close, drafts, autosave } = useCardForm({ data, sprintFilter: f.sprintFilter, epicFilter: f.epicFilter, setBanner, router, startSaving, run, viewerPersonId, newCardAssigneeId: bare ? viewerPersonId : null });
   const activeCard = form?.id ? data.cards.find((c) => c.id === form.id) ?? null : null;
 
   // What moved since you last looked, what you have ticked, and how far back

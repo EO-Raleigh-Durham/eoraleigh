@@ -25,7 +25,7 @@ insert into public.board_roles (key, name, short_name, sort_order) values
   ('myeo', 'My EO', 'My EO', 80),
   ('learning', 'Learning', 'Learning', 90),
   ('member-engagement', 'Member Engagement', 'Member Engagement', 100),
-  ('visitor-experience', 'Visitor Experience Chair', 'Visitor Experience', 105),
+  ('visitor-experience', 'Visitor Experience', 'Visitor Experience', 105),
   ('chapter-staff', 'Chapter Staff', 'Staff', 110)
 on conflict do nothing;
 

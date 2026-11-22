@@ -73,8 +73,8 @@ const MEMBERSHIP_WRITES = [
   "onboarding_move_stage",
 ];
 
-const OWN_READS = ["my_commitments"];
-const OWN_WRITES = ["goal_check_in", "card_update", "meeting_update_write", "issue_file", "issue_update"];
+const OWN_READS = ["my_commitments", "my_boards"];
+const OWN_WRITES = ["goal_check_in", "card_update", "card_add", "meeting_update_write", "issue_file", "issue_update"];
 const OWN = [...OWN_READS, ...OWN_WRITES];
 const DATA_READS = ["database_schema", "query_database"];
 

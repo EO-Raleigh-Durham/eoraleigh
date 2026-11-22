@@ -6,7 +6,7 @@ import { FinalCTA } from "@/components/home/FinalCTA";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
 
 const PATH_STEPS = [
-  { num: "01", title: "Member", body: `You join ${CHAPTER_NAME}, take the Forum oath of confidentiality, and are placed in a Forum of 8 peers for monthly experience-shares.", time: "Monthly Forum", term: "Ongoing", training: "Member onboarding` },
+  { num: "01", title: "Member", body: `You join ${CHAPTER_NAME}, take the Forum oath of confidentiality, and are placed in a Forum of 8 peers for monthly experience-shares.`, time: "Monthly Forum", term: "Ongoing", training: "Member onboarding" },
   { num: "02", title: "Forum Moderator", body: "Trained to facilitate Forum sessions: hold space, ask the question behind the question, and run experience-shares for your group.", time: "Monthly", term: "1 year", training: "Forum Training Program" },
   { num: "03", title: "Chapter Committee", body: "Serve on a chapter committee in Learning, Membership, Marketing, Forum, Finance, or Strategic Alliance Partners, and shape the program for fellow members.", time: "Variable", term: "1 year", training: "Committee onboarding" },
   { num: "04", title: "Chapter Board", body: "Set chapter strategy and operations across all functions. Accountable to the membership and to EO Global standards.", time: "Variable", term: "1–2 years", training: "EO leadership track" },
