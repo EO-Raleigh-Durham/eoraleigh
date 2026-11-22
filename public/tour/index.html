@@ -426,7 +426,7 @@
     var wrap = document.createElement("div");
     wrap.className = "shot";
     var img = document.createElement("img");
-    img.src = "img/" + st.img;
+    img.src = "/tour/img/" + st.img;
     img.alt = st.title + " screen of the EO Chapter Manager demo";
     img.width = W; img.height = H;
     wrap.appendChild(img);
@@ -532,7 +532,7 @@
     if (location.hash !== "#" + (i + 1)) history.replaceState(null, "", "#" + (i + 1));
 
     var nxt = STEPS[i + 1];
-    if (nxt && nxt.img) { var p = new Image(); p.src = "img/" + nxt.img; }
+    if (nxt && nxt.img) { var p = new Image(); p.src = "/tour/img/" + nxt.img; }
   }
 
   buildSections();
