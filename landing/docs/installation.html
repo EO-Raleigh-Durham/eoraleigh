@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation guide · EO Chapter Manager</title>
+<meta name="description" content="How to install EO Chapter Manager for your chapter: accounts and costs, where to host your data, email, payments, your own domain, a launch checklist and troubleshooting.">
+<link rel="canonical" href="https://eochapterdemo.com/docs/installation">
+<meta property="og:title" content="Installation guide · EO Chapter Manager">
+<meta property="og:description" content="How to install EO Chapter Manager for your chapter: accounts and costs, where to host your data, email, payments, your own domain, a launch checklist and troubleshooting.">
+<meta property="og:image" content="https://eochapterdemo.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --eo-blue:#3D46F2; --base-blue:#0C0C31; --ink:#1d1d3a; --muted:#5d6075; --line:#e2e4ee; --soft:#f5f6fb; --pink:#EE396F; --orange:#F2653E; --yellow:#EEB829; --green:#1AA691; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Roboto,system-ui,sans-serif; color:var(--ink); background:#fff; line-height:1.6; }
+  a { color:var(--eo-blue); }
+  .wrap { max-width:1160px; margin:0 auto; padding:0 20px; }
+  .top { background:var(--base-blue); color:#fff; }
+  .top .wrap { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; color:#fff; text-decoration:none; }
+  .brand-mark { width:30px; height:30px; border-radius:50%; background:conic-gradient(var(--eo-blue),var(--pink),var(--orange),var(--yellow),var(--green),var(--eo-blue)); position:relative; }
+  .brand-mark::after { content:""; position:absolute; inset:7px; border-radius:50%; background:var(--base-blue); }
+  .top nav a { color:#d6d8f5; text-decoration:none; margin-left:22px; font-size:14px; }
+  .top nav a:hover, .top nav a[aria-current] { color:#fff; }
+  .head { background:var(--soft); border-bottom:1px solid var(--line); padding:36px 0 28px; }
+  .eyebrow { color:var(--eo-blue); font-size:13px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; margin:0 0 8px; }
+  .head h1 { font-size:clamp(30px,4vw,44px); line-height:1.1; margin:0 0 10px; color:var(--base-blue); font-weight:900; }
+  .head p { margin:0; color:var(--muted); max-width:720px; font-size:17px; }
+  .layout { display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; padding:36px 20px 72px; }
+  .toc { position:sticky; top:20px; align-self:start; font-size:14px; }
+  .toc h2 { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; }
+  .toc ol { list-style:none; margin:0 0 24px; padding:0; border-left:2px solid var(--line); }
+  .toc li a { display:block; padding:5px 0 5px 14px; color:var(--ink); text-decoration:none; }
+  .toc li a:hover { color:var(--eo-blue); }
+  .toc .other a { display:inline-block; margin-top:4px; font-weight:700; }
+  article { max-width:780px; font-size:16.5px; }
+  article h2 { font-size:28px; color:var(--base-blue); margin:44px 0 12px; padding-top:8px; border-top:1px solid var(--line); scroll-margin-top:16px; }
+  article h2:first-child { margin-top:0; border-top:0; }
+  article h3 { font-size:20px; color:var(--base-blue); margin:28px 0 8px; scroll-margin-top:16px; }
+  article h4 { font-size:17px; margin:22px 0 6px; }
+  article p, article li { margin:0 0 12px; }
+  article ul, article ol { padding-left:22px; }
+  article hr { display:none; }
+  article code { font-family:ui-monospace,Menlo,monospace; font-size:14px; background:var(--soft); border:1px solid var(--line); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  article pre { background:var(--base-blue); color:#e3e5ff; border-radius:10px; padding:16px 18px; overflow-x:auto; margin:0 0 18px; }
+  article pre code { background:none; border:0; padding:0; color:inherit; font-size:13.5px; }
+  article blockquote { margin:16px 0; padding:12px 16px; background:#fff7e6; border-left:4px solid var(--yellow); border-radius:6px; }
+  article blockquote p { margin:0; }
+  .table-wrap { overflow-x:auto; margin:0 0 20px; }
+  article table { width:100%; border-collapse:collapse; font-size:15px; }
+  article th, article td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  article th { background:var(--soft); font-weight:500; }
+  article input[type=checkbox] { margin-right:8px; }
+  article li:has(> input[type=checkbox]) { list-style:none; margin-left:-22px; }
+  footer { background:var(--base-blue); color:#aeb3ff; padding:32px 0; font-size:14px; }
+  footer a { color:#fff; }
+  @media (max-width:900px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:0; }
+    .brand { font-size:0; gap:0; }
+    .top nav { white-space:nowrap; }
+    .top nav a { margin-left:14px; }
+    .toc { position:static; border-bottom:1px solid var(--line); margin-bottom:24px; }
+    .top nav a:not(.keep) { display:none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
+    <nav>
+      <a href="/tour">Tour</a>
+      <a class="keep" href="/docs/installation" aria-current="page">Installation</a>
+      <a class="keep" href="/docs/maintenance">Maintenance</a>
+      <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+    </nav>
+  </div>
+</header>
+<div class="head">
+  <div class="wrap">
+    <p class="eyebrow">Documentation</p>
+    <h1>Installation guide</h1>
+    <p>How to install EO Chapter Manager for your chapter: accounts and costs, where to host your data, email, payments, your own domain, a launch checklist and troubleshooting.</p>
+  </div>
+</div>
+<div class="wrap layout">
+  <nav class="toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#before-you-start">Before you start</a></li>
+      <li><a href="#decisions-to-make-first">Decisions to make first</a></li>
+      <li><a href="#where-your-data-and-website-live">Where your data and website live</a></li>
+      <li><a href="#what-the-install-does-step-by-step">What the install does, step by step</a></li>
+      <li><a href="#turning-on-email-payments-and-the-assistant">Turning on email, payments and the assistant</a></li>
+      <li><a href="#your-own-web-address">Your own web address</a></li>
+      <li><a href="#make-it-your-chapters">Make it your chapter&#39;s</a></li>
+      <li><a href="#launch-checklist">Launch checklist</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+    </ol>
+    <h2>Also read</h2>
+    <div class="other"><a href="/docs/maintenance">Maintenance guide</a><br><a href="https://github.com/dhajdu/eo-chapter-manager#readme">README for AI agents</a></div>
+  </nav>
+  <article>
+<p>This guide is for the person setting up EO Chapter Manager for a chapter: usually the chapter manager, with a board member who approves the costs. It explains what happens at each step, what you decide, and how to fix the common problems.</p>
+<p>The short version lives in the <a href="https://github.com/dhajdu/eo-chapter-manager#readme" rel="noopener">README</a>: you open an AI coding agent, paste one sentence, and the agent follows the README as a runbook. This guide is the long version, for when you want to understand the install, check the agent&#39;s work, or do it by hand.</p>
+<hr>
+<h2 id="before-you-start">Before you start</h2>
+<h3 id="who-should-do-it">Who should do it</h3>
+<p>One person runs the install from start to finish, in one sitting of about an hour. They need to be comfortable copying and pasting, and able to sign in to the accounts below. No programming is needed when an AI agent does the work.</p>
+<p>Set the accounts up under a <strong>chapter email address</strong> (for example <code>tech@yourchapter.org</code>), not a personal one. Board members change every year; the accounts should stay with the chapter.</p>
+<h3 id="accounts-you-need">Accounts you need</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Service</th>
+<th>What it is for</th>
+<th>Plan and cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com" rel="noopener">GitHub</a></td>
+<td>Holds your chapter&#39;s copy of the code</td>
+<td>Free</td>
+</tr>
+<tr>
+<td><a href="https://supabase.com" rel="noopener">Supabase</a></td>
+<td>The database, member sign-ins and file storage</td>
+<td>Free to start; the Pro plan (about US$25 a month) adds daily backups and is recommended once real members use it</td>
+</tr>
+<tr>
+<td><a href="https://vercel.com" rel="noopener">Vercel</a></td>
+<td>Hosts the website and runs the hourly background jobs</td>
+<td>Pro plan, about US$20 a month. The free plan does not run hourly jobs</td>
+</tr>
+</tbody></table></div>
+<p>Optional, add them now or later:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Turns on</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://resend.com" rel="noopener">Resend</a></td>
+<td>All email: tickets, reminders, newsletters, password resets from your own address</td>
+<td>Free up to 3,000 emails a month, then from US$20 a month</td>
+</tr>
+<tr>
+<td><a href="https://stripe.com" rel="noopener">Stripe</a></td>
+<td>Paid tickets and dues</td>
+<td>A fee per payment, no monthly cost</td>
+</tr>
+<tr>
+<td><a href="https://console.anthropic.com" rel="noopener">Anthropic</a></td>
+<td>The board&#39;s AI assistant</td>
+<td>Pay per use, usually a few dollars a month</td>
+</tr>
+</tbody></table></div>
+<h3 id="tools-on-the-computer">Tools on the computer</h3>
+<p>The agent installs what is missing, but it helps to know what it uses: Node.js 20.9 or later, Git, and the command-line tools for GitHub (<code>gh</code>), Supabase (<code>supabase</code>) and Vercel (<code>vercel</code>). On a Mac, the agent installs them with Homebrew and npm. Windows works too, through WSL.</p>
+<h3 id="the-ai-agent">The AI agent</h3>
+<p>Any coding agent that can run commands works: Claude Code, Codex, Cursor and similar. Open it in a new, empty folder. The agent will stop and ask you to sign in to each service in your browser; that is expected.</p>
+<hr>
+<h2 id="decisions-to-make-first">Decisions to make first</h2>
+<p>The agent asks for these in one message. Have the answers ready.</p>
+<ol>
+<li><p><strong>Chapter name and short label.</strong> The full name as members say it (<code>EO Berlin</code>) and a short label for tight spaces (<code>EOBER</code>).</p>
+</li>
+<li><p><strong>Web address.</strong> The address the site will use (<code>https://www.eoberlin.org</code>). If the chapter has no domain yet, the site starts on a free Vercel address and you add the domain later (see <a href="#your-own-web-address">Your own web address</a>).</p>
+</li>
+<li><p><strong>City, country and two-letter country code.</strong> (<code>Berlin</code>, <code>Germany</code>, <code>DE</code>.)</p>
+</li>
+<li><p><strong>Time zone.</strong> The standard name (<code>Europe/Berlin</code>) and the short label shown next to times (<code>CET</code>). Every event time on the site uses it.</p>
+</li>
+<li><p><strong>Public contact email.</strong> Shown on the site (<code>hello@eoberlin.org</code>).</p>
+</li>
+<li><p><strong>First admin.</strong> The name and email of the person who will run the site. They get a link to set their password at the end.</p>
+</li>
+<li><p><strong>Where the data and website are hosted.</strong> The most important technical decision, and the hardest to change later. Read the next section before you answer.</p>
+</li>
+</ol>
+<p>One more choice:</p>
+<ul>
+<li><strong>Local currency.</strong> Prices are kept in US dollars. You can add a second local currency (for example <code>EUR</code>) with a fixed planning rate, used on the board&#39;s dashboards.</li>
+</ul>
+<hr>
+<h2 id="where-your-data-and-website-live">Where your data and website live</h2>
+<p>The site holds personal data about your members: names, contact details, companies, dues and attendance. Where that data is stored matters for the law, for your members&#39; trust and for speed. Decide it with the board before the install, and write the decision in the chapter handbook.</p>
+<h3 id="two-places-two-choices">Two places, two choices</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>What it holds</th>
+<th>Where it is chosen</th>
+<th>Can it change later?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Supabase</strong> (the database)</td>
+<td>All member and chapter data, sign-ins, uploaded photos and files</td>
+<td>The region picked when the project is created (Step 2)</td>
+<td><strong>No.</strong> Moving means creating a new project in the new region and copying the data across. Plan for an afternoon of work and a short outage</td>
+</tr>
+<tr>
+<td><strong>Vercel</strong> (the website)</td>
+<td>No stored data. It runs the pages and passes data between visitors and the database</td>
+<td><code>regions</code> in <code>vercel.json</code> (Step 5)</td>
+<td>Yes, any time: change one line and push</td>
+</tr>
+</tbody></table></div>
+<p>Pages and images are also cached on Vercel&#39;s worldwide network so the site loads fast everywhere; that copy holds public pages only, not member data.</p>
+<h3 id="how-to-choose">How to choose</h3>
+<ol>
+<li><strong>Follow the law that applies to your chapter.</strong> Data-protection laws such as the GDPR (EU and UK) set rules on where personal data may go and how it is protected. Some countries require personal data to be stored inside the country, or require a filing before it is sent abroad. If you are unsure, ask a member who is a lawyer, or your region. This decision outranks everything below.</li>
+<li><strong>Otherwise, pick the region nearest your members.</strong> Data in Frankfurt serves a German chapter quickly; the same data in Singapore makes every page slower for them.</li>
+<li><strong>Put the website in the same region as the database.</strong> Every page asks the database for data, often several times. Across oceans, each trip adds a noticeable delay.</li>
+</ol>
+<h3 id="matching-regions">Matching regions</h3>
+<p>Use a pair from the same row. The Supabase name is what the agent passes when it creates the project; the Vercel code goes in <code>vercel.json</code>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Members mostly in</th>
+<th>Supabase region</th>
+<th>Vercel region</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Germany, central Europe</td>
+<td>Frankfurt (<code>eu-central-1</code>)</td>
+<td><code>fra1</code></td>
+</tr>
+<tr>
+<td>UK</td>
+<td>London (<code>eu-west-2</code>)</td>
+<td><code>lhr1</code></td>
+</tr>
+<tr>
+<td>Ireland, western Europe</td>
+<td>Ireland (<code>eu-west-1</code>)</td>
+<td><code>dub1</code></td>
+</tr>
+<tr>
+<td>France</td>
+<td>Paris (<code>eu-west-3</code>)</td>
+<td><code>cdg1</code></td>
+</tr>
+<tr>
+<td>Nordics</td>
+<td>Stockholm (<code>eu-north-1</code>)</td>
+<td><code>arn1</code></td>
+</tr>
+<tr>
+<td>US east, Latin America north</td>
+<td>N. Virginia (<code>us-east-1</code>)</td>
+<td><code>iad1</code></td>
+</tr>
+<tr>
+<td>US west</td>
+<td>N. California (<code>us-west-1</code>)</td>
+<td><code>sfo1</code></td>
+</tr>
+<tr>
+<td>Canada</td>
+<td>Canada Central (<code>ca-central-1</code>)</td>
+<td><code>iad1</code> (the nearest, unless Vercel lists a Canadian region)</td>
+</tr>
+<tr>
+<td>Brazil, South America</td>
+<td>São Paulo (<code>sa-east-1</code>)</td>
+<td><code>gru1</code></td>
+</tr>
+<tr>
+<td>India</td>
+<td>Mumbai (<code>ap-south-1</code>)</td>
+<td><code>bom1</code></td>
+</tr>
+<tr>
+<td>Southeast Asia</td>
+<td>Singapore (<code>ap-southeast-1</code>)</td>
+<td><code>sin1</code></td>
+</tr>
+<tr>
+<td>Japan</td>
+<td>Tokyo (<code>ap-northeast-1</code>)</td>
+<td><code>hnd1</code></td>
+</tr>
+<tr>
+<td>Korea</td>
+<td>Seoul (<code>ap-northeast-2</code>)</td>
+<td><code>icn1</code></td>
+</tr>
+<tr>
+<td>Australia, New Zealand</td>
+<td>Sydney (<code>ap-southeast-2</code>)</td>
+<td><code>syd1</code></td>
+</tr>
+</tbody></table></div>
+<p>Both companies add regions over time; check the current lists at <a href="https://vercel.com/docs/regions" rel="noopener">vercel.com/docs/regions</a> and in Supabase&#39;s new-project form if yours is not here. The template ships with <code>sin1</code>; the agent changes it to your choice before the first deploy.</p>
+<h3 id="other-services-that-see-member-data">Other services that see member data</h3>
+<p>The optional services also process some member data, mostly in the United States:</p>
+<ul>
+<li><strong>Stripe</strong> sees the name and email of whoever pays, and their card details (the site never sees the card).</li>
+<li><strong>Resend</strong> sees the email addresses and content of every email the site sends.</li>
+<li><strong>Anthropic</strong> sees the questions board members ask the assistant and the data it reads to answer them.</li>
+</ul>
+<p>If your law requires it, sign each company&#39;s data processing agreement (all of them, and Supabase and Vercel, offer one in their dashboards or on request), and list these services in your privacy policy.</p>
+<h3 id="who-owns-it">Who owns it</h3>
+<p>Your chapter owns its accounts, its database and its copy of the code. Nobody else, including the people who publish EO Chapter Manager, can see your data. That also means nobody else can recover it: keep the database password and account logins in the chapter&#39;s password manager, and switch on backups (see the <a href="/docs/maintenance">maintenance guide</a>).</p>
+<hr>
+<h2 id="what-the-install-does-step-by-step">What the install does, step by step</h2>
+<p>The README numbers these Step 0 to Step 7. Here is what each one means for you.</p>
+<h3 id="step-0-access">Step 0: access</h3>
+<p>The agent checks it can reach GitHub, Supabase and Vercel. If it cannot, it asks you to run a sign-in command, which opens a browser window. Sign in with the chapter&#39;s accounts. The agent also tells you the names of the projects it will create and asks you to agree to the costs.</p>
+<h3 id="step-1-the-chapters-copy-and-settings">Step 1: the chapter&#39;s copy and settings</h3>
+<p>The agent creates a <strong>private</strong> repository on your GitHub account from the EO Chapter Manager template, for example <code>eo-berlin-chapter-manager</code>. This is your chapter&#39;s own copy. Nothing you change there affects other chapters.</p>
+<p>It then writes a settings file, <code>.env.local</code>, with your answers and four random secrets. This file holds passwords and keys. It never goes to GitHub, and you should not email or share it. The same values are copied into Vercel in Step 5.</p>
+<h3 id="step-2-the-supabase-project">Step 2: the Supabase project</h3>
+<p>The agent creates the database project and a database password.</p>
+<blockquote>
+<p><strong>Save the database password now</strong>, in the chapter&#39;s password manager. Supabase cannot show it again. You need it for upgrades and for restoring backups.</p>
+</blockquote>
+<p>It also tells Supabase your site&#39;s address. Without this, password-reset emails point to the wrong place. If the agent cannot do it automatically, it asks you to open Supabase, go to <strong>Authentication &gt; URL Configuration</strong>, and enter the site address as the Site URL, plus <code>&lt;site address&gt;/**</code> under Redirect URLs.</p>
+<h3 id="step-3-the-database">Step 3: the database</h3>
+<p>One script, <code>scripts/setup-db.mjs</code>, builds the whole database: over 100 tables, the security rules on every table, the 13 standard EO board roles, starter workboards and the storage folders for photos and files. It fills in your chapter&#39;s name and time zone as it goes.</p>
+<p>The last line should read <code>Database ready for &lt;your chapter name&gt;.</code> If the script stops part way, it says why; fix that and run it again. It skips what is already done.</p>
+<h3 id="step-4-a-local-test">Step 4: a local test</h3>
+<p>The agent builds the site and starts it on the computer at <code>http://localhost:3000</code>. You should see the home page with your chapter&#39;s name. This proves the code and the database work together before anything goes public.</p>
+<h3 id="step-5-vercel">Step 5: Vercel</h3>
+<p>The agent creates the Vercel project, connects it to the GitHub copy, and copies the settings across. From now on, <strong>every change pushed to GitHub publishes the site automatically</strong>. Nobody uploads files by hand.</p>
+<p>When it finishes, the site is live at a <code>.vercel.app</code> address.</p>
+<h3 id="step-6-the-first-admin">Step 6: the first admin</h3>
+<p>The agent creates the first admin account and prints a one-time link. Open it to set a password. Then sign in at <code>/login</code>. Admins reach the admin area at <code>/admin</code> and the board portal at <code>/board</code>.</p>
+<h3 id="step-7-hand-over">Step 7: hand-over</h3>
+<p>The agent reports the site&#39;s address, reminds you about the database password, and lists what is still switched off. Write these down in the chapter&#39;s handbook, together with which accounts own GitHub, Supabase and Vercel.</p>
+<hr>
+<h2 id="turning-on-email-payments-and-the-assistant">Turning on email, payments and the assistant</h2>
+<p>Each of these is optional. The site works without them: tickets show on screen, and paid tickets and the assistant are hidden. You can ask the agent to do any of these later (&quot;turn on email using Resend&quot;).</p>
+<p>New settings always go in two places: <code>.env.local</code> on the computer, and <strong>Vercel &gt; your project &gt; Settings &gt; Environment Variables</strong> (for Production and Preview). Vercel only picks up a new setting on the next deployment, so after adding one, redeploy from the Vercel dashboard or push any change to GitHub.</p>
+<h3 id="email-with-resend">Email with Resend</h3>
+<ol>
+<li>Create a Resend account and add your sending domain (for example <code>yourchapter.org</code>). Resend shows three or four DNS records; add them where your domain is managed and wait until Resend says <strong>Verified</strong>.</li>
+<li>Create an API key and set <code>RESEND_API_KEY</code>.</li>
+<li>Set <code>EMAIL_FROM</code>, for example <code>&quot;EO Berlin &lt;hello@yourchapter.org&gt;&quot;</code>, using the verified domain.</li>
+<li>Set <code>MARKETING_POSTAL_ADDRESS</code> to the chapter&#39;s postal address. Most countries&#39; email laws require it in newsletters.</li>
+<li>Optional: in Resend, add a webhook to <code>&lt;site address&gt;/api/webhooks/resend (no slash at the end)</code> and put its signing secret in <code>RESEND_WEBHOOK_SECRET</code>, so bounces and complaints are recorded.</li>
+</ol>
+<p>To send Supabase&#39;s own sign-in and password emails from your domain too, add Resend as the SMTP server in <strong>Supabase &gt; Authentication &gt; Emails &gt; SMTP Settings</strong>. Without this, Supabase sends them from its own address with a low hourly limit.</p>
+<h3 id="payments-with-stripe">Payments with Stripe</h3>
+<ol>
+<li>In Stripe, copy the secret key into <code>STRIPE_SECRET_KEY</code>. Use the test key (<code>sk_test_</code>) first.</li>
+<li>Add a webhook endpoint: <strong>Developers &gt; Webhooks &gt; Add endpoint</strong>, address <code>&lt;site address&gt;/api/stripe/webhook</code>, with these events: <code>checkout.session.completed</code>, <code>checkout.session.expired</code>, <code>checkout.session.async_payment_succeeded</code>, <code>checkout.session.async_payment_failed</code>.</li>
+<li>Copy the endpoint&#39;s signing secret into <code>STRIPE_WEBHOOK_SECRET</code>.</li>
+<li>Buy a ticket to a test event with Stripe&#39;s test card <code>4242 4242 4242 4242</code>. The ticket should appear on screen and the registration should show as paid in the board&#39;s event page.</li>
+<li>When that works, repeat steps 1 to 3 with the live keys.</li>
+</ol>
+<p>The webhook is what marks a ticket as paid. If payments go through in Stripe but tickets stay unpaid, the webhook address or secret is wrong.</p>
+<h3 id="the-board-assistant">The board assistant</h3>
+<ol>
+<li><p>Create an Anthropic API key and set <code>ANTHROPIC_API_KEY</code>.</p>
+</li>
+<li><p>The assistant reads the database through a separate read-only account that cannot see revenue figures or private profiles. Give that account a password by running this once in <strong>Supabase &gt; SQL Editor</strong>:</p>
+<pre><code class="language-sql">alter role chatbot_reader login password &#39;&lt;a long random password&gt;&#39;;
+</code></pre>
+</li>
+<li><p>Set <code>CHATBOT_DB_URL</code> to <code>postgres://chatbot_reader.&lt;project ref&gt;:&lt;that password&gt;@aws-1-&lt;region&gt;.pooler.supabase.com:5432/postgres?sslmode=require</code>.</p>
+</li>
+</ol>
+<p>The assistant only proposes changes; a board member confirms each one.</p>
+<h3 id="site-analytics-on-the-board-pages">Site analytics on the board pages</h3>
+<p>Turn on <strong>Web Analytics</strong> in the Vercel project, create a Vercel access token, and set <code>VERCEL_ANALYTICS_TOKEN</code>, <code>VERCEL_ANALYTICS_TEAM_ID</code> and <code>VERCEL_ANALYTICS_PROJECT_ID</code>.</p>
+<hr>
+<h2 id="your-own-web-address">Your own web address</h2>
+<ol>
+<li>In Vercel, open the project&#39;s <strong>Settings &gt; Domains</strong> and add the domain (for example <code>www.eoberlin.org</code>, and <code>eoberlin.org</code> to redirect to it).</li>
+<li>Vercel shows the DNS records to add. Add them where the domain is managed. It usually works within an hour.</li>
+<li>Change <code>NEXT_PUBLIC_SITE_URL</code> to the new address in Vercel and in <code>.env.local</code>, then redeploy.</li>
+<li>In Supabase, <strong>Authentication &gt; URL Configuration</strong>: update the Site URL and add <code>&lt;new address&gt;/**</code> to Redirect URLs.</li>
+<li>If you use Stripe or Resend webhooks, change their addresses to the new domain.</li>
+</ol>
+<p>If you are moving from an old website, keep the old site running until the new address works, then switch the DNS.</p>
+<hr>
+<h2 id="make-it-your-chapters">Make it your chapter&#39;s</h2>
+<ul>
+<li><strong>Logo.</strong> Put the chapter&#39;s official logo files in <code>public/logo/</code>: <code>primary.svg</code> for light backgrounds and <code>white.svg</code> for dark ones. Get them from your region or EO Global&#39;s brand portal.</li>
+<li><strong>Words.</strong> Everything written about your chapter lives in <code>src/content/</code>: the about page, testimonials, partners, the privacy policy and the home page sections. Edit those files (or ask the agent: &quot;change the about page to say ...&quot;).</li>
+<li><strong>Photos.</strong> <code>public/images/</code> holds plain placeholders. Replace them with your own photos, keeping the same file names.</li>
+<li><strong>Privacy policy.</strong> <code>src/content/privacy-policy.tsx</code> is a general draft. Have it checked for your country before launch.</li>
+<li><strong>People and events.</strong> Add the board, members, forums and events in <code>/admin</code> and <code>/board</code>. See the <a href="/docs/maintenance">maintenance guide</a> for the yearly board change.</li>
+</ul>
+<p>Every change to these files goes live when it is pushed to GitHub.</p>
+<hr>
+<h2 id="launch-checklist">Launch checklist</h2>
+<p>Before telling members about the site:</p>
+<ul>
+<li><input disabled="" type="checkbox"> The site loads on its own domain, with the chapter&#39;s logo and name</li>
+<li><input disabled="" type="checkbox"> The first admin can sign in, and can reach <code>/admin</code> and <code>/board</code></li>
+<li><input disabled="" type="checkbox"> The current board is entered, and each board member can sign in to <code>/board</code></li>
+<li><input disabled="" type="checkbox"> Members are imported, and a test member can sign in to <code>/member</code></li>
+<li><input disabled="" type="checkbox"> A password reset email arrives and its link opens your site, not <code>localhost</code></li>
+<li><input disabled="" type="checkbox"> A free event RSVP works and shows a ticket</li>
+<li><input disabled="" type="checkbox"> If Stripe is on: a test paid ticket is marked paid, then live keys are in place</li>
+<li><input disabled="" type="checkbox"> If Resend is on: a ticket email arrives from your domain and is not in spam</li>
+<li><input disabled="" type="checkbox"> The privacy policy has been reviewed</li>
+<li><input disabled="" type="checkbox"> The database password, and the owner of each account, are written in the chapter handbook</li>
+<li><input disabled="" type="checkbox"> Supabase is on the Pro plan (daily backups) once real member data is in</li>
+</ul>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Likely cause and fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Every page says it cannot reach the database, or requests fail with 401</td>
+<td>The secret key was copied masked. Get it again with <code>supabase projects api-keys --project-ref &lt;ref&gt; --reveal</code> and update <code>SUPABASE_SECRET_KEY</code> in <code>.env.local</code> and Vercel</td>
+</tr>
+<tr>
+<td>The setup script says &quot;tenant not found&quot;</td>
+<td>The database address uses the wrong pooler. Change <code>aws-1-</code> to <code>aws-0-</code> in <code>SUPABASE_DB_URL</code> (or the other way round)</td>
+</tr>
+<tr>
+<td>The setup script cannot connect at all</td>
+<td>The address uses <code>db.&lt;ref&gt;.supabase.co</code>, which many networks cannot reach. Use the session pooler address from the README, port 5432</td>
+</tr>
+<tr>
+<td>Password-reset links open <code>localhost</code> or an error page</td>
+<td>The Site URL in Supabase is wrong. Fix it under <strong>Authentication &gt; URL Configuration</strong></td>
+</tr>
+<tr>
+<td>A new setting has no effect on the live site</td>
+<td>Vercel only reads settings at build time. Redeploy</td>
+</tr>
+<tr>
+<td>The agent waits forever after a <code>vercel</code> command</td>
+<td>The command was run without <code>&lt;/dev/null</code> at the end. Stop it and run it again with that ending</td>
+</tr>
+<tr>
+<td>Paid tickets stay unpaid</td>
+<td>The Stripe webhook address or <code>STRIPE_WEBHOOK_SECRET</code> is wrong, or the four events are not selected</td>
+</tr>
+<tr>
+<td>No emails arrive</td>
+<td><code>RESEND_API_KEY</code> or <code>EMAIL_FROM</code> is missing, or the sending domain is not verified in Resend</td>
+</tr>
+<tr>
+<td>Background jobs (survey emails, reminders) never run</td>
+<td>The Vercel project is on the free plan, or <code>CRON_SECRET</code> is missing</td>
+</tr>
+<tr>
+<td>The build fails on Vercel after a change</td>
+<td>Open the failed deployment in Vercel and read the log, or ask the agent to read it. The previous version stays live until a build succeeds</td>
+</tr>
+</tbody></table></div>
+<p>Still stuck? Ask your agent to read this guide and the README and diagnose the problem; it can run the checks for you. You can also open an issue on the <a href="https://github.com/dhajdu/eo-chapter-manager/issues" rel="noopener">GitHub repository</a>.</p>
+
+  </article>
+</div>
+<footer>
+  <div class="wrap">
+    EO Chapter Manager is MIT-licensed and built by an EO chapter for every chapter. It is not an official EO Global product.
+    <a href="/">eochapterdemo.com</a> · <a href="https://github.com/dhajdu/eo-chapter-manager">github.com/dhajdu/eo-chapter-manager</a> · This page is built from <a href="https://github.com/dhajdu/eo-chapter-manager/blob/main/docs/installation.md">docs/installation.md</a>
+  </div>
+</footer>
+</body>
+</html>

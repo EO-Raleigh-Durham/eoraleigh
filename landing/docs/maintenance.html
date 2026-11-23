@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maintenance guide · EO Chapter Manager</title>
+<meta name="description" content="How to run EO Chapter Manager year to year: the new board each July, members, backups, updates, security and costs.">
+<link rel="canonical" href="https://eochapterdemo.com/docs/maintenance">
+<meta property="og:title" content="Maintenance guide · EO Chapter Manager">
+<meta property="og:description" content="How to run EO Chapter Manager year to year: the new board each July, members, backups, updates, security and costs.">
+<meta property="og:image" content="https://eochapterdemo.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --eo-blue:#3D46F2; --base-blue:#0C0C31; --ink:#1d1d3a; --muted:#5d6075; --line:#e2e4ee; --soft:#f5f6fb; --pink:#EE396F; --orange:#F2653E; --yellow:#EEB829; --green:#1AA691; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Roboto,system-ui,sans-serif; color:var(--ink); background:#fff; line-height:1.6; }
+  a { color:var(--eo-blue); }
+  .wrap { max-width:1160px; margin:0 auto; padding:0 20px; }
+  .top { background:var(--base-blue); color:#fff; }
+  .top .wrap { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; color:#fff; text-decoration:none; }
+  .brand-mark { width:30px; height:30px; border-radius:50%; background:conic-gradient(var(--eo-blue),var(--pink),var(--orange),var(--yellow),var(--green),var(--eo-blue)); position:relative; }
+  .brand-mark::after { content:""; position:absolute; inset:7px; border-radius:50%; background:var(--base-blue); }
+  .top nav a { color:#d6d8f5; text-decoration:none; margin-left:22px; font-size:14px; }
+  .top nav a:hover, .top nav a[aria-current] { color:#fff; }
+  .head { background:var(--soft); border-bottom:1px solid var(--line); padding:36px 0 28px; }
+  .eyebrow { color:var(--eo-blue); font-size:13px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; margin:0 0 8px; }
+  .head h1 { font-size:clamp(30px,4vw,44px); line-height:1.1; margin:0 0 10px; color:var(--base-blue); font-weight:900; }
+  .head p { margin:0; color:var(--muted); max-width:720px; font-size:17px; }
+  .layout { display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; padding:36px 20px 72px; }
+  .toc { position:sticky; top:20px; align-self:start; font-size:14px; }
+  .toc h2 { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; }
+  .toc ol { list-style:none; margin:0 0 24px; padding:0; border-left:2px solid var(--line); }
+  .toc li a { display:block; padding:5px 0 5px 14px; color:var(--ink); text-decoration:none; }
+  .toc li a:hover { color:var(--eo-blue); }
+  .toc .other a { display:inline-block; margin-top:4px; font-weight:700; }
+  article { max-width:780px; font-size:16.5px; }
+  article h2 { font-size:28px; color:var(--base-blue); margin:44px 0 12px; padding-top:8px; border-top:1px solid var(--line); scroll-margin-top:16px; }
+  article h2:first-child { margin-top:0; border-top:0; }
+  article h3 { font-size:20px; color:var(--base-blue); margin:28px 0 8px; scroll-margin-top:16px; }
+  article h4 { font-size:17px; margin:22px 0 6px; }
+  article p, article li { margin:0 0 12px; }
+  article ul, article ol { padding-left:22px; }
+  article hr { display:none; }
+  article code { font-family:ui-monospace,Menlo,monospace; font-size:14px; background:var(--soft); border:1px solid var(--line); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  article pre { background:var(--base-blue); color:#e3e5ff; border-radius:10px; padding:16px 18px; overflow-x:auto; margin:0 0 18px; }
+  article pre code { background:none; border:0; padding:0; color:inherit; font-size:13.5px; }
+  article blockquote { margin:16px 0; padding:12px 16px; background:#fff7e6; border-left:4px solid var(--yellow); border-radius:6px; }
+  article blockquote p { margin:0; }
+  .table-wrap { overflow-x:auto; margin:0 0 20px; }
+  article table { width:100%; border-collapse:collapse; font-size:15px; }
+  article th, article td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  article th { background:var(--soft); font-weight:500; }
+  article input[type=checkbox] { margin-right:8px; }
+  article li:has(> input[type=checkbox]) { list-style:none; margin-left:-22px; }
+  footer { background:var(--base-blue); color:#aeb3ff; padding:32px 0; font-size:14px; }
+  footer a { color:#fff; }
+  @media (max-width:900px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:0; }
+    .brand { font-size:0; gap:0; }
+    .top nav { white-space:nowrap; }
+    .top nav a { margin-left:14px; }
+    .toc { position:static; border-bottom:1px solid var(--line); margin-bottom:24px; }
+    .top nav a:not(.keep) { display:none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
+    <nav>
+      <a href="/tour">Tour</a>
+      <a class="keep" href="/docs/installation">Installation</a>
+      <a class="keep" href="/docs/maintenance" aria-current="page">Maintenance</a>
+      <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+    </nav>
+  </div>
+</header>
+<div class="head">
+  <div class="wrap">
+    <p class="eyebrow">Documentation</p>
+    <h1>Maintenance guide</h1>
+    <p>How to run EO Chapter Manager year to year: the new board each July, members, backups, updates, security and costs.</p>
+  </div>
+</div>
+<div class="wrap layout">
+  <nav class="toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#who-looks-after-what">Who looks after what</a></li>
+      <li><a href="#the-maintenance-calendar">The maintenance calendar</a></li>
+      <li><a href="#accounts-and-passwords">Accounts and passwords</a></li>
+      <li><a href="#who-can-sign-in-and-to-what">Who can sign in, and to what</a></li>
+      <li><a href="#members">Members</a></li>
+      <li><a href="#the-new-board-each-july">The new board each July</a></li>
+      <li><a href="#background-jobs">Background jobs</a></li>
+      <li><a href="#backups-and-restoring">Backups and restoring</a></li>
+      <li><a href="#taking-updates">Taking updates</a></li>
+      <li><a href="#undoing-a-bad-change">Undoing a bad change</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#costs">Costs</a></li>
+      <li><a href="#where-to-look-when-something-is-wrong">Where to look when something is wrong</a></li>
+    </ol>
+    <h2>Also read</h2>
+    <div class="other"><a href="/docs/installation">Installation guide</a><br><a href="https://github.com/dhajdu/eo-chapter-manager#readme">README for AI agents</a></div>
+  </nav>
+  <article>
+<p>How to keep EO Chapter Manager running from year to year: who looks after what, the new board each July, members and access, backups, updates, costs and security.</p>
+<p>It is written for the chapter manager and whoever on the board owns the chapter&#39;s technology. Many tasks below are a single sentence you can give your AI coding agent (Claude Code, Codex, Cursor or similar), opened in the chapter&#39;s copy of the code. Those are marked <strong>Ask the agent</strong>.</p>
+<hr>
+<h2 id="who-looks-after-what">Who looks after what</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Usually</th>
+<th>Looks after</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Technology owner</strong></td>
+<td>The chapter manager, or a board member who stays more than one term</td>
+<td>The GitHub, Supabase and Vercel accounts, backups, updates, keys</td>
+</tr>
+<tr>
+<td><strong>Chapter manager</strong></td>
+<td>Staff</td>
+<td>Members, events, the board list, day-to-day questions</td>
+</tr>
+<tr>
+<td><strong>Board</strong></td>
+<td>Each chair</td>
+<td>Their own goals, events and pages in <code>/board</code></td>
+</tr>
+</tbody></table></div>
+<p>The technology owner should not change every year. If they do, run <a href="#when-someone-leaves">the account hand-over</a> first.</p>
+<hr>
+<h2 id="the-maintenance-calendar">The maintenance calendar</h2>
+<p><strong>Every week</strong></p>
+<ul>
+<li>Glance at the board&#39;s chapter dashboard. Missing numbers usually mean an event or member was not entered.</li>
+</ul>
+<p><strong>Every month</strong></p>
+<ul>
+<li>Check that background jobs ran (see <a href="#background-jobs">Background jobs</a>).</li>
+<li>Check that a backup exists for the last few days (Supabase &gt; Database &gt; Backups).</li>
+<li>Check the bills on Supabase, Vercel and, if used, Resend and Anthropic.</li>
+</ul>
+<p><strong>Every quarter</strong></p>
+<ul>
+<li>Look for a new version of EO Chapter Manager and take it (see <a href="#taking-updates">Taking updates</a>).</li>
+<li>Open <strong>Supabase &gt; Advisors</strong> and fix anything marked security.</li>
+<li>Review who has admin access at <code>/admin/users</code>.</li>
+</ul>
+<p><strong>Every year, April to June</strong></p>
+<ul>
+<li>Enter next year&#39;s board (see <a href="#the-new-board-each-july">The new board each July</a>).</li>
+<li>Set next year&#39;s dues, metrics and goals.</li>
+<li>Mark members who did not renew.</li>
+</ul>
+<p><strong>Every year, July</strong></p>
+<ul>
+<li>Check the new board can sign in to <code>/board</code>.</li>
+<li>Hand over accounts if the technology owner changes.</li>
+</ul>
+<hr>
+<h2 id="accounts-and-passwords">Accounts and passwords</h2>
+<p>Keep all of these in the chapter&#39;s shared password manager, not in one person&#39;s head or inbox:</p>
+<ul>
+<li>GitHub, Supabase and Vercel logins (ideally under a chapter email address)</li>
+<li>The <strong>database password</strong> from installation. Supabase cannot show it again; without it you cannot restore a backup or run upgrades by hand</li>
+<li>Stripe, Resend and Anthropic logins, if used</li>
+<li>The domain registrar login (where your web address is managed)</li>
+<li>A copy of <code>.env.local</code>, the settings file. It holds every key the site uses</li>
+</ul>
+<p>Turn on two-factor sign-in for GitHub, Supabase, Vercel and Stripe.</p>
+<h3 id="when-someone-leaves">When someone leaves</h3>
+<p>When the technology owner or chapter manager changes:</p>
+<ol>
+<li>Add the new person to the GitHub repository, the Supabase organisation and the Vercel team, as owners.</li>
+<li>Remove the person leaving from all three, and from Stripe and Resend.</li>
+<li>Change their role at <code>/admin/users</code> (or deactivate them).</li>
+<li>If they ever had a copy of <code>.env.local</code>, change the keys (see <a href="#changing-keys">Changing keys</a>).</li>
+</ol>
+<hr>
+<h2 id="who-can-sign-in-and-to-what">Who can sign in, and to what</h2>
+<p>Everyone signs in at <code>/login</code>, either with an emailed link or a password.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Reaches</th>
+<th>How someone gets it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Guest</strong></td>
+<td>Public pages, their own tickets</td>
+<td>Anyone who signs in</td>
+</tr>
+<tr>
+<td><strong>Member</strong></td>
+<td><code>/member</code>: events, tickets, directory, chapter news</td>
+<td>Automatic: their email is on a member record with an active (or on-leave) membership</td>
+</tr>
+<tr>
+<td><strong>Board</strong></td>
+<td><code>/board</code> and <code>/member</code></td>
+<td>Automatic: they hold a Chair or Co-Chair appointment for the current board year. Can also be set by hand at <code>/admin/users</code></td>
+</tr>
+<tr>
+<td><strong>Contractor</strong></td>
+<td>Selected board pages</td>
+<td>Granted at <code>/admin/users/contractors</code>, sponsored by a current chair</td>
+</tr>
+<tr>
+<td><strong>Super admin</strong></td>
+<td>Everything, including <code>/admin</code></td>
+<td>Set at <code>/admin/users</code> by another super admin</td>
+</tr>
+</tbody></table></div>
+<p>Members do not need an invitation. If their email is on file, they go to <code>/login</code>, enter it and click the link they receive.</p>
+<p>To add someone by hand (for example a new staff member), use <code>/admin/users/new</code>, then tell them to sign in at <code>/login</code> with their email. To remove someone, set them to inactive at <code>/admin/users</code>; their history is kept.</p>
+<p>Keep at least <strong>two</strong> super admins, so the chapter is never locked out.</p>
+<hr>
+<h2 id="members">Members</h2>
+<h3 id="adding-members">Adding members</h3>
+<p>New members need a person record with their email and an active membership. Member records can come from the membership pipeline (<code>/board/prospects</code>) or be added in bulk.</p>
+<p><strong>Ask the agent:</strong> &quot;Add these new members to the database with an active primary membership starting today: [names and emails].&quot; The agent runs SQL like this in <strong>Supabase &gt; SQL Editor</strong>, which you can also run yourself:</p>
+<pre><code class="language-sql">-- 1. The people. Put one line per new member in both lists. Skips emails already on file.
+insert into people (name, email)
+values (&#39;Alex Example&#39;, &#39;alex@example.com&#39;)
+on conflict (email) do nothing;
+
+-- 2. Their memberships.
+insert into chapter_memberships (person_id, chapter_id, membership_type, status, start_date)
+select p.id, (select id from chapters limit 1), &#39;Primary Membership&#39;, &#39;active&#39;, current_date
+from people p
+where p.email in (&#39;alex@example.com&#39;)
+  and not exists (select 1 from chapter_memberships m where m.person_id = p.id and m.status = &#39;active&#39;);
+</code></pre>
+<p>Then fill in company, forum and photo from <code>/board/members</code>.</p>
+<h3 id="members-who-leave">Members who leave</h3>
+<p>Change the membership status. The possible values are <code>active</code>, <code>on_leave</code>, <code>elumni</code>, <code>terminated</code> and <code>transferred</code>. The person becomes a guest the next time they sign in; their history stays.</p>
+<pre><code class="language-sql">update chapter_memberships m
+set status = &#39;terminated&#39;, end_date = current_date
+from people p
+where p.id = m.person_id and lower(p.email) = lower(&#39;alex@example.com&#39;) and m.status = &#39;active&#39;;
+</code></pre>
+<p><strong>Ask the agent:</strong> &quot;Mark these members as no longer active from 30 June: [emails].&quot;</p>
+<p>There is no screen for membership status yet; it is on the list of improvements. Until then, use the agent or the SQL above.</p>
+<hr>
+<h2 id="the-new-board-each-july">The new board each July</h2>
+<p>EO&#39;s year runs from 1 July to 30 June. The year is named by the year it starts: <code>2027</code> means July 2027 to June 2028.</p>
+<h3 id="how-the-change-over-works">How the change-over works</h3>
+<p>Board access comes from <strong>board appointments</strong>: who holds which role (President, Membership, Forum and so on) as Chair or Co-Chair, for which year. The site always uses the newest board year that has already started. So:</p>
+<ul>
+<li>You can enter next year&#39;s board in April. Nothing changes until 1 July.</li>
+<li>On 1 July, the new board gets <code>/board</code> access and the public board page shows them. Nothing needs to be run that day.</li>
+<li>If nobody enters a new board, last year&#39;s board keeps access. Do not let that happen.</li>
+</ul>
+<p>People with a board role set by hand at <code>/admin/users</code> keep it until someone changes it.</p>
+<h3 id="step-1-enter-next-years-board-april-to-june">Step 1: enter next year&#39;s board (April to June)</h3>
+<p>Each incoming board member needs a person record with the email they will sign in with.</p>
+<p><strong>Ask the agent:</strong> &quot;Add the board appointments for the year starting July 2027: President [email], Membership [email], ... Co-Chair of Marketing [email].&quot;</p>
+<p>The SQL it runs looks like this:</p>
+<pre><code class="language-sql">insert into board_appointments (person_id, board_role_id, position, scope, fiscal_year_start)
+select p.id, r.id, v.position::board_position, &#39;Local&#39;::appointment_scope, 2027
+from (values
+  (&#39;president@example.com&#39;,  &#39;president&#39;,       &#39;Chair&#39;),
+  (&#39;elect@example.com&#39;,      &#39;president-elect&#39;, &#39;Chair&#39;),
+  (&#39;membership@example.com&#39;, &#39;membership&#39;,      &#39;Chair&#39;),
+  (&#39;cochair@example.com&#39;,    &#39;marcoms&#39;,         &#39;Co-Chair&#39;)
+) as v(email, role_key, position)
+join people p on lower(p.email) = lower(v.email)
+join board_roles r on r.key = v.role_key
+on conflict do nothing;
+</code></pre>
+<p>The role keys are: <code>president</code>, <code>president-elect</code>, <code>membership</code>, <code>marcoms</code>, <code>sap</code>, <code>finance</code>, <code>governance</code>, <code>forum</code>, <code>myeo</code>, <code>learning</code>, <code>member-engagement</code>, <code>visitor-experience</code> and <code>chapter-staff</code>. Each role has one Chair per year and any number of Co-Chairs.</p>
+<p>Check what was entered:</p>
+<pre><code class="language-sql">select a.fiscal_year_start, r.name, a.position, p.full_name, p.email
+from board_appointments a join board_roles r on r.id = a.board_role_id join people p on p.id = a.person_id
+where a.fiscal_year_start = 2027 order by r.sort_order, a.position;
+</code></pre>
+<p>Add board photos at <code>/board/photos</code> or ask the agent to attach them.</p>
+<h3 id="step-2-next-years-numbers-and-goals">Step 2: next year&#39;s numbers and goals</h3>
+<ul>
+<li><strong>Chapter metrics and dues rates:</strong> <code>/board/historical-metrics</code>. Add the new year, with the dues per member and initiation fee. The chapter dashboard uses this row.</li>
+<li><strong>Goals:</strong> <code>/board/goals</code>. The new board sets its priorities, key results and each chair&#39;s goal, usually at the first board meeting.</li>
+<li><strong>Handover notes:</strong> the outgoing team writes their reflections at <code>/board/handover</code> before they leave.</li>
+</ul>
+<h3 id="step-3-the-dues-page">Step 3: the dues page</h3>
+<p>The online dues page (<code>/chapter-dues</code>) has the dues year and amount written into the code, so they change with a small code update each year.</p>
+<p><strong>Ask the agent:</strong> &quot;Update the dues page for the year starting July 2027 with dues of US$X.&quot; It changes <code>DUES_FY_START</code> in <code>src/lib/dues.ts</code> and <code>DUES_AMOUNT</code> (in cents) in <code>src/app/chapter-dues/actions.ts</code>, and the secondary-chapter amount in <code>src/app/secondary-chapter-dues/actions.ts</code> if that changed. The change goes live when pushed to GitHub.</p>
+<h3 id="step-4-on-1-july">Step 4: on 1 July</h3>
+<ul>
+<li>Ask two incoming board members to sign in and open <code>/board</code>.</li>
+<li>Check the public board page shows the new board.</li>
+<li>Change by-hand roles at <code>/admin/users</code> for anyone leaving the board.</li>
+</ul>
+<hr>
+<h2 id="background-jobs">Background jobs</h2>
+<p>Vercel runs these on a schedule. They need the Vercel Pro plan and the <code>CRON_SECRET</code> setting.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Job</th>
+<th>When</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Event survey</td>
+<td>Hourly</td>
+<td>Emails the feedback survey once per event, 1 to 72 hours after it ends</td>
+</tr>
+<tr>
+<td>Release unpaid seats</td>
+<td>Hourly</td>
+<td>Frees seats held for a payment that was never completed</td>
+</tr>
+<tr>
+<td>Content sync</td>
+<td>Hourly</td>
+<td>Keeps the marketing calendar and board cards in step</td>
+</tr>
+<tr>
+<td>Deliverable sweep</td>
+<td>Daily</td>
+<td>Deletes abandoned uploads and long-archived card files</td>
+</tr>
+<tr>
+<td>Closed cards</td>
+<td>Daily</td>
+<td>Posts the day&#39;s closed revenue cards to a Lark chat, if Lark is set up</td>
+</tr>
+<tr>
+<td>Weekly sprints</td>
+<td>Mondays</td>
+<td>Opens the next week&#39;s sprint on boards that use sprints</td>
+</tr>
+<tr>
+<td>Monthly goals</td>
+<td>1st of the month</td>
+<td>Recalculates measurable key results from live data</td>
+</tr>
+</tbody></table></div>
+<p>To check they run: <strong>Vercel &gt; your project &gt; Settings &gt; Cron Jobs</strong> lists each job and its last run. Most jobs also record every run in the database:</p>
+<pre><code class="language-sql">select * from routine_runs order by started_at desc limit 20;
+</code></pre>
+<p>If your chapter uses Lark, set <code>LARK_OPS_WEBHOOK_URL</code> and the site posts an alert after a job fails twice in a row.</p>
+<hr>
+<h2 id="backups-and-restoring">Backups and restoring</h2>
+<h3 id="what-to-back-up">What to back up</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where it lives</th>
+<th>Backed up by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Members, events, payments, everything entered on the site</td>
+<td>Supabase database</td>
+<td>Supabase&#39;s daily backups (Pro plan), plus your own monthly copy</td>
+</tr>
+<tr>
+<td>Uploaded photos and files</td>
+<td>Supabase Storage</td>
+<td><strong>Not</strong> in the database backups. Download them yourself (below)</td>
+</tr>
+<tr>
+<td>The code, logo, words and photos in the repository</td>
+<td>GitHub</td>
+<td>GitHub keeps every version</td>
+</tr>
+<tr>
+<td>Settings and keys</td>
+<td><code>.env.local</code> and Vercel</td>
+<td>Your password manager</td>
+</tr>
+</tbody></table></div>
+<h3 id="daily-backups">Daily backups</h3>
+<p>The Supabase <strong>Pro</strong> plan keeps a daily backup for 7 days. The free plan keeps none. Move to Pro before real member data goes in. Check <strong>Supabase &gt; Database &gt; Backups</strong> monthly.</p>
+<h3 id="your-own-monthly-copy">Your own monthly copy</h3>
+<p>Keep one copy outside Supabase, in the chapter&#39;s own storage, so the chapter is safe even if the account is lost.</p>
+<p><strong>Ask the agent:</strong> &quot;Make a full backup of the database and the storage files into a dated folder.&quot; Or run it yourself with the database password:</p>
+<pre><code class="language-bash">pg_dump &quot;$SUPABASE_DB_URL&quot; --no-owner --no-privileges -Fc -f &quot;backup-$(date +%Y-%m-%d).dump&quot;
+</code></pre>
+<p><code>pg_dump</code> comes with PostgreSQL; use the same major version as the database or newer (Supabase shows it under <strong>Settings &gt; Infrastructure</strong>). To copy the storage files, use the Supabase dashboard (<strong>Storage</strong>, download each folder) or ask the agent to download them with the Supabase command-line tool.</p>
+<p>Treat backup files as confidential: they contain every member&#39;s details.</p>
+<h3 id="restoring">Restoring</h3>
+<ul>
+<li><strong>From a Supabase daily backup:</strong> Supabase &gt; Database &gt; Backups &gt; Restore. It replaces the whole database with that day&#39;s copy; anything entered since is lost. The site is down for a few minutes.</li>
+<li><strong>From your own copy:</strong> create a new Supabase project, restore the file into it with <code>pg_restore</code>, then point the site at the new project&#39;s keys. <strong>Ask the agent</strong> to do it; it is the same as moving region.</li>
+</ul>
+<p>Practise a restore once a year on a separate test project, so you know it works before you need it.</p>
+<hr>
+<h2 id="taking-updates">Taking updates</h2>
+<p>New versions of EO Chapter Manager are published to <a href="https://github.com/dhajdu/eo-chapter-manager" rel="noopener">github.com/dhajdu/eo-chapter-manager</a>. Taking one is optional; the site keeps working without it. Take updates at least for security fixes.</p>
+<p><strong>Ask the agent:</strong> &quot;Take the latest EO Chapter Manager update into our copy, keep our content and logo, apply any new database upgrades, and test it on a preview before it goes live.&quot;</p>
+<p>What happens:</p>
+<ol>
+<li>The agent merges the new version into a <strong>branch</strong>, not straight into the live site. Your files in <code>src/content/</code>, <code>public/logo/</code> and <code>public/images/</code> are yours; where both sides changed them, it keeps yours.</li>
+<li>If the update has new files in <code>supabase/upgrades/</code>, it applies them to the database in number order. Each is written to be safe to run twice. <strong>Make a backup first.</strong></li>
+<li>Vercel builds a <strong>preview</strong> of the branch at its own address. Click through the main pages there: home, events, <code>/member</code>, <code>/board</code>.</li>
+<li>When the preview looks right, the branch is merged into <code>main</code> and goes live.</li>
+</ol>
+<p>By hand, the same steps are:</p>
+<pre><code class="language-bash">git remote add upstream https://github.com/dhajdu/eo-chapter-manager   # once
+git fetch upstream
+git switch -c update-$(date +%Y-%m)
+git merge upstream/main
+npm ci &amp;&amp; npm test &amp;&amp; npm run build
+git push -u origin HEAD        # Vercel builds a preview
+</code></pre>
+<p>Then open a pull request on GitHub and merge it when the preview works.</p>
+<hr>
+<h2 id="undoing-a-bad-change">Undoing a bad change</h2>
+<ul>
+<li><strong>A code or content change broke the site:</strong> in <strong>Vercel &gt; Deployments</strong>, open the last good deployment and choose <strong>Instant Rollback</strong> (or <strong>Promote to Production</strong>). The old version is live again within a minute. Then fix or undo the change in GitHub, because the next push will replace the rollback.</li>
+<li><strong>Data was deleted or damaged:</strong> restore from a backup (above). If only a few records are affected, restore the backup into a separate test project and copy the records across, rather than rolling back the whole chapter. <strong>Ask the agent</strong> to help.</li>
+</ul>
+<hr>
+<h2 id="security">Security</h2>
+<ul>
+<li><strong>Never share <code>.env.local</code></strong> or paste its contents into email or chat. It contains the key that can read and change every record.</li>
+<li><strong>Never set the demo settings</strong> (<code>NEXT_PUBLIC_DEMO_MEMBER_LOGIN</code>, <code>NEXT_PUBLIC_DEMO_BOARD_LOGIN</code>) on a real chapter. They show sign-in details on the login page to anyone.</li>
+<li><strong>Keep row-level security on.</strong> Supabase &gt; Advisors warns if a table is exposed. The site&#39;s server code is the only thing that reads sensitive tables.</li>
+<li><strong>Review access every quarter</strong> at <code>/admin/users</code>: remove people who left the board or staff.</li>
+</ul>
+<h3 id="changing-keys">Changing keys</h3>
+<p>Change the keys if <code>.env.local</code> may have leaked, or when someone who had it leaves:</p>
+<ol>
+<li><strong>Supabase:</strong> Settings &gt; API Keys: create a new secret key and revoke the old one. Change the database password under Settings &gt; Database.</li>
+<li><strong>Stripe, Resend, Anthropic:</strong> create a new key in each dashboard and delete the old one.</li>
+<li><strong>The four random secrets</strong> (<code>CRON_SECRET</code>, <code>UNSUBSCRIBE_SECRET</code>, <code>RSVP_ANTISPAM_SECRET</code>, <code>MCP_RECEIPT_SECRET</code>): generate new ones with <code>openssl rand -hex 32</code>. Changing <code>UNSUBSCRIBE_SECRET</code> makes unsubscribe links in emails already sent stop working, so change it only if it leaked.</li>
+<li>Update <code>.env.local</code> and the Vercel settings, then redeploy.</li>
+</ol>
+<p><strong>Ask the agent:</strong> &quot;Rotate our Supabase secret key and update Vercel.&quot;</p>
+<hr>
+<h2 id="costs">Costs</h2>
+<p>Typical monthly costs for one chapter:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Plan</th>
+<th>About</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vercel</td>
+<td>Pro</td>
+<td>US$20</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>Pro (daily backups)</td>
+<td>US$25</td>
+</tr>
+<tr>
+<td>Resend</td>
+<td>Free up to 3,000 emails, then Pro</td>
+<td>US$0 to 20</td>
+</tr>
+<tr>
+<td>Anthropic</td>
+<td>Pay as you go</td>
+<td>A few dollars</td>
+</tr>
+<tr>
+<td>Stripe</td>
+<td>Per payment</td>
+<td>No monthly fee</td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>Yearly</td>
+<td>US$10 to 50 a year</td>
+</tr>
+</tbody></table></div>
+<p>Set a spending limit or alert in Vercel and Anthropic, and check the bills monthly.</p>
+<hr>
+<h2 id="where-to-look-when-something-is-wrong">Where to look when something is wrong</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Look here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A page shows an error</td>
+<td><strong>Vercel &gt; Logs</strong>, filtered to the time it happened</td>
+</tr>
+<tr>
+<td>The site will not build after a change</td>
+<td><strong>Vercel &gt; Deployments</strong>, the failed one, Build Logs. The last good version stays live</td>
+</tr>
+<tr>
+<td>Sign-in emails do not arrive</td>
+<td><strong>Supabase &gt; Authentication &gt; Logs</strong>; and whether custom SMTP is set (see the installation guide)</td>
+</tr>
+<tr>
+<td>Other emails do not arrive</td>
+<td><strong>Resend &gt; Emails</strong>; check <code>RESEND_API_KEY</code> and the verified domain</td>
+</tr>
+<tr>
+<td>A payment did not mark the ticket paid</td>
+<td><strong>Stripe &gt; Developers &gt; Webhooks</strong>, the endpoint&#39;s recent deliveries</td>
+</tr>
+<tr>
+<td>A background job did not run</td>
+<td><strong>Vercel &gt; Settings &gt; Cron Jobs</strong>, and <code>routine_runs</code></td>
+</tr>
+<tr>
+<td>A board member cannot reach <code>/board</code></td>
+<td>Their appointment for the current year (the check query in <a href="#step-1-enter-next-years-board-april-to-june">Step 1</a>), and that they sign in with the same email</td>
+</tr>
+<tr>
+<td>A member signs in but only sees guest pages</td>
+<td>Their email on file and an <code>active</code> membership (see <a href="#members">Members</a>)</td>
+</tr>
+<tr>
+<td>Someone changed a record and you need to know who</td>
+<td><code>audit_log</code> in the Supabase table editor</td>
+</tr>
+</tbody></table></div>
+<p><strong>Ask the agent</strong> with the error message and what you were doing. It can read the logs, find the cause and propose a fix, which you approve before it goes live. Problems with the software itself can be reported at <a href="https://github.com/dhajdu/eo-chapter-manager/issues" rel="noopener">github.com/dhajdu/eo-chapter-manager/issues</a>.</p>
+
+  </article>
+</div>
+<footer>
+  <div class="wrap">
+    EO Chapter Manager is MIT-licensed and built by an EO chapter for every chapter. It is not an official EO Global product.
+    <a href="/">eochapterdemo.com</a> · <a href="https://github.com/dhajdu/eo-chapter-manager">github.com/dhajdu/eo-chapter-manager</a> · This page is built from <a href="https://github.com/dhajdu/eo-chapter-manager/blob/main/docs/maintenance.md">docs/maintenance.md</a>
+  </div>
+</footer>
+</body>
+</html>
