@@ -15,7 +15,7 @@ This README is a runbook written for an AI coding agent: Claude Code, Codex, Cur
 
 > Follow the README at https://github.com/dhajdu/eo-chapter-manager and set it up for **EO &lt;your chapter&gt;**. Give me the website link at the end.
 
-The agent does the work; you log in to three services when it asks, answer six questions, and approve the costs. Plan on about an hour.
+The agent does the work; you log in to three services when it asks, answer seven questions (including where to host the data), and approve the costs. Plan on about an hour.
 
 **What you need:** accounts on [GitHub](https://github.com), [Supabase](https://supabase.com) (free to start) and [Vercel](https://vercel.com) (the Pro plan, because the app runs hourly background jobs). Optional: [Stripe](https://stripe.com) for paid tickets and dues, [Resend](https://resend.com) for email, [Anthropic](https://console.anthropic.com) for the board assistant.
 
@@ -53,6 +53,7 @@ Ask the operator these questions in one message:
 4. The time zone (offer the IANA name you think fits, for example `Europe/Berlin`) and its short label (`CET`)
 5. The public contact email (for example `hello@eoberlin.org`)
 6. The first admin: name and email address
+7. Where the data and website should be hosted. Explain that the database region cannot be changed after Step 2, that some countries' laws require member data to stay in the country or region (for example the GDPR in the EU), and suggest the matching pair from the region table in `docs/installation.md` ("Where your data and website live") nearest the chapter. Use their answer for the Supabase region in Step 2 and `vercel.json` in Step 5
 
 `<chapter-slug>` below means the chapter name in lowercase with dashes, for example `eo-berlin`.
 
@@ -78,7 +79,7 @@ node -e 'const t=require("fs").readFileSync(".env.local","utf8");const req=t.spl
 ```bash
 supabase orgs list
 DB_PASSWORD=$(openssl rand -hex 24)    # hex, so it needs no escaping in connection strings
-supabase projects create <chapter-slug>-chapter-manager --org-id <ORG_ID> --region <nearest region> --db-password "$DB_PASSWORD"
+supabase projects create <chapter-slug>-chapter-manager --org-id <ORG_ID> --region <the region agreed in Step 1> --db-password "$DB_PASSWORD"
 ```
 
 Tell the operator the database password once and ask them to save it in their password manager now; Supabase cannot show it again.
@@ -149,7 +150,7 @@ Every key should appear twice, once for Production and once for Preview. Deploy 
 git commit --allow-empty -m "First deploy" && git push
 ```
 
-`vercel.json` sets the server region to Singapore (`sin1`). Change it to the region nearest the chapter (for example `fra1`) before this push if that is not Asia.
+`vercel.json` ships with the server region set to Singapore (`sin1`). Before this push, change `regions` to the Vercel region agreed in Step 1, the one that matches the Supabase region (for example `fra1` with Frankfurt). Commit that change.
 
 **Check:** `vercel ls </dev/null` shows a Ready production deployment. Open it.
 
@@ -170,7 +171,8 @@ Report to the operator:
 - the live website link, and `/login`
 - that they should save the database password if they have not
 - what is switched off until they add keys: email (Resend), payments (Stripe), the board assistant (Anthropic)
-- the next steps below
+- where the data is hosted (the Supabase and Vercel regions), to record in the chapter handbook
+- the next steps below, and the guides in `docs/`
 
 ---
 
@@ -212,6 +214,11 @@ Then `CHATBOT_DB_URL=postgres://chatbot_reader.<ref>:<that password>@aws-1-<regi
 ## Updating later
 
 New versions of EO Chapter Manager are published to this repo. To take one, merge it into your copy (`git remote add upstream https://github.com/dhajdu/eo-chapter-manager && git fetch upstream && git merge upstream/main`), then apply any new files in `supabase/upgrades/` in number order. Your `src/content/` files and logo are yours; resolve merge conflicts there in your favour.
+
+## Guides
+
+- [Installation guide](docs/installation.md): the long version of the steps above, for people: accounts and costs, where to host the data, email, payments, your own domain, a launch checklist and troubleshooting.
+- [Maintenance guide](docs/maintenance.md): running it year to year: the new board each July, members, backups, updates, costs and security.
 
 ## For developers
 

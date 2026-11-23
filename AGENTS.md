@@ -31,6 +31,7 @@ npm run build
 - `src/kernel/`, `src/entities/`: workboards, marketing calendar and shared building blocks
 - `supabase/`: `00-prereqs.sql`, `01-schema.sql`, `02-starter.sql` build a new database (run by `scripts/setup-db.mjs`); `upgrades/` holds changes for existing installs
 - `scripts/`: `setup-db.mjs`, `create-admin.mjs`, guardrail tests
+- `docs/`: `installation.md` and `maintenance.md`, the guides for chapter staff. Keep them in step when you change setup, settings, roles, scheduled jobs or yearly tasks
 
 ## Authorization
 
