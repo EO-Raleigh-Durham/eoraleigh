@@ -1,6 +1,7 @@
 import { pageMeta } from "@/lib/page-metadata";
 import Link from "next/link";
-import { duesYearLabel } from "@/lib/dues";
+import { duesUsd, duesYearLabel, duesWindow } from "@/lib/dues";
+import { getOpenDuesYear } from "@/lib/dues-server";
 import { BankTransferForm } from "./BankTransferForm";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
 import { DUES_VAT_LAW } from "@/content/dues-copy";
@@ -19,6 +20,8 @@ export default async function BankTransferPage({
   searchParams: Promise<{ submitted?: string }>;
 }) {
   const { submitted } = await searchParams;
+  const open = await getOpenDuesYear();
+  const dues = open && open.primaryCents != null ? open : null;
 
   if (submitted === "1") {
     return (
@@ -39,6 +42,20 @@ export default async function BankTransferPage({
     );
   }
 
+  if (!dues) {
+    return (
+      <main className="dur-page">
+        <section className="dur-card dur-card--center">
+          <p className="dur-eyebrow">{CHAPTER_NAME}</p>
+          <h1 className="dur-title">Dues are not open yet</h1>
+          <p className="dur-lead">
+            The board has not opened dues for the new membership year. Please check back soon or contact the chapter
+          </p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="dur-page">
       <section className="dur-card">
@@ -48,21 +65,21 @@ export default async function BankTransferPage({
         <p className="dur-eyebrow">{CHAPTER_NAME}</p>
         <h1 className="dur-title">VAT Invoice &amp; Bank Transfer Request</h1>
         <p className="dur-lead">
-          Renewing your {CHAPTER_NAME} membership for FY {duesYearLabel()} via bank
+          Renewing your {CHAPTER_NAME} membership for FY {duesYearLabel(dues.fyStart)} via bank
           transfer. Complete this form and our team will walk you through the
           contract and invoice process.
         </p>
 
         <div className="dur-vat-notice">
-          <strong>VAT note:</strong> Local chapter dues are $2,200. A VAT invoice
+          <strong>VAT note:</strong> Local chapter dues are {duesUsd(dues.primaryCents)}. A VAT invoice
           requires an additional <strong>8% VAT</strong> — bringing the total to{" "}
-          <strong>$2,376</strong>. This fee is required by {DUES_VAT_LAW} and
+          <strong>{duesUsd(Math.round(dues.primaryCents * 1.08))}</strong>. This fee is required by {DUES_VAT_LAW} and
           is not included in the base dues.
         </div>
 
         <div className="dur-amount" style={{ marginBottom: 28 }}>
-          <span className="dur-amount-value">$2,376</span>
-          <span className="dur-amount-note">$2,200 dues + 8% VAT · Membership year {duesYearLabel()}</span>
+          <span className="dur-amount-value">{duesUsd(Math.round(dues.primaryCents * 1.08))}</span>
+          <span className="dur-amount-note">{duesUsd(dues.primaryCents)} dues + 8% VAT · Membership year {duesYearLabel(dues.fyStart)}</span>
         </div>
 
         <BankTransferForm />

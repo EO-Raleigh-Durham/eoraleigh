@@ -16,7 +16,7 @@ type DuesFormProps = {
 export function DuesForm({
   action = createDuesCheckout,
   defaultName,
-  payLabel = "Pay $2,200 by card",
+  payLabel = "Pay by card",
 }: DuesFormProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);

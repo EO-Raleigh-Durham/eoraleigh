@@ -3962,6 +3962,22 @@ COMMENT ON TABLE public.board_members IS 'Who is on a Workboard (edge8 port). Un
 
 
 --
+-- Name: board_prework_responses; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.board_prework_responses (
+    cycle text NOT NULL,
+    user_id uuid NOT NULL,
+    respondent_name text,
+    answers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    submitted_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT board_prework_responses_answers_check CHECK ((jsonb_typeof(answers) = 'object'::text))
+);
+
+
+--
 -- Name: board_priorities; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -4184,8 +4200,11 @@ CREATE TABLE public.chapter_metrics (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     dues_per_member_usd integer,
     initiation_fee_usd integer,
+    dues_open boolean DEFAULT false NOT NULL,
+    secondary_dues_usd integer,
     CONSTRAINT chapter_metrics_dues_per_member_usd_check CHECK (((dues_per_member_usd IS NULL) OR (dues_per_member_usd >= 0))),
-    CONSTRAINT chapter_metrics_initiation_fee_usd_check CHECK (((initiation_fee_usd IS NULL) OR (initiation_fee_usd >= 0)))
+    CONSTRAINT chapter_metrics_initiation_fee_usd_check CHECK (((initiation_fee_usd IS NULL) OR (initiation_fee_usd >= 0))),
+    CONSTRAINT chapter_metrics_secondary_dues_usd_check CHECK (((secondary_dues_usd IS NULL) OR (secondary_dues_usd >= 0)))
 );
 
 
@@ -4201,6 +4220,20 @@ COMMENT ON COLUMN public.chapter_metrics.dues_per_member_usd IS 'Local chapter d
 --
 
 COMMENT ON COLUMN public.chapter_metrics.initiation_fee_usd IS 'One-time initiation fee per new member (USD) for the fiscal year. The live FY''s revenue counts it once for each member who joined that year.';
+
+
+--
+-- Name: COLUMN chapter_metrics.dues_open; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.chapter_metrics.dues_open IS 'True for the fiscal year members currently pay dues for. The dues pages use the newest open year.';
+
+
+--
+-- Name: COLUMN chapter_metrics.secondary_dues_usd; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.chapter_metrics.secondary_dues_usd IS 'Secondary-chapter dues (USD) for the fiscal year.';
 
 
 --
@@ -5236,6 +5269,24 @@ COMMENT ON COLUMN public.events.survey_sent_at IS 'When the automatic post-event
 --
 
 COMMENT ON COLUMN public.events.survey_sent_count IS 'How many people the automatic post-event survey email was sent to.';
+
+
+--
+-- Name: forum_constitutions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.forum_constitutions (
+    forum_id uuid NOT NULL,
+    file_name text NOT NULL,
+    storage_path text NOT NULL,
+    content_type text,
+    size_bytes integer,
+    uploaded_by uuid,
+    uploaded_by_name text,
+    uploaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT forum_constitutions_file_name_check CHECK (((char_length(file_name) >= 1) AND (char_length(file_name) <= 200))),
+    CONSTRAINT forum_constitutions_size_bytes_check CHECK (((size_bytes IS NULL) OR (size_bytes >= 0)))
+);
 
 
 --
@@ -6946,6 +6997,14 @@ ALTER TABLE ONLY public.board_members
 
 
 --
+-- Name: board_prework_responses board_prework_responses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.board_prework_responses
+    ADD CONSTRAINT board_prework_responses_pkey PRIMARY KEY (cycle, user_id);
+
+
+--
 -- Name: board_priorities board_priorities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -7503,6 +7562,22 @@ ALTER TABLE ONLY public.event_vouchers
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: forum_constitutions forum_constitutions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forum_constitutions
+    ADD CONSTRAINT forum_constitutions_pkey PRIMARY KEY (forum_id);
+
+
+--
+-- Name: forum_constitutions forum_constitutions_storage_path_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forum_constitutions
+    ADD CONSTRAINT forum_constitutions_storage_path_key UNIQUE (storage_path);
 
 
 --
@@ -10466,6 +10541,14 @@ ALTER TABLE ONLY public.board_members
 
 
 --
+-- Name: board_prework_responses board_prework_responses_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.board_prework_responses
+    ADD CONSTRAINT board_prework_responses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_profiles(id) ON DELETE CASCADE;
+
+
+--
 -- Name: board_priorities board_priorities_board_appointment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11031,6 +11114,22 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_submitted_by_person_id_fkey FOREIGN KEY (submitted_by_person_id) REFERENCES public.people(id) ON DELETE SET NULL;
+
+
+--
+-- Name: forum_constitutions forum_constitutions_forum_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forum_constitutions
+    ADD CONSTRAINT forum_constitutions_forum_id_fkey FOREIGN KEY (forum_id) REFERENCES public.forums(id) ON DELETE CASCADE;
+
+
+--
+-- Name: forum_constitutions forum_constitutions_uploaded_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.forum_constitutions
+    ADD CONSTRAINT forum_constitutions_uploaded_by_fkey FOREIGN KEY (uploaded_by) REFERENCES public.user_profiles(id) ON DELETE SET NULL;
 
 
 --
@@ -11876,6 +11975,12 @@ ALTER TABLE public.board_meetings ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE public.board_members ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: board_prework_responses; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.board_prework_responses ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: board_priorities; Type: ROW SECURITY; Schema: public; Owner: -
@@ -12777,6 +12882,12 @@ ALTER TABLE public.event_vouchers ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: forum_constitutions; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.forum_constitutions ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: forums; Type: ROW SECURITY; Schema: public; Owner: -
@@ -13731,6 +13842,13 @@ GRANT SELECT ON TABLE public.board_members TO chatbot_reader;
 
 
 --
+-- Name: TABLE board_prework_responses; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.board_prework_responses TO service_role;
+
+
+--
 -- Name: TABLE board_priorities; Type: ACL; Schema: public; Owner: -
 --
 
@@ -14558,6 +14676,13 @@ GRANT ALL ON TABLE public.events TO anon;
 GRANT ALL ON TABLE public.events TO authenticated;
 GRANT ALL ON TABLE public.events TO service_role;
 GRANT SELECT ON TABLE public.events TO chatbot_reader;
+
+
+--
+-- Name: TABLE forum_constitutions; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.forum_constitutions TO service_role;
 
 
 --

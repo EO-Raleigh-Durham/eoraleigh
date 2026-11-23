@@ -5,7 +5,7 @@ import type {
   ChapterMetric,
   ChapterMetricField,
 } from "@/lib/chapter-metrics";
-import { addYear, deleteYear, updateCell } from "./actions";
+import { addYear, deleteYear, setOpenDuesYear, updateCell } from "./actions";
 
 type MetricType = "text" | "integer" | "decimal" | "money" | "percent";
 
@@ -29,6 +29,7 @@ const METRIC_DEFS: MetricDef[] = [
   { field: "eo_grants_usd", label: "EO grants", type: "money" },
   { field: "sap_usd", label: "SAP", type: "money" },
   { field: "dues_per_member_usd", label: "Dues per member", type: "money" },
+  { field: "secondary_dues_usd", label: "Secondary chapter dues", type: "money" },
   { field: "initiation_fee_usd", label: "Initiation fee", type: "money" },
 ];
 
@@ -206,6 +207,45 @@ function MetricsTableState({ initialMetrics }: { initialMetrics: ChapterMetric[]
       </div>
 
       {error && <div className="admin-banner admin-banner--err">{error}</div>}
+
+      <div className="cm-toolbar" style={{ gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <label htmlFor="cm-dues-open" style={{ fontWeight: 600, fontSize: 14 }}>
+          Members pay dues for
+        </label>
+        <select
+          id="cm-dues-open"
+          className="cm-add-input"
+          style={{ width: "auto", minWidth: 120 }}
+          value={data.find((r) => r.dues_open)?.fiscal_year ?? ""}
+          disabled={pending}
+          onChange={(e) => {
+            const year = e.target.value;
+            const snapshot = data;
+            setError(null);
+            setData(data.map((r) => ({ ...r, dues_open: r.fiscal_year === year })));
+            startTransition(async () => {
+              const result = await setOpenDuesYear(year);
+              if (!result.ok) {
+                setError(result.error);
+                setData(snapshot);
+              } else {
+                setFlash(year ? `Dues open for ${year}` : "Dues closed");
+                setTimeout(() => setFlash(null), 2000);
+              }
+            });
+          }}
+        >
+          <option value="">Not open</option>
+          {data.map((r) => (
+            <option key={r.id} value={r.fiscal_year}>
+              {r.fiscal_year}
+            </option>
+          ))}
+        </select>
+        <span style={{ fontSize: 13, color: "#5E617D" }}>
+          The dues pages charge this year&apos;s dues per member and secondary chapter dues. Set both before opening a new year.
+        </span>
+      </div>
 
       <div className="cm-table-wrap">
         <table className="cm-table">

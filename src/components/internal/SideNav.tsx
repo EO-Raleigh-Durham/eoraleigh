@@ -75,6 +75,7 @@ const BOARD_NAV: NavSection[] = [
       { label: "Goals", href: "/board/goals" },
       { label: "Chair Reports", href: "/board/chair-reports" },
       { label: "Board Meetings", href: "/board/meetings" },
+      { label: "Board pre-work", href: "/board/pre-work" },
     ],
   },
   {
@@ -161,6 +162,7 @@ const BOARD_NAV: NavSection[] = [
       { label: "Staff Onboarding", href: "/board/staff-onboarding" },
       { label: "Users", href: "/admin/users" },
       { label: "Contractors", href: "/admin/users/contractors" },
+      { label: "Board team", href: "/admin/board-team" },
     ],
   },
 ];

@@ -219,6 +219,8 @@ export type DuesBankTransferEmailInput = {
   address: string;
   accountantEmail: string;
   accountantPhone: string;
+  /** e.g. "FY 2026/2027 · $2,200", set by the page's open dues year */
+  duesSummary?: string;
 };
 
 export async function sendDuesBankTransferEmail(
@@ -271,7 +273,7 @@ function duesBankTransferEmailHtml(i: DuesBankTransferEmailInput): string {
       <table width="520" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;border:1px solid #ECEDF2;padding:28px">
         <tr><td style="font-size:13px;color:#3D46F2;font-weight:700;letter-spacing:0.06em;text-transform:uppercase">${CHAPTER_NAME}</td></tr>
         <tr><td style="padding-top:10px;font-size:18px;font-weight:700;color:#0C0C31">Dues renewal — bank transfer &amp; VAT invoice request</td></tr>
-        <tr><td style="padding-top:6px;font-size:14px;color:#5E617D">FY 2026/2027 · $2,200</td></tr>
+        ${i.duesSummary ? `<tr><td style="padding-top:6px;font-size:14px;color:#5E617D">${escapeHtml(i.duesSummary)}</td></tr>` : ""}
         <tr><td style="padding-top:20px"><table cellpadding="0" cellspacing="0" width="100%">${body}</table></td></tr>
         <tr><td style="padding-top:20px;font-size:13px;color:#5E617D;line-height:1.6">
           Next step: send the member a contract and VAT invoice, then confirm bank transfer details.
@@ -629,4 +631,41 @@ function recapReadyHtml(input: RecapReadyEmailInput): string {
     </td></tr>
   </table>
 </body></html>`;
+}
+
+// ── Account invitation ───────────────────────────────────────────────────
+// Sent by createUser() in auth.ts. The link is a one-time token on our own
+// /auth/confirm route, which signs the person in and sends them to set a
+// password. Returns false when email is not configured, so the caller can
+// show the link to copy instead.
+
+export type InviteEmailInput = { to: string; name: string; link: string };
+
+export function renderInviteEmailHtml(i: InviteEmailInput): string {
+  return `<div style="font-family:Roboto,Arial,sans-serif;max-width:520px;margin:0 auto;color:#0C0C31">
+  <p style="font-size:15px">Hi ${escapeHtml(i.name)},</p>
+  <p style="font-size:15px;line-height:1.55">You have been given an account on the ${escapeHtml(CHAPTER_NAME)} website. Open the link below to sign in and choose your password.</p>
+  <p style="margin:24px 0"><a href="${escapeHtml(i.link)}" style="background:#3D46F2;color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:8px;display:inline-block">Set my password</a></p>
+  <p style="font-size:13px;color:#5E617D;line-height:1.5">The link works once and expires after a day. If it has expired, use "Forgot password" on the sign-in page with this email address.</p>
+</div>`;
+}
+
+export async function sendInviteEmail(input: InviteEmailInput): Promise<boolean> {
+  if (!resend) return false;
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: input.to,
+      subject: `Your ${CHAPTER_NAME} account`,
+      html: renderInviteEmailHtml(input),
+    });
+    if (error) {
+      console.warn("sendInviteEmail:", error.message ?? String(error));
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn("sendInviteEmail threw:", err instanceof Error ? err.message : String(err));
+    return false;
+  }
 }

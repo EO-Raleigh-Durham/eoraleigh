@@ -115,7 +115,7 @@
   </nav>
   <article>
 <p>How to keep EO Chapter Manager running from year to year: who looks after what, the new board each July, members and access, backups, updates, costs and security.</p>
-<p>It is written for the chapter manager and whoever on the board owns the chapter&#39;s technology. Many tasks below are a single sentence you can give your AI coding agent (Claude Code, Codex, Cursor or similar), opened in the chapter&#39;s copy of the code. Those are marked <strong>Ask the agent</strong>.</p>
+<p>It is written for the chapter manager and whoever on the board owns the chapter&#39;s technology. Most tasks below are done on screens in the site. Some are a single sentence you can give your AI coding agent (Claude Code, Codex, Cursor or similar), opened in the chapter&#39;s copy of the code. Those are marked <strong>Ask the agent</strong>.</p>
 <hr>
 <h2 id="who-looks-after-what">Who looks after what</h2>
 <div class="table-wrap"><table>
@@ -163,9 +163,9 @@
 </ul>
 <p><strong>Every year, April to June</strong></p>
 <ul>
-<li>Enter next year&#39;s board (see <a href="#the-new-board-each-july">The new board each July</a>).</li>
-<li>Set next year&#39;s dues, metrics and goals.</li>
-<li>Mark members who did not renew.</li>
+<li>Enter next year&#39;s board at <strong>Admin &gt; Board team</strong> (see <a href="#the-new-board-each-july">The new board each July</a>).</li>
+<li>Set next year&#39;s dues and metrics, and open the new dues year.</li>
+<li>Set members who did not renew to Ended or Alumni on their member page.</li>
 </ul>
 <p><strong>Every year, July</strong></p>
 <ul>
@@ -229,35 +229,49 @@
 </tr>
 </tbody></table></div>
 <p>Members do not need an invitation. If their email is on file, they go to <code>/login</code>, enter it and click the link they receive.</p>
-<p>To add someone by hand (for example a new staff member), use <code>/admin/users/new</code>, then tell them to sign in at <code>/login</code> with their email. To remove someone, set them to inactive at <code>/admin/users</code>; their history is kept.</p>
+<p>To give someone a login by hand (for example a new staff member), use <strong>Admin &gt; Users &gt; Invite user</strong> (<code>/admin/users/new</code>). They get an email with a link to choose a password. If email is not set up, the screen shows the link for you to send them yourself. To remove someone, set them to inactive at <code>/admin/users</code>; their history is kept.</p>
 <p>Keep at least <strong>two</strong> super admins, so the chapter is never locked out.</p>
 <hr>
 <h2 id="members">Members</h2>
 <h3 id="adding-members">Adding members</h3>
-<p>New members need a person record with their email and an active membership. Member records can come from the membership pipeline (<code>/board/prospects</code>) or be added in bulk.</p>
-<p><strong>Ask the agent:</strong> &quot;Add these new members to the database with an active primary membership starting today: [names and emails].&quot; The agent runs SQL like this in <strong>Supabase &gt; SQL Editor</strong>, which you can also run yourself:</p>
-<pre><code class="language-sql">-- 1. The people. Put one line per new member in both lists. Skips emails already on file.
-insert into people (name, email)
-values (&#39;Alex Example&#39;, &#39;alex@example.com&#39;)
-on conflict (email) do nothing;
-
--- 2. Their memberships.
-insert into chapter_memberships (person_id, chapter_id, membership_type, status, start_date)
-select p.id, (select id from chapters limit 1), &#39;Primary Membership&#39;, &#39;active&#39;, current_date
-from people p
-where p.email in (&#39;alex@example.com&#39;)
-  and not exists (select 1 from chapter_memberships m where m.person_id = p.id and m.status = &#39;active&#39;);
-</code></pre>
-<p>Then fill in company, forum and photo from <code>/board/members</code>.</p>
-<h3 id="members-who-leave">Members who leave</h3>
-<p>Change the membership status. The possible values are <code>active</code>, <code>on_leave</code>, <code>elumni</code>, <code>terminated</code> and <code>transferred</code>. The person becomes a guest the next time they sign in; their history stays.</p>
-<pre><code class="language-sql">update chapter_memberships m
-set status = &#39;terminated&#39;, end_date = current_date
-from people p
-where p.id = m.person_id and lower(p.email) = lower(&#39;alex@example.com&#39;) and m.status = &#39;active&#39;;
-</code></pre>
-<p><strong>Ask the agent:</strong> &quot;Mark these members as no longer active from 30 June: [emails].&quot;</p>
-<p>There is no screen for membership status yet; it is on the list of improvements. Until then, use the agent or the SQL above.</p>
+<p>On <strong>Board &gt; Members</strong>, press <strong>Add member</strong> and enter their name, email, Primary or Secondary, and start date. If the email already belongs to someone on file (a prospect or a guest), their record is used instead of a duplicate. They can sign in at <code>/login</code> with that email straight away. Then add their company, forum and photo on their member page.</p>
+<h3 id="members-who-leave-or-pause">Members who leave or pause</h3>
+<p>Open the member&#39;s page from <strong>Board &gt; Members</strong>. The <strong>Membership</strong> card shows their status. Change it to:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Use it when</th>
+<th>Member portal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Active</td>
+<td>A current member</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>On leave</td>
+<td>A member taking a break</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Alumni</td>
+<td>They left in good standing</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Ended</td>
+<td>Their membership ended</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Transferred</td>
+<td>They moved to another chapter</td>
+<td>No</td>
+</tr>
+</tbody></table></div>
+<p>Add an end date and press <strong>Save</strong>. They lose member access the next time they sign in; their history stays. Every change is recorded with who made it.</p>
 <hr>
 <h2 id="the-new-board-each-july">The new board each July</h2>
 <p>EO&#39;s year runs from 1 July to 30 June. The year is named by the year it starts: <code>2027</code> means July 2027 to June 2028.</p>
@@ -270,37 +284,23 @@ where p.id = m.person_id and lower(p.email) = lower(&#39;alex@example.com&#39;) 
 </ul>
 <p>People with a board role set by hand at <code>/admin/users</code> keep it until someone changes it.</p>
 <h3 id="step-1-enter-next-years-board-april-to-june">Step 1: enter next year&#39;s board (April to June)</h3>
-<p>Each incoming board member needs a person record with the email they will sign in with.</p>
-<p><strong>Ask the agent:</strong> &quot;Add the board appointments for the year starting July 2027: President [email], Membership [email], ... Co-Chair of Marketing [email].&quot;</p>
-<p>The SQL it runs looks like this:</p>
-<pre><code class="language-sql">insert into board_appointments (person_id, board_role_id, position, scope, fiscal_year_start)
-select p.id, r.id, v.position::board_position, &#39;Local&#39;::appointment_scope, 2027
-from (values
-  (&#39;president@example.com&#39;,  &#39;president&#39;,       &#39;Chair&#39;),
-  (&#39;elect@example.com&#39;,      &#39;president-elect&#39;, &#39;Chair&#39;),
-  (&#39;membership@example.com&#39;, &#39;membership&#39;,      &#39;Chair&#39;),
-  (&#39;cochair@example.com&#39;,    &#39;marcoms&#39;,         &#39;Co-Chair&#39;)
-) as v(email, role_key, position)
-join people p on lower(p.email) = lower(v.email)
-join board_roles r on r.key = v.role_key
-on conflict do nothing;
-</code></pre>
-<p>The role keys are: <code>president</code>, <code>president-elect</code>, <code>membership</code>, <code>marcoms</code>, <code>sap</code>, <code>finance</code>, <code>governance</code>, <code>forum</code>, <code>myeo</code>, <code>learning</code>, <code>member-engagement</code>, <code>visitor-experience</code> and <code>chapter-staff</code>. Each role has one Chair per year and any number of Co-Chairs.</p>
-<p>Check what was entered:</p>
-<pre><code class="language-sql">select a.fiscal_year_start, r.name, a.position, p.full_name, p.email
-from board_appointments a join board_roles r on r.id = a.board_role_id join people p on p.id = a.person_id
-where a.fiscal_year_start = 2027 order by r.sort_order, a.position;
-</code></pre>
-<p>Add board photos at <code>/board/photos</code> or ask the agent to attach them.</p>
+<p>A super admin opens <strong>Admin &gt; Board team</strong> (<code>/admin/board-team</code>) and picks next year at the top.</p>
+<ol>
+<li>Press <strong>Start from</strong> last year to copy last year&#39;s Chairs and Co-Chairs as a starting point, if many carry over.</li>
+<li>For each role, press <strong>Choose Chair</strong> or <strong>+ Add</strong> for a Co-Chair, then search by name or email. Someone not on file can be added with their name and the email they will sign in with.</li>
+<li>Remove people who are moving on with the <strong>×</strong> next to their name.</li>
+<li>The banner at the top says when the year takes over (&quot;These people get board access on 1 July&quot;) and lists any role still without a Chair.</li>
+</ol>
+<p>Each role has one Chair per year and any number of Co-Chairs. Changes to the current year take effect immediately, and removing someone there asks you to confirm because they lose board access at once.</p>
+<p>Add board photos at <code>/board/photos</code>.</p>
 <h3 id="step-2-next-years-numbers-and-goals">Step 2: next year&#39;s numbers and goals</h3>
 <ul>
-<li><strong>Chapter metrics and dues rates:</strong> <code>/board/historical-metrics</code>. Add the new year, with the dues per member and initiation fee. The chapter dashboard uses this row.</li>
+<li><strong>Chapter metrics and dues rates:</strong> <strong>Board &gt; Historical metrics</strong> (<code>/board/historical-metrics</code>). Add the new year and fill in the dues per member, secondary chapter dues and initiation fee. The chapter dashboard uses this row.</li>
 <li><strong>Goals:</strong> <code>/board/goals</code>. The new board sets its priorities, key results and each chair&#39;s goal, usually at the first board meeting.</li>
 <li><strong>Handover notes:</strong> the outgoing team writes their reflections at <code>/board/handover</code> before they leave.</li>
 </ul>
-<h3 id="step-3-the-dues-page">Step 3: the dues page</h3>
-<p>The online dues page (<code>/chapter-dues</code>) has the dues year and amount written into the code, so they change with a small code update each year.</p>
-<p><strong>Ask the agent:</strong> &quot;Update the dues page for the year starting July 2027 with dues of US$X.&quot; It changes <code>DUES_FY_START</code> in <code>src/lib/dues.ts</code> and <code>DUES_AMOUNT</code> (in cents) in <code>src/app/chapter-dues/actions.ts</code>, and the secondary-chapter amount in <code>src/app/secondary-chapter-dues/actions.ts</code> if that changed. The change goes live when pushed to GitHub.</p>
+<h3 id="step-3-open-the-new-dues-year-may-or-june">Step 3: open the new dues year (May or June)</h3>
+<p>On <strong>Board &gt; Historical metrics</strong>, choose the new year under <strong>Members pay dues for</strong>. From that moment the dues pages (card and bank transfer, local and secondary) show the new year and charge its amounts. Nothing needs to be deployed. Set the dues amounts for the year before you open it; the screen will not open a year without them.</p>
 <h3 id="step-4-on-1-july">Step 4: on 1 July</h3>
 <ul>
 <li>Ask two incoming board members to sign in and open <code>/board</code>.</li>
@@ -526,11 +526,11 @@ git push -u origin HEAD        # Vercel builds a preview
 </tr>
 <tr>
 <td>A board member cannot reach <code>/board</code></td>
-<td>Their appointment for the current year (the check query in <a href="#step-1-enter-next-years-board-april-to-june">Step 1</a>), and that they sign in with the same email</td>
+<td>Their appointment for the current year at <strong>Admin &gt; Board team</strong>, and that they sign in with the same email</td>
 </tr>
 <tr>
 <td>A member signs in but only sees guest pages</td>
-<td>Their email on file and an <code>active</code> membership (see <a href="#members">Members</a>)</td>
+<td>Their email on file, and the Membership card on their page says Active or On leave</td>
 </tr>
 <tr>
 <td>Someone changed a record and you need to know who</td>

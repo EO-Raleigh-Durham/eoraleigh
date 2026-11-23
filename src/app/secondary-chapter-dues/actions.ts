@@ -2,19 +2,10 @@
 
 import { stripe, isStripeConfigured } from "@/lib/stripe";
 import { CHAPTER_NAME, CHAPTER_SITE_URL } from "@/kernel/config/chapter";
+import { duesYearDash, duesYearLabel, duesWindow, grossUpForCard } from "@/lib/dues";
+import { getOpenDuesYear } from "@/lib/dues-server";
 
-const DUES_AMOUNT = 150000; // $1,500.00 in cents — net amount the chapter receives
 const DUES_CURRENCY = "usd";
-const DUES_LABEL = `${CHAPTER_NAME} Secondary Chapter Dues 2026/2027`;
-
-// Gross-up so the chapter nets DUES_AMOUNT after Stripe takes their cut.
-// Using 3.5% to cover 2.9% standard + 0.6% buffer for international cards.
-// Formula: gross = (dues + fixed_fee_cents) / (1 - rate), rounded up to nearest dollar.
-const STRIPE_RATE = 0.035;
-const STRIPE_FIXED_CENTS = 30; // $0.30
-const GROSS_AMOUNT =
-  Math.ceil((DUES_AMOUNT + STRIPE_FIXED_CENTS) / (1 - STRIPE_RATE) / 100) * 100;
-const PROCESSING_FEE = GROSS_AMOUNT - DUES_AMOUNT;
 
 type Result = { ok: true; checkoutUrl: string } | { ok: false; error: string };
 
@@ -31,6 +22,13 @@ export async function createSecondaryDuesCheckout(formData: FormData): Promise<R
     return { ok: false, error: "Please enter your name and email." };
   }
 
+  // Year and amount come from the board's open dues year, never the browser.
+  const dues = await getOpenDuesYear();
+  if (!dues || dues.secondaryCents == null) return { ok: false, error: "Dues for the new membership year are not open yet. Please contact the chapter." };
+  const DUES_AMOUNT = dues.secondaryCents;
+  const DUES_LABEL = `${CHAPTER_NAME} Secondary Chapter Dues ${duesYearLabel(dues.fyStart)}`;
+  const PROCESSING_FEE = grossUpForCard(DUES_AMOUNT).feeCents;
+
   const origin = process.env.NEXT_PUBLIC_SITE_URL || CHAPTER_SITE_URL;
 
   try {
@@ -44,7 +42,7 @@ export async function createSecondaryDuesCheckout(formData: FormData): Promise<R
             currency: DUES_CURRENCY,
             product_data: {
               name: DUES_LABEL,
-              description: "Membership year: July 1, 2026 to June 30, 2027",
+              description: `Membership year: ${duesWindow(dues.fyStart)}`,
             },
             unit_amount: DUES_AMOUNT,
           },
@@ -66,7 +64,7 @@ export async function createSecondaryDuesCheckout(formData: FormData): Promise<R
       cancel_url: `${origin}/secondary-chapter-dues?cancelled=1`,
       metadata: {
         type: "secondary_dues",
-        dues_year: "2026-2027",
+        dues_year: duesYearDash(dues.fyStart),
         member_name: name,
         company: company || "",
       },

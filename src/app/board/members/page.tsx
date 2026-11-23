@@ -3,6 +3,7 @@ import { listForums } from "@/lib/forums";
 import { requireBoardOrAbove } from "@/lib/auth";
 import { canViewRevenue, redactMemberFinancials } from "@/lib/revenue-access";
 import { MembersShell } from "./MembersShell";
+import { AddMemberForm } from "./AddMemberForm";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
 
 export const metadata = {
@@ -43,6 +44,8 @@ export default async function MembersAdminPage() {
         <Stat label="On leave" value={onLeave} />
         <Stat label="Primary / Secondary" value={`${primary} / ${secondary}`} />
       </div>
+
+      <AddMemberForm />
 
       <MembersShell members={members} forums={forums} revenueAccess={revenueAccess} />
     </div>

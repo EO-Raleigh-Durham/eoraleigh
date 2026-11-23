@@ -1,5 +1,7 @@
 "use server";
 
+import { duesUsd, duesYearLabel } from "@/lib/dues";
+import { getOpenDuesYear } from "@/lib/dues-server";
 import { sendDuesBankTransferEmail } from "@/lib/email";
 import { CHAPTER_CONTACT_EMAIL } from "@/kernel/config/chapter";
 
@@ -47,7 +49,12 @@ export async function submitBankTransferRequest(
 
   // The email is the whole request: nothing is saved anywhere else. If it
   // was not sent, say so rather than showing a confirmation.
-  const sent = await sendDuesBankTransferEmail(fields);
+  const dues = await getOpenDuesYear();
+  const amount = dues ? dues.primaryCents : null;
+  const sent = await sendDuesBankTransferEmail({
+    ...fields,
+    duesSummary: dues && amount != null ? `FY ${duesYearLabel(dues.fyStart)} · ${duesUsd(amount)}` : undefined,
+  });
   if (!sent) {
     return {
       ok: false,

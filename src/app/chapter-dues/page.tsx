@@ -1,14 +1,23 @@
 import { pageMeta } from "@/lib/page-metadata";
+import { duesUsd, duesYearLabel, duesWindow } from "@/lib/dues";
+import { getOpenDuesYear } from "@/lib/dues-server";
 import Link from "next/link";
 import { DuesForm } from "./DuesForm";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
 
-export const metadata = pageMeta({
-  title: "Chapter Dues Renewal 2026/2027",
-  description:
-    `Renew your ${CHAPTER_NAME} local chapter dues for the 2026/2027 membership year. $2,200, paid securely by card.`,
-  path: "/chapter-dues",
-});
+export async function generateMetadata() {
+  const dues = await getOpenDuesYear();
+  const year = dues ? duesYearLabel(dues.fyStart) : null;
+  const amount = dues ? dues.primaryCents : null;
+  return pageMeta({
+    title: year ? `Chapter Dues Renewal ${year}` : "Chapter Dues Renewal",
+    description:
+      year && amount != null
+        ? `Renew your ${CHAPTER_NAME} local chapter dues for the ${year} membership year. ${duesUsd(amount)}, paid securely by card.`
+        : `Renew your ${CHAPTER_NAME} local chapter dues.`,
+    path: "/chapter-dues",
+  });
+}
 
 export default async function DuesRenewalPage({
   searchParams,
@@ -16,6 +25,8 @@ export default async function DuesRenewalPage({
   searchParams: Promise<{ paid?: string; cancelled?: string }>;
 }) {
   const { paid, cancelled } = await searchParams;
+  const open = await getOpenDuesYear();
+  const dues = open && open.primaryCents != null ? open : null;
 
   if (paid === "1") {
     return (
@@ -28,8 +39,22 @@ export default async function DuesRenewalPage({
           </div>
           <h1 className="dur-title">Payment received</h1>
           <p className="dur-lead">
-            Thank you for renewing your {CHAPTER_NAME} chapter dues for 2026/2027. A
+            Thank you for renewing your {CHAPTER_NAME} chapter dues{dues ? ` for ${duesYearLabel(dues.fyStart)}` : ""}. A
             receipt is on its way to your email
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!dues) {
+    return (
+      <main className="dur-page">
+        <section className="dur-card dur-card--center">
+          <p className="dur-eyebrow">{CHAPTER_NAME}</p>
+          <h1 className="dur-title">Dues are not open yet</h1>
+          <p className="dur-lead">
+            The board has not opened dues for the new membership year. Please check back soon or contact the chapter
           </p>
         </section>
       </main>
@@ -40,15 +65,14 @@ export default async function DuesRenewalPage({
     <main className="dur-page">
       <section className="dur-card">
         <p className="dur-eyebrow">{CHAPTER_NAME}</p>
-        <h1 className="dur-title">Chapter Dues Renewal 2026/2027</h1>
+        <h1 className="dur-title">Chapter Dues Renewal {duesYearLabel(dues.fyStart)}</h1>
         <p className="dur-lead">
-          Renew your local chapter membership for the year running July 1, 2026
-          to June 30, 2027
+          Renew your local chapter membership for the year running {duesWindow(dues.fyStart)}
         </p>
 
         <div className="dur-amount">
-          <span className="dur-amount-value">$2,200</span>
-          <span className="dur-amount-note">Membership year 2026/2027 · Processing fee added at checkout</span>
+          <span className="dur-amount-value">{duesUsd(dues.primaryCents)}</span>
+          <span className="dur-amount-note">Membership year {duesYearLabel(dues.fyStart)} · Processing fee added at checkout</span>
         </div>
 
         {cancelled === "1" && (
@@ -57,7 +81,7 @@ export default async function DuesRenewalPage({
           </div>
         )}
 
-        <DuesForm />
+        <DuesForm payLabel={`Pay ${duesUsd(dues.primaryCents)} by card`} />
 
         <div className="dur-divider">
           <span>or</span>

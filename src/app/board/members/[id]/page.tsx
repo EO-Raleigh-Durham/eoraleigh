@@ -18,6 +18,8 @@ import { canViewRevenue, redactMemberFinancials } from "@/lib/revenue-access";
 import { MemberProfileForm } from "../MemberProfileForm";
 import { ForumPicker } from "../ForumPicker";
 import { MemberActivity } from "../MemberActivity";
+import { MembershipCard } from "../MembershipCard";
+import { loadMemberships } from "@/lib/membership-admin";
 import { CHAPTER_TIME_ZONE } from "@/kernel/config/chapter";
 
 export const metadata = {
@@ -78,10 +80,11 @@ export default async function MemberDetailPage({ params }: { params: Params }) {
   // object as serialized props, so UI-only masking would still ship the values.
   const member = revenueAccess ? loaded : redactMemberFinancials(loaded);
 
-  const [engagement, voice, emailAliases] = await Promise.all([
+  const [engagement, voice, emailAliases, memberships] = await Promise.all([
     loadMemberEngagementForPerson(id),
     loadMember360(id, member.company_id ?? null),
     loadMemberEmailAliases(id),
+    loadMemberships(id),
   ]);
 
   const statusLabel = member.membership_status
@@ -140,6 +143,10 @@ export default async function MemberDetailPage({ params }: { params: Params }) {
 
       <div className="mbr-detail">
         <MemberProfileForm member={member} />
+
+        <MembershipCard
+          membership={memberships.find((m) => m.status === "active" || m.status === "on_leave") ?? memberships[0] ?? null}
+        />
 
         <section className="admin-shelf-section">
           <h3 className="admin-shelf-section-title">Other emails</h3>

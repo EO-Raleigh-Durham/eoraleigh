@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireBoardOrAbove } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { recordAudit } from "@/kernel/audit/audit";
 import {
   CHAPTER_METRIC_FIELDS,
   type ChapterMetricField,
@@ -22,6 +23,7 @@ const INTEGER_FIELDS: ChapterMetricField[] = [
   "sap_usd",
   "dues_per_member_usd",
   "initiation_fee_usd",
+  "secondary_dues_usd",
 ];
 
 function parseFieldValue(
@@ -123,5 +125,45 @@ export async function deleteYear(fiscalYear: string): Promise<ActionResult> {
 
   if (error) return { ok: false, error: error.message };
   revalidatePath("/board/historical-metrics");
+  return { ok: true };
+}
+
+/**
+ * Opens one fiscal year for dues (or none, with an empty string). The dues
+ * pages charge the open year's amounts, so exactly one year stays open.
+ */
+export async function setOpenDuesYear(fiscalYear: string): Promise<ActionResult> {
+  const user = await requireBoardOrAbove();
+  const target = fiscalYear.trim();
+  if (target) {
+    const { data: row } = await supabase
+      .from("chapter_metrics")
+      .select("fiscal_year, dues_per_member_usd")
+      .eq("fiscal_year", target)
+      .maybeSingle();
+    if (!row) return { ok: false, error: `No ${target} row` };
+    if (!row.dues_per_member_usd) {
+      return { ok: false, error: `Set the dues per member for ${target} before opening it` };
+    }
+  }
+  const { error: closeErr } = await supabase
+    .from("chapter_metrics")
+    .update({ dues_open: false })
+    .eq("dues_open", true);
+  if (closeErr) return { ok: false, error: closeErr.message };
+  if (target) {
+    const { error } = await supabase.from("chapter_metrics").update({ dues_open: true }).eq("fiscal_year", target);
+    if (error) return { ok: false, error: error.message };
+  }
+  await recordAudit({
+    table: "chapter_metrics",
+    recordId: target || "none",
+    operation: "update",
+    actor: user.email,
+    newData: { dues_open_year: target || null },
+  });
+  revalidatePath("/board/historical-metrics");
+  revalidatePath("/chapter-dues");
+  revalidatePath("/secondary-chapter-dues");
   return { ok: true };
 }

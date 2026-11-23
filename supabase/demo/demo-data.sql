@@ -706,12 +706,12 @@ values
 
 -- ---------------------------------------------------------------- chapter metrics and goals
 insert into public.chapter_metrics (fiscal_year, fiscal_year_start, president, members, retention_pct, revenue_usd, revenue_per_member_usd,
-  forum_count, forum_health, chapter_events, average_event_score, end_of_year_reserves_usd, eo_grants_usd, sap_usd, dues_per_member_usd, initiation_fee_usd)
+  forum_count, forum_health, chapter_events, average_event_score, end_of_year_reserves_usd, eo_grants_usd, sap_usd, dues_per_member_usd, initiation_fee_usd, secondary_dues_usd, dues_open)
 values
-  (pg_temp.fy_label(pg_temp.fy() - 3), pg_temp.fy() - 3, 'Chiara Oyelaran', 27, 88, 71500, 2648, 4, 'Good', 17, 8.6, 18200, 9000, 6000, 2400, 1500),
-  (pg_temp.fy_label(pg_temp.fy() - 2), pg_temp.fy() - 2, 'Chiara Oyelaran', 31, 90, 86400, 2787, 5, 'Good', 19, 8.8, 24500, 11000, 9000, 2400, 1500),
-  (pg_temp.fy_label(pg_temp.fy() - 1), pg_temp.fy() - 1, 'Bastian Achterberg', 36, 92, 104800, 2911, 6, 'Strong', 21, 9.0, 31700, 12000, 18000, 2500, 2000),
-  (pg_temp.fy_label(pg_temp.fy()), pg_temp.fy(), 'Talia Brenneman', null, null, null, null, 6, null, null, null, null, null, 23000, 2600, 2000);
+  (pg_temp.fy_label(pg_temp.fy() - 3), pg_temp.fy() - 3, 'Chiara Oyelaran', 27, 88, 71500, 2648, 4, 'Good', 17, 8.6, 18200, 9000, 6000, 2400, 1500, 1600, false),
+  (pg_temp.fy_label(pg_temp.fy() - 2), pg_temp.fy() - 2, 'Chiara Oyelaran', 31, 90, 86400, 2787, 5, 'Good', 19, 8.8, 24500, 11000, 9000, 2400, 1500, 1600, false),
+  (pg_temp.fy_label(pg_temp.fy() - 1), pg_temp.fy() - 1, 'Bastian Achterberg', 36, 92, 104800, 2911, 6, 'Strong', 21, 9.0, 31700, 12000, 18000, 2500, 2000, 1700, false),
+  (pg_temp.fy_label(pg_temp.fy()), pg_temp.fy(), 'Talia Brenneman', null, null, null, null, 6, null, null, null, null, null, 23000, 2600, 2000, 1700, true);
 
 insert into public.chapter_goals (fiscal_year_start, net_growth_target_pct, risk_lapse_rate, source_note)
 values (pg_temp.fy(), 12, 0.45, 'Board planning day: grow by about five net members this year.');

@@ -18,6 +18,8 @@ export type ChapterMetric = {
   sap_usd: number | null;
   dues_per_member_usd: number | null; // board-set local dues rate (migration 114)
   initiation_fee_usd: number | null; // board-set one-time fee per new member (migration 115)
+  secondary_dues_usd: number | null; // board-set secondary-chapter dues (migration 132)
+  dues_open: boolean; // members pay dues for this year now (migration 132)
 };
 
 export const CHAPTER_METRIC_FIELDS = [
@@ -35,6 +37,7 @@ export const CHAPTER_METRIC_FIELDS = [
   "sap_usd",
   "dues_per_member_usd",
   "initiation_fee_usd",
+  "secondary_dues_usd",
 ] as const;
 
 export type ChapterMetricField = (typeof CHAPTER_METRIC_FIELDS)[number];
@@ -69,6 +72,8 @@ function normaliseNumeric(row: Record<string, unknown>): ChapterMetric {
     sap_usd: num(row.sap_usd),
     dues_per_member_usd: num(row.dues_per_member_usd),
     initiation_fee_usd: num(row.initiation_fee_usd),
+    secondary_dues_usd: num(row.secondary_dues_usd),
+    dues_open: row.dues_open === true,
   };
 }
 

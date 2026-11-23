@@ -1,7 +1,9 @@
 // Server-only auth helpers. NEVER import from a client component.
 // All mutations use the service-role client (supabase.ts) to bypass RLS.
 
-import { CHAPTER_NAME } from "../kernel/config/chapter.ts";
+import { CHAPTER_NAME, CHAPTER_SITE_URL } from "../kernel/config/chapter.ts";
+import { sendInviteEmail } from "./email.ts";
+import { inviteConfirmLink } from "./invite-link.ts";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { createSessionClient } from "./supabase-server";
@@ -277,42 +279,62 @@ export async function requireAuth(redirectTo = "/login"): Promise<SessionUser> {
   return requireAtLeast("guest", redirectTo);
 }
 
+export type CreateUserResult =
+  | { ok: true; userId: string; link: string; emailed: boolean }
+  | { ok: false; error: string };
+
 /**
- * Creates a Supabase Auth user and a user_profiles row.
- * Supabase sends an invite email prompting the user to set their password.
+ * Creates (or finds) a Supabase Auth user, adds a user_profiles row, and emails
+ * a one-time link to set a password. When email is not configured or the send
+ * fails, `emailed` is false and the caller shows `link` to pass on by hand.
  */
 export async function createUser(
   email: string,
   fullName: string,
   role: UserRole,
   invitedByProfileId?: string,
-): Promise<{ ok: true; userId: string } | { ok: false; error: string }> {
-  const { data: created, error: authErr } = await supabase.auth.admin.createUser({
+): Promise<CreateUserResult> {
+  let otpType: "invite" | "email" = "invite";
+  let generated = await supabase.auth.admin.generateLink({
+    type: "invite",
     email,
-    email_confirm: false,
-    user_metadata: { full_name: fullName },
+    options: { data: { full_name: fullName } },
   });
-
-  if (authErr || !created.user) {
-    return { ok: false, error: authErr?.message ?? "Failed to create auth user" };
+  // Someone who already has a login gets a sign-in link instead.
+  if (generated.error && /already|registered|exists/i.test(generated.error.message)) {
+    otpType = "email";
+    generated = await supabase.auth.admin.generateLink({ type: "magiclink", email });
+  }
+  const user = generated.data?.user;
+  if (generated.error || !user) {
+    return { ok: false, error: generated.error?.message ?? "Failed to create auth user" };
   }
 
-  const userId = created.user.id;
-
-  const { error: profileErr } = await supabase.from("user_profiles").insert({
-    user_id: userId,
-    email,
-    full_name: fullName,
-    role,
-    active: true,
-    invited_by: invitedByProfileId ?? null,
-  });
-
-  if (profileErr) {
-    return { ok: false, error: profileErr.message };
+  const { data: existing } = await supabase
+    .from("user_profiles")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!existing) {
+    const { error: profileErr } = await supabase.from("user_profiles").insert({
+      user_id: user.id,
+      email,
+      full_name: fullName,
+      role,
+      active: true,
+      invited_by: invitedByProfileId ?? null,
+    });
+    if (profileErr) return { ok: false, error: profileErr.message };
   }
 
-  return { ok: true, userId };
+  const link = inviteConfirmLink(
+    CHAPTER_SITE_URL,
+    generated.data.properties?.hashed_token ?? "",
+    otpType,
+    generated.data.properties?.action_link ?? "",
+  );
+  const emailed = link ? await sendInviteEmail({ to: email, name: fullName, link }) : false;
+  return { ok: true, userId: user.id, link, emailed };
 }
 
 /**

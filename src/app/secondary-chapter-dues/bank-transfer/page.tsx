@@ -1,4 +1,6 @@
 import { pageMeta } from "@/lib/page-metadata";
+import { duesUsd, duesYearLabel, duesWindow } from "@/lib/dues";
+import { getOpenDuesYear } from "@/lib/dues-server";
 import Link from "next/link";
 import { SecondaryBankTransferForm } from "./BankTransferForm";
 import { CHAPTER_NAME } from "@/kernel/config/chapter";
@@ -18,6 +20,8 @@ export default async function SecondaryBankTransferPage({
   searchParams: Promise<{ submitted?: string }>;
 }) {
   const { submitted } = await searchParams;
+  const open = await getOpenDuesYear();
+  const dues = open && (open.secondaryCents ?? 0) != null ? open : null;
 
   if (submitted === "1") {
     return (
@@ -38,6 +42,20 @@ export default async function SecondaryBankTransferPage({
     );
   }
 
+  if (!dues) {
+    return (
+      <main className="dur-page">
+        <section className="dur-card dur-card--center">
+          <p className="dur-eyebrow">{CHAPTER_NAME}</p>
+          <h1 className="dur-title">Dues are not open yet</h1>
+          <p className="dur-lead">
+            The board has not opened dues for the new membership year. Please check back soon or contact the chapter
+          </p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="dur-page">
       <section className="dur-card">
@@ -47,21 +65,21 @@ export default async function SecondaryBankTransferPage({
         <p className="dur-eyebrow">{CHAPTER_NAME}</p>
         <h1 className="dur-title">VAT Invoice &amp; Bank Transfer Request</h1>
         <p className="dur-lead">
-          Renewing your {CHAPTER_NAME} secondary chapter membership for FY 2026/2027 via bank transfer.
+          Renewing your {CHAPTER_NAME} secondary chapter membership for FY {duesYearLabel(dues.fyStart)} via bank transfer.
           Complete this form and our team will walk you through the contract and
           invoice process.
         </p>
 
         <div className="dur-vat-notice">
-          <strong>VAT note:</strong> Secondary chapter dues are $1,500. A VAT invoice
+          <strong>VAT note:</strong> Secondary chapter dues are {duesUsd((dues.secondaryCents ?? 0))}. A VAT invoice
           requires an additional <strong>8% VAT</strong> — bringing the total to{" "}
-          <strong>$1,620</strong>. This fee is required by {DUES_VAT_LAW} and
+          <strong>{duesUsd(Math.round((dues.secondaryCents ?? 0) * 1.08))}</strong>. This fee is required by {DUES_VAT_LAW} and
           is not included in the base dues.
         </div>
 
         <div className="dur-amount" style={{ marginBottom: 28 }}>
-          <span className="dur-amount-value">$1,620</span>
-          <span className="dur-amount-note">$1,500 dues + 8% VAT · Membership year 2026/2027</span>
+          <span className="dur-amount-value">{duesUsd(Math.round((dues.secondaryCents ?? 0) * 1.08))}</span>
+          <span className="dur-amount-note">{duesUsd((dues.secondaryCents ?? 0))} dues + 8% VAT · Membership year {duesYearLabel(dues.fyStart)}</span>
         </div>
 
         <SecondaryBankTransferForm />

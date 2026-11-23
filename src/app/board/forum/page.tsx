@@ -76,7 +76,9 @@ export default async function ForumAdminPage() {
         {forums.map((f) => (
           <section key={f.id} className="frm-forum">
             <div className="frm-forum-head">
-              <h2 className="frm-forum-name">{f.name}</h2>
+              <h2 className="frm-forum-name">
+                <Link href={`/board/forum/${f.id}`}>{f.name}</Link>
+              </h2>
               <span className="frm-forum-count">
                 {f.members.length} {f.members.length === 1 ? "member" : "members"}
               </span>

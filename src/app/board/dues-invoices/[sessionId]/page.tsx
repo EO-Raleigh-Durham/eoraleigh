@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { stripe } from "@/lib/stripe";
-import { duesYearLabel, duesWindow } from "@/lib/dues";
+import { DUES_FY_START, duesYearLabel, duesWindow, fyStartFromDash } from "@/lib/dues";
+import { getDuesYear } from "@/lib/dues-server";
 import { PrintButton } from "./PrintButton";
 import { CHAPTER_BOARD_EMAIL, CHAPTER_CITY, CHAPTER_DOMAIN, CHAPTER_NAME } from "@/kernel/config/chapter";
 
@@ -11,8 +12,6 @@ export const metadata: Metadata = {
   description: `One member's dues invoice for the ${CHAPTER_NAME} membership year.`,
 };
 export const dynamic = "force-dynamic";
-
-const DUES_AMOUNT_CENTS = 220000; // $2,200.00 net dues (board-set); year label from src/lib/dues
 
 function fmt(cents: number): string {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
@@ -52,7 +51,11 @@ export default async function DuesInvoicePage({
     session.metadata?.member_name || session.customer_details?.name || "Member";
   const email = session.customer_email || session.customer_details?.email || "";
   const company = session.metadata?.company || "";
-  const amountTotal = session.amount_total ?? DUES_AMOUNT_CENTS;
+  // The year paid for is in the checkout metadata; its dues amount is the one
+  // the board set for that year (chapter_metrics). The rest is the card fee.
+  const fyStart = fyStartFromDash(session.metadata?.dues_year) ?? DUES_FY_START;
+  const amountTotal = session.amount_total ?? 0;
+  const DUES_AMOUNT_CENTS = Math.min(amountTotal, (await getDuesYear(fyStart))?.primaryCents ?? amountTotal);
   const processingFee = Math.max(0, amountTotal - DUES_AMOUNT_CENTS);
   const pi =
     typeof session.payment_intent === "object" && session.payment_intent !== null
@@ -121,9 +124,9 @@ export default async function DuesInvoicePage({
           <tbody>
             <tr>
               <td>
-                <strong>{CHAPTER_NAME} Local Chapter Dues, FY {duesYearLabel()}</strong>
+                <strong>{CHAPTER_NAME} Local Chapter Dues, FY {duesYearLabel(fyStart)}</strong>
                 <div className="invoice-item-sub">
-                  Membership year: {duesWindow()}
+                  Membership year: {duesWindow(fyStart)}
                 </div>
               </td>
               <td className="invoice-col-amount">{fmt(DUES_AMOUNT_CENTS)}</td>
@@ -154,7 +157,7 @@ export default async function DuesInvoicePage({
         <footer className="invoice-footer">
           <p>
             This receipt confirms that the above member has paid their local chapter dues for
-            the {duesYearLabel()} fiscal year.
+            the {duesYearLabel(fyStart)} fiscal year.
           </p>
           <p>{[CHAPTER_NAME, CHAPTER_DOMAIN, CHAPTER_BOARD_EMAIL].filter(Boolean).join(" · ")}</p>
         </footer>

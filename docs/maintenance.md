@@ -2,7 +2,7 @@
 
 How to keep EO Chapter Manager running from year to year: who looks after what, the new board each July, members and access, backups, updates, costs and security.
 
-It is written for the chapter manager and whoever on the board owns the chapter's technology. Many tasks below are a single sentence you can give your AI coding agent (Claude Code, Codex, Cursor or similar), opened in the chapter's copy of the code. Those are marked **Ask the agent**.
+It is written for the chapter manager and whoever on the board owns the chapter's technology. Most tasks below are done on screens in the site. Some are a single sentence you can give your AI coding agent (Claude Code, Codex, Cursor or similar), opened in the chapter's copy of the code. Those are marked **Ask the agent**.
 
 - [Who looks after what](#who-looks-after-what)
 - [The maintenance calendar](#the-maintenance-calendar)
@@ -48,9 +48,9 @@ The technology owner should not change every year. If they do, run [the account 
 - Review who has admin access at `/admin/users`.
 
 **Every year, April to June**
-- Enter next year's board (see [The new board each July](#the-new-board-each-july)).
-- Set next year's dues, metrics and goals.
-- Mark members who did not renew.
+- Enter next year's board at **Admin > Board team** (see [The new board each July](#the-new-board-each-july)).
+- Set next year's dues and metrics, and open the new dues year.
+- Set members who did not renew to Ended or Alumni on their member page.
 
 **Every year, July**
 - Check the new board can sign in to `/board`.
@@ -95,7 +95,7 @@ Everyone signs in at `/login`, either with an emailed link or a password.
 
 Members do not need an invitation. If their email is on file, they go to `/login`, enter it and click the link they receive.
 
-To add someone by hand (for example a new staff member), use `/admin/users/new`, then tell them to sign in at `/login` with their email. To remove someone, set them to inactive at `/admin/users`; their history is kept.
+To give someone a login by hand (for example a new staff member), use **Admin > Users > Invite user** (`/admin/users/new`). They get an email with a link to choose a password. If email is not set up, the screen shows the link for you to send them yourself. To remove someone, set them to inactive at `/admin/users`; their history is kept.
 
 Keep at least **two** super admins, so the chapter is never locked out.
 
@@ -105,40 +105,21 @@ Keep at least **two** super admins, so the chapter is never locked out.
 
 ### Adding members
 
-New members need a person record with their email and an active membership. Member records can come from the membership pipeline (`/board/prospects`) or be added in bulk.
+On **Board > Members**, press **Add member** and enter their name, email, Primary or Secondary, and start date. If the email already belongs to someone on file (a prospect or a guest), their record is used instead of a duplicate. They can sign in at `/login` with that email straight away. Then add their company, forum and photo on their member page.
 
-**Ask the agent:** "Add these new members to the database with an active primary membership starting today: [names and emails]." The agent runs SQL like this in **Supabase > SQL Editor**, which you can also run yourself:
+### Members who leave or pause
 
-```sql
--- 1. The people. Put one line per new member in both lists. Skips emails already on file.
-insert into people (name, email)
-values ('Alex Example', 'alex@example.com')
-on conflict (email) do nothing;
+Open the member's page from **Board > Members**. The **Membership** card shows their status. Change it to:
 
--- 2. Their memberships.
-insert into chapter_memberships (person_id, chapter_id, membership_type, status, start_date)
-select p.id, (select id from chapters limit 1), 'Primary Membership', 'active', current_date
-from people p
-where p.email in ('alex@example.com')
-  and not exists (select 1 from chapter_memberships m where m.person_id = p.id and m.status = 'active');
-```
+| Status | Use it when | Member portal |
+|---|---|---|
+| Active | A current member | Yes |
+| On leave | A member taking a break | Yes |
+| Alumni | They left in good standing | No |
+| Ended | Their membership ended | No |
+| Transferred | They moved to another chapter | No |
 
-Then fill in company, forum and photo from `/board/members`.
-
-### Members who leave
-
-Change the membership status. The possible values are `active`, `on_leave`, `elumni`, `terminated` and `transferred`. The person becomes a guest the next time they sign in; their history stays.
-
-```sql
-update chapter_memberships m
-set status = 'terminated', end_date = current_date
-from people p
-where p.id = m.person_id and lower(p.email) = lower('alex@example.com') and m.status = 'active';
-```
-
-**Ask the agent:** "Mark these members as no longer active from 30 June: [emails]."
-
-There is no screen for membership status yet; it is on the list of improvements. Until then, use the agent or the SQL above.
+Add an end date and press **Save**. They lose member access the next time they sign in; their history stays. Every change is recorded with who made it.
 
 ---
 
@@ -158,49 +139,26 @@ People with a board role set by hand at `/admin/users` keep it until someone cha
 
 ### Step 1: enter next year's board (April to June)
 
-Each incoming board member needs a person record with the email they will sign in with.
+A super admin opens **Admin > Board team** (`/admin/board-team`) and picks next year at the top.
 
-**Ask the agent:** "Add the board appointments for the year starting July 2027: President [email], Membership [email], ... Co-Chair of Marketing [email]."
+1. Press **Start from** last year to copy last year's Chairs and Co-Chairs as a starting point, if many carry over.
+2. For each role, press **Choose Chair** or **+ Add** for a Co-Chair, then search by name or email. Someone not on file can be added with their name and the email they will sign in with.
+3. Remove people who are moving on with the **×** next to their name.
+4. The banner at the top says when the year takes over ("These people get board access on 1 July") and lists any role still without a Chair.
 
-The SQL it runs looks like this:
+Each role has one Chair per year and any number of Co-Chairs. Changes to the current year take effect immediately, and removing someone there asks you to confirm because they lose board access at once.
 
-```sql
-insert into board_appointments (person_id, board_role_id, position, scope, fiscal_year_start)
-select p.id, r.id, v.position::board_position, 'Local'::appointment_scope, 2027
-from (values
-  ('president@example.com',  'president',       'Chair'),
-  ('elect@example.com',      'president-elect', 'Chair'),
-  ('membership@example.com', 'membership',      'Chair'),
-  ('cochair@example.com',    'marcoms',         'Co-Chair')
-) as v(email, role_key, position)
-join people p on lower(p.email) = lower(v.email)
-join board_roles r on r.key = v.role_key
-on conflict do nothing;
-```
-
-The role keys are: `president`, `president-elect`, `membership`, `marcoms`, `sap`, `finance`, `governance`, `forum`, `myeo`, `learning`, `member-engagement`, `visitor-experience` and `chapter-staff`. Each role has one Chair per year and any number of Co-Chairs.
-
-Check what was entered:
-
-```sql
-select a.fiscal_year_start, r.name, a.position, p.full_name, p.email
-from board_appointments a join board_roles r on r.id = a.board_role_id join people p on p.id = a.person_id
-where a.fiscal_year_start = 2027 order by r.sort_order, a.position;
-```
-
-Add board photos at `/board/photos` or ask the agent to attach them.
+Add board photos at `/board/photos`.
 
 ### Step 2: next year's numbers and goals
 
-- **Chapter metrics and dues rates:** `/board/historical-metrics`. Add the new year, with the dues per member and initiation fee. The chapter dashboard uses this row.
+- **Chapter metrics and dues rates:** **Board > Historical metrics** (`/board/historical-metrics`). Add the new year and fill in the dues per member, secondary chapter dues and initiation fee. The chapter dashboard uses this row.
 - **Goals:** `/board/goals`. The new board sets its priorities, key results and each chair's goal, usually at the first board meeting.
 - **Handover notes:** the outgoing team writes their reflections at `/board/handover` before they leave.
 
-### Step 3: the dues page
+### Step 3: open the new dues year (May or June)
 
-The online dues page (`/chapter-dues`) has the dues year and amount written into the code, so they change with a small code update each year.
-
-**Ask the agent:** "Update the dues page for the year starting July 2027 with dues of US$X." It changes `DUES_FY_START` in `src/lib/dues.ts` and `DUES_AMOUNT` (in cents) in `src/app/chapter-dues/actions.ts`, and the secondary-chapter amount in `src/app/secondary-chapter-dues/actions.ts` if that changed. The change goes live when pushed to GitHub.
+On **Board > Historical metrics**, choose the new year under **Members pay dues for**. From that moment the dues pages (card and bank transfer, local and secondary) show the new year and charge its amounts. Nothing needs to be deployed. Set the dues amounts for the year before you open it; the screen will not open a year without them.
 
 ### Step 4: on 1 July
 
@@ -354,8 +312,8 @@ Set a spending limit or alert in Vercel and Anthropic, and check the bills month
 | Other emails do not arrive | **Resend > Emails**; check `RESEND_API_KEY` and the verified domain |
 | A payment did not mark the ticket paid | **Stripe > Developers > Webhooks**, the endpoint's recent deliveries |
 | A background job did not run | **Vercel > Settings > Cron Jobs**, and `routine_runs` |
-| A board member cannot reach `/board` | Their appointment for the current year (the check query in [Step 1](#step-1-enter-next-years-board-april-to-june)), and that they sign in with the same email |
-| A member signs in but only sees guest pages | Their email on file and an `active` membership (see [Members](#members)) |
+| A board member cannot reach `/board` | Their appointment for the current year at **Admin > Board team**, and that they sign in with the same email |
+| A member signs in but only sees guest pages | Their email on file, and the Membership card on their page says Active or On leave |
 | Someone changed a record and you need to know who | `audit_log` in the Supabase table editor |
 
 **Ask the agent** with the error message and what you were doing. It can read the logs, find the cause and propose a fix, which you approve before it goes live. Problems with the software itself can be reported at [github.com/dhajdu/eo-chapter-manager/issues](https://github.com/dhajdu/eo-chapter-manager/issues).
