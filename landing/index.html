@@ -135,7 +135,9 @@
   @media (max-width: 900px) {
     }
   @media (max-width: 760px) {
-    .top nav { display: none; }
+    .brand { font-size: 0; gap: 0; }
+    .top nav { white-space: nowrap; }
+    .top nav a { margin-left: 10px; font-size: 12px; }
     .surface { grid-template-columns: 1fr; }
     .surface .shot { order: -1; }
     section { padding: 52px 0; }
@@ -148,11 +150,10 @@
   <div class="wrap">
     <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
     <nav>
-      <a href="#problem">Why</a>
-      <a href="#surfaces">What you get</a>
-      <a href="#install">Install</a>
-      <a href="/docs/installation">Docs</a>
-      <a href="#contact">Contact</a>
+      <a href="/tour">Tour</a>
+      <a href="/docs/installation">Installation</a>
+      <a href="/docs/maintenance">Maintenance</a>
+      <a href="#contact">Support</a>
       <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
     </nav>
   </div>
