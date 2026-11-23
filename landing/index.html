@@ -118,6 +118,17 @@
   th { background: var(--soft); font-weight: 500; }
   .scroll { overflow-x: auto; }
 
+  .soon { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 28px; padding: 18px 22px; background: #fff; border: 1px dashed #b9bdd6; border-radius: 12px; }
+  .soon .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--eo-blue); border-radius: 999px; padding: 3px 10px; }
+  .soon p { margin: 0; flex: 1; min-width: 240px; }
+
+  /* contact */
+  .contact { display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+  .contact img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; box-shadow: 0 12px 30px rgba(12,12,49,.18); }
+  .contact h3 { margin: 0 0 4px; font-size: 26px; color: var(--base-blue); }
+  .contact .role { margin: 0 0 14px; color: var(--muted); font-size: 17px; }
+  .contact .links { display: flex; flex-wrap: wrap; gap: 12px; }
+
   footer { background: var(--base-blue); color: #aeb3ff; padding: 36px 0; font-size: 14px; }
   footer a { color: #fff; }
 
@@ -140,6 +151,7 @@
       <a href="#problem">Why</a>
       <a href="#surfaces">What you get</a>
       <a href="#install">Install</a>
+      <a href="#contact">Contact</a>
       <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
     </nav>
   </div>
@@ -234,6 +246,11 @@
       </div>
       <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="/tour/img/09-chapter-dashboard.jpg" alt="The board's chapter dashboard" loading="lazy" width="1280" height="800"></div>
     </div>
+
+    <div class="soon">
+      <span class="tag">Coming soon</span>
+      <p><strong>An iPhone app.</strong> Members get their tickets, events and chapter news on their phone, with notifications when something new is posted.</p>
+    </div>
   </div>
 </section>
 
@@ -262,6 +279,26 @@
     <p style="margin-top:24px"><a class="btn btn--outline" href="https://github.com/dhajdu/eo-chapter-manager">Read the README on GitHub</a></p>
   </div>
 </section>
+
+<!-- public-contact:start -->
+<section id="contact">
+  <div class="wrap">
+    <h2>Questions? Talk to the builder</h2>
+    <p class="sub">Happy to walk your board through it, help with an install, or hear what your chapter needs.</p>
+    <div class="contact">
+      <img src="/img/dave-hajdu.jpg" alt="Dave Hajdu" width="160" height="160" loading="lazy">
+      <div>
+        <h3>Dave Hajdu</h3>
+        <p class="role">Founder of the EO Vietnam chapter and former Area Director</p>
+        <div class="links">
+          <a class="btn btn--solid" href="https://wa.me/84909958581">WhatsApp +84 90 995 8581</a>
+          <a class="btn btn--outline" href="mailto:dave@edge8.ai">dave@edge8.ai</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- public-contact:end -->
 
 <footer>
   <div class="wrap">
