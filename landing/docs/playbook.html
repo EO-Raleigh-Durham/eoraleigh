@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter playbook · EO Chapter Manager</title>
+<meta name="description" content="Eight practices EO Vietnam uses to run its chapter: one source of truth, a membership pipeline, events as a product, engagement signals, dues, governance by seat, staff leverage and member trust.">
+<link rel="canonical" href="https://eochapterdemo.com/docs/playbook">
+<meta property="og:title" content="Chapter playbook · EO Chapter Manager">
+<meta property="og:description" content="Eight practices EO Vietnam uses to run its chapter: one source of truth, a membership pipeline, events as a product, engagement signals, dues, governance by seat, staff leverage and member trust.">
+<meta property="og:image" content="https://eochapterdemo.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --eo-blue:#3D46F2; --base-blue:#0C0C31; --ink:#1d1d3a; --muted:#5d6075; --line:#e2e4ee; --soft:#f5f6fb; --pink:#EE396F; --orange:#F2653E; --yellow:#EEB829; --green:#1AA691; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Roboto,system-ui,sans-serif; color:var(--ink); background:#fff; line-height:1.6; }
+  a { color:var(--eo-blue); }
+  .wrap { max-width:1160px; margin:0 auto; padding:0 20px; }
+  .top { background:var(--base-blue); color:#fff; }
+  .top .wrap { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; color:#fff; text-decoration:none; }
+  .brand-mark { width:30px; height:30px; border-radius:50%; background:conic-gradient(var(--eo-blue),var(--pink),var(--orange),var(--yellow),var(--green),var(--eo-blue)); position:relative; }
+  .brand-mark::after { content:""; position:absolute; inset:7px; border-radius:50%; background:var(--base-blue); }
+  .top nav a { color:#d6d8f5; text-decoration:none; margin-left:22px; font-size:14px; }
+  .top nav a:hover, .top nav a[aria-current] { color:#fff; }
+  .head { background:var(--soft); border-bottom:1px solid var(--line); padding:36px 0 28px; }
+  .eyebrow { color:var(--eo-blue); font-size:13px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; margin:0 0 8px; }
+  .head h1 { font-size:clamp(30px,4vw,44px); line-height:1.1; margin:0 0 10px; color:var(--base-blue); font-weight:900; }
+  .head p { margin:0; color:var(--muted); max-width:720px; font-size:17px; }
+  .layout { display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; padding:36px 20px 72px; }
+  .toc { position:sticky; top:20px; align-self:start; font-size:14px; }
+  .toc h2 { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 10px; }
+  .toc ol { list-style:none; margin:0 0 24px; padding:0; border-left:2px solid var(--line); }
+  .toc li a { display:block; padding:5px 0 5px 14px; color:var(--ink); text-decoration:none; }
+  .toc li a:hover { color:var(--eo-blue); }
+  .toc .other a { display:inline-block; margin-top:4px; font-weight:700; }
+  article { max-width:780px; font-size:16.5px; }
+  article h2 { font-size:28px; color:var(--base-blue); margin:44px 0 12px; padding-top:8px; border-top:1px solid var(--line); scroll-margin-top:16px; }
+  article h2:first-child { margin-top:0; border-top:0; }
+  article h3 { font-size:20px; color:var(--base-blue); margin:28px 0 8px; scroll-margin-top:16px; }
+  article h4 { font-size:17px; margin:22px 0 6px; }
+  article p, article li { margin:0 0 12px; }
+  article ul, article ol { padding-left:22px; }
+  article hr { display:none; }
+  article code { font-family:ui-monospace,Menlo,monospace; font-size:14px; background:var(--soft); border:1px solid var(--line); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  article pre { background:var(--base-blue); color:#e3e5ff; border-radius:10px; padding:16px 18px; overflow-x:auto; margin:0 0 18px; }
+  article pre code { background:none; border:0; padding:0; color:inherit; font-size:13.5px; }
+  article blockquote { margin:16px 0; padding:12px 16px; background:#fff7e6; border-left:4px solid var(--yellow); border-radius:6px; }
+  article blockquote p { margin:0; }
+  .table-wrap { overflow-x:auto; margin:0 0 20px; }
+  article table { width:100%; border-collapse:collapse; font-size:15px; }
+  article th, article td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  article th { background:var(--soft); font-weight:500; }
+  article input[type=checkbox] { margin-right:8px; }
+  article li:has(> input[type=checkbox]) { list-style:none; margin-left:-22px; }
+  footer { background:var(--base-blue); color:#aeb3ff; padding:32px 0; font-size:14px; }
+  footer a { color:#fff; }
+  @media (max-width:900px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:0; }
+    .brand { font-size:0; gap:0; }
+    .top nav { white-space:nowrap; }
+    .top nav a { margin-left:6px; font-size:12px; }
+    .toc { position:static; border-bottom:1px solid var(--line); margin-bottom:24px; }
+    .top nav a:not(.keep) { display:none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
+    <nav>
+      <a class="keep" href="/tour">Tour</a>
+      <a class="keep" href="/docs/playbook" aria-current="page">Playbook</a>
+      <a class="keep" href="/docs/installation">Installation</a>
+      <a class="keep" href="/docs/maintenance">Maintenance</a>
+      <a class="keep" href="/#contact">Support</a>
+      <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+    </nav>
+  </div>
+</header>
+<div class="head">
+  <div class="wrap">
+    <p class="eyebrow">Best practices</p>
+    <h1>How to run a chapter that outlasts its board</h1>
+    <p>Eight practices EO Vietnam uses to run its chapter. Each has the rule, what we do, a test, and a first step for next week.</p>
+  </div>
+</div>
+<div class="wrap layout">
+  <nav class="toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#the-premise">The premise</a></li>
+      <li><a href="#1-own-one-source-of-truth">1. Own one source of truth</a></li>
+      <li><a href="#2-run-membership-as-a-pipeline-not-a-list">2. Run membership as a pipeline, not a list</a></li>
+      <li><a href="#3-treat-events-as-a-product">3. Treat events as a product</a></li>
+      <li><a href="#4-measure-what-members-say-against-what-they-do">4. Measure what members say against what they do</a></li>
+      <li><a href="#5-make-dues-and-renewals-boring">5. Make dues and renewals boring</a></li>
+      <li><a href="#6-govern-by-seats-not-personalities">6. Govern by seats, not personalities</a></li>
+      <li><a href="#7-give-a-small-staff-leverage">7. Give a small staff leverage</a></li>
+      <li><a href="#8-protect-member-trust">8. Protect member trust</a></li>
+      <li><a href="#what-we-have-not-cracked-yet">What we have not cracked yet</a></li>
+      <li><a href="#your-first-90-days">Your first 90 days</a></li>
+      <li><a href="#see-the-practices-running">See the practices running</a></li>
+    </ol>
+    <h2>Also read</h2>
+    <div class="other"><a href="/docs/installation">Installation guide</a><br><a href="/docs/maintenance">Maintenance guide</a></div>
+  </nav>
+  <article>
+<p>This playbook is for chapter presidents, boards and chapter managers. It describes how EO Vietnam runs its chapter, as eight practices. Each one has the rule, what we actually do, a test to check yourself against, and a first step you can take next week.</p>
+<p>None of the practices require EO Chapter Manager. The software exists because we wanted these practices to survive the annual change of board, but a chapter can start every one of them with the tools it already has.</p>
+<hr>
+<h2 id="the-premise">The premise</h2>
+<p>Every July a new board takes over. Most chapters lose something in that handover: a login, a spreadsheet, a relationship, the reason a decision was made. Multiply that by a few years and the chapter is running on memory.</p>
+<p>The practices below all serve one idea. Put the knowledge in the system, attach the work to the seat, and watch each member individually. Do that and renewal, growth and handover stop being annual emergencies.</p>
+<h2 id="1-own-one-source-of-truth">1. Own one source of truth</h2>
+<p>A chapter cannot manage what it cannot count. Before any dashboard, campaign or automation, put every person, company, membership, board position and prospect in one database the chapter owns.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>One database holds people, companies, memberships, positions, deals and events. The old CRM is a frozen archive, and nothing reads from it.</li>
+<li>A strict member definition, written down: only Primary and Secondary memberships count. Spouses, Strategic Alliance Partner contacts, applicants and visitors are tracked as people, not counted as members.</li>
+<li>A member on leave is not an active member. Every count, metric and member page uses the same filter, so two reports never disagree.</li>
+<li>Every form on the site lands on a deduplicated person record, so nobody exists twice.</li>
+</ul>
+<p><strong>The test:</strong> You can pull the full active roster, with dues status and twelve months of attendance, in under ten seconds.</p>
+<blockquote>
+<p><strong>Start next week:</strong> Write your definition of an active member on one page and get the board to agree to it. Then count your members three ways (finance, events, the chat group) and reconcile the differences.</p>
+</blockquote>
+<h2 id="2-run-membership-as-a-pipeline-not-a-list">2. Run membership as a pipeline, not a list</h2>
+<p>Growth is a sales process with a board seat attached. Treat every prospect as a deal with a stage, an owner and a next action, and treat the first year of membership as part of the same pipeline.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>Two boards: acquisition (first contact to signed) and onboarding (signed to fully activated). When a prospect signs, the onboarding card is created automatically.</li>
+<li>Days in stage show on every card, so a stalled prospect is visible at a glance instead of discovered in a quarterly review.</li>
+<li>Nobody is closed as lost without a reason. The reasons are the cheapest market research a chapter will ever get.</li>
+<li>Marketing is judged on cost per approved member, not reach or followers. Every campaign carries a tracking code that the application form captures.</li>
+</ul>
+<p><strong>The test:</strong> The Membership Chair opens one screen in the morning and has a five-minute working list.</p>
+<blockquote>
+<p><strong>Start next week:</strong> List every open prospect with the date of the last real contact. Anything older than fourteen days gets an owner and a next action, or gets closed with a reason.</p>
+</blockquote>
+<h2 id="3-treat-events-as-a-product">3. Treat events as a product</h2>
+<p>Events are where members decide whether the chapter is worth the dues. Run them as one repeatable flow, and collect the data that flow produces every single time.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>One flow for every event: RSVP, ticket, payment, QR check-in at the door, and a short survey afterward.</li>
+<li>Capacity and waitlists are enforced by the system. Prices, vouchers and payment status are checked on the server, never trusted from the browser.</li>
+<li>Check-in happens on a phone. Attendance is what was scanned at the door, not who said they would come.</li>
+<li>The survey always asks the same growth question, so every event is comparable with every other event.</li>
+<li>Past events are kept as content: a recap, photos and a description that keep bringing prospects to the site long after the night is over.</li>
+</ul>
+<p><strong>The test:</strong> Any board member can run an event by following the screens, with no spreadsheet and no manual confirmation emails.</p>
+<blockquote>
+<p><strong>Start next week:</strong> Pick your next event and run registration, check-in and the survey through a single tool. Do not add a second tool for any step.</p>
+</blockquote>
+<h2 id="4-measure-what-members-say-against-what-they-do">4. Measure what members say against what they do</h2>
+<p>Averages hide the members you are about to lose. Look at each member individually, on two axes: what they do (attendance) and what they say (survey sentiment).</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>An engagement score built from check-ins, survey ratings and Forum status, with a formula any board member can repeat aloud.</li>
+<li>A two-by-two matrix of behavior against sentiment replaces the flat list of most and least engaged members.</li>
+<li>Every member carries one renewal signal: Healthy, Value risk, Drifting, At risk or Quiet. The reasoning is always visible.</li>
+<li>New members are tracked through their first 360 days, with a grace period before the score counts against them.</li>
+<li>The board can override a signal the rules get wrong, and the reason is recorded.</li>
+</ul>
+<p><strong>The test:</strong> For any active member, the board can say in thirty seconds whether they are getting value and likely to renew, and why.</p>
+<blockquote>
+<p><strong>Start next week:</strong> Take your last six events and mark who attended. Any member who came to none of them gets a personal call from a board member this month, not an email.</p>
+</blockquote>
+<h2 id="5-make-dues-and-renewals-boring">5. Make dues and renewals boring</h2>
+<p>Collecting money should take no courage and no chasing. If renewal depends on someone remembering to send a message, it will eventually be missed.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>Dues are paid online by card, or by bank transfer with a proper invoice. Every payment produces a receipt.</li>
+<li>Each member has their own renewal page, so the ask is one link, not a thread.</li>
+<li>Annual re-qualification has a defined flow a member finishes in a few minutes, and revenue verification is seen only by the chairs who need it.</li>
+<li>Event revenue and dues reconcile against payment records automatically.</li>
+</ul>
+<p><strong>The test:</strong> Nobody on the board has to ask a fellow member, in person, whether they have paid.</p>
+<blockquote>
+<p><strong>Start next week:</strong> Create one payment link and one invoice template for dues. Send both in the same message, sixty days before the renewal date.</p>
+</blockquote>
+<h2 id="6-govern-by-seats-not-personalities">6. Govern by seats, not personalities</h2>
+<p>The board changes every year. Anything that lives in a person leaves with that person, so attach goals, access and knowledge to the seat.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>Goals belong to chair seats. A chapter priority breaks down into a goal for each chair, and staff work is tracked as cards under that goal.</li>
+<li>Work runs in sprints on a shared board, so a chair sees progress without calling a meeting.</li>
+<li>Access follows the role. A current board appointment grants access, and an ended term loses it automatically.</li>
+<li>Every role has a handover pack, and the chapter keeps multi-year trends, so a new chair starts with context instead of a folder of files.</li>
+<li>One board dashboard covers membership, events, revenue, marketing and engagement.</li>
+</ul>
+<p><strong>The test:</strong> Asked between meetings whether they know what is happening in the chapter, any board member says yes and points at one screen.</p>
+<blockquote>
+<p><strong>Start next week:</strong> For each chair seat, write one goal for the year and the number that proves it. Put all of them on a single page the whole board can see.</p>
+</blockquote>
+<h2 id="7-give-a-small-staff-leverage">7. Give a small staff leverage</h2>
+<p>Most chapters run on one or two staff and a volunteer board. Use automation and AI to remove the repetitive work, and keep people on relationships and judgment.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>AI drafts, a person approves. No message reaches members without a human pressing send.</li>
+<li>A board assistant answers plain-language questions about the chapter: who joined this year, which members are at risk, how the last event rated.</li>
+<li>The assistant reads through a restricted database role that cannot see revenue, and anything it wants to change is a proposal a board member must confirm.</li>
+<li>Newsletters and campaigns are scheduled in the platform, in both languages our members read, and a digest keeps the board informed without another meeting.</li>
+</ul>
+<p><strong>The test:</strong> Your chapter manager spends the week on members, not on copying data between tools.</p>
+<blockquote>
+<p><strong>Start next week:</strong> Ask your chapter manager which three tasks they repeat every week. Automate or template the most boring one first.</p>
+</blockquote>
+<h2 id="8-protect-member-trust">8. Protect member trust</h2>
+<p>Members hand the chapter their revenue, their company details and their candid survey answers. Treat that as the most valuable thing the chapter holds.</p>
+<h3>What we do at EO Vietnam</h3>
+<ul>
+<li>Three access tiers: member, board and administrator. Every sensitive action re-checks the role on the server.</li>
+<li>Member revenue is visible only to the chairs who need it, enforced in code and not by policy alone.</li>
+<li>The chapter uses its own database, never one shared with another organization, and chooses where that data is hosted.</li>
+<li>Software changes go through review and automated checks before they reach the live site.</li>
+</ul>
+<p><strong>The test:</strong> You can name exactly who can see a member&#x27;s revenue today, and the list is short.</p>
+<blockquote>
+<p><strong>Start next week:</strong> List everyone who can open your member spreadsheet or CRM right now. Remove every past board member from it this week.</p>
+</blockquote>
+<h2 id="what-we-have-not-cracked-yet">What we have not cracked yet</h2>
+<p>A playbook that claims everything works is not worth reading. These are the places where EO Vietnam is still doing it the hard way.</p>
+<ul>
+<li>Renewal reminders still depend on people. The dates are tracked, but the reminder sequence is not yet automatic.</li>
+<li>The chapter books are not fully in the platform. Income is reconciled, while expenses and the monthly profit and loss still live with the Finance Chair.</li>
+<li>Older attendance history is incomplete, so engagement scores only trust what was scanned at the door since the platform went live.</li>
+<li>Member-to-member community between events still mostly happens in chat groups.</li>
+</ul>
+<h2 id="your-first-90-days">Your first 90 days</h2>
+<p>The order matters. You cannot spot a drifting member before you can count members, and you cannot count members before you agree what one is.</p>
+<h3>Days 1 to 30: count</h3>
+<p>Agree the member definition. Move the roster into one place and reconcile it against dues. Remove old access. Practices 1 and 8.</p>
+<h3>Days 31 to 60: capture</h3>
+<p>Run every event through one flow with check-in and a survey. Put every prospect on a pipeline board with an owner. Practices 2 and 3.</p>
+<h3>Days 61 to 90: act</h3>
+<p>Review engagement member by member and make the calls. Set one goal per chair seat and put renewals on a schedule. Practices 4, 5 and 6.</p>
+<h2 id="see-the-practices-running">See the practices running</h2>
+<p>Every practice on this page is running in the <a href="/tour">tour</a> and the <a href="https://app.eochapterdemo.com/login">live demo</a>, with a made-up chapter in place of our members. Questions about how any of it works in a real chapter are welcome: <a href="/#contact">talk to the builder</a>.</p>
+
+  </article>
+</div>
+<footer>
+  <div class="wrap">
+    Written by EO Vietnam from our own experience. It is not official guidance from EO Global.
+    <a href="/">eochapterdemo.com</a> · <a href="https://github.com/dhajdu/eo-chapter-manager">github.com/dhajdu/eo-chapter-manager</a> · This page is built from <a href="https://github.com/dhajdu/eo-chapter-manager/blob/main/docs/playbook.md">docs/playbook.md</a>
+  </div>
+</footer>
+</body>
+</html>
