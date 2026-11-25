@@ -51,3 +51,22 @@ supabase/.branches/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# EO Raleigh Durham: this fork is public. Keep private working files in
+# private/ and never commit exports, spreadsheets or backups (see CHAPTER.md).
+/private/
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.numbers
+*.ods
+*.vcf
+*.mbox
+*.eml
+*.dump
+*.backup
+*.bak
+*.sqlite
+*.sqlite3
+*.db

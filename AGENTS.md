@@ -71,3 +71,7 @@ The assistant reads through a restricted `chatbot_reader` Postgres role (`CHATBO
 ## The demo site
 
 `landing/` is the static landing page for eochapterdemo.com (its own Vercel project, root directory `landing`). It is not part of the app; a chapter can ignore or delete it. The demo sign-in panel and guide (`src/components/DemoLoginHint.tsx`, `DemoGuide.tsx`) appear only when `NEXT_PUBLIC_DEMO_MEMBER_LOGIN` / `NEXT_PUBLIC_DEMO_BOARD_LOGIN` are set; never set them on a real chapter.
+
+## EO Raleigh Durham copy: read `CHAPTER.md`
+
+This copy is a **public** fork. Never commit chapter-private content (member or prospect details, board or member-only material, exports, backups, secrets), including in `src/content/` files that only signed-in pages show. `CHAPTER.md` has the full rules and how to stay in step with upstream; read it before your first change.
