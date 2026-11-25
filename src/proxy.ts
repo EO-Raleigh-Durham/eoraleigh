@@ -8,6 +8,7 @@ import { hasCurrentBoardAppointment, type BoardAccessClient } from "./lib/board-
 import { firstPartyUser } from "./lib/oauth-client-token";
 import { CHAPTER_NAME } from "./kernel/config/chapter";
 import { PLANS_COOKIE, PLANS_COOKIE_MAX_AGE, decidePlans, isLinkPreviewBot, isPlansPath, plansFormHtml } from "./lib/plans-gate";
+import { SITE_GATE_COOKIE, SITE_GATE_COOKIE_MAX_AGE, SITE_GATE_FIELD, decideSiteGate, isSiteGateExempt, siteGateFormHtml } from "./lib/site-gate";
 
 // Route guard.
 //
@@ -100,6 +101,44 @@ export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(PATHNAME_HEADER, pathname);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
+
+  // ── Pre-launch access code (src/lib/site-gate.ts) ───────────────────────
+  // Off unless SITE_ACCESS_CODE is set. Runs before everything else, so with
+  // it on, nothing (sign-in pages included) is reachable without the code.
+  if (process.env.SITE_ACCESS_CODE && !isSiteGateExempt(pathname)) {
+    const cookie = request.cookies.get(SITE_GATE_COOKIE)?.value;
+    let submitted: string | null = null;
+    const isForm = (request.headers.get("content-type") ?? "").startsWith("application/x-www-form-urlencoded");
+    if (request.method === "POST" && isForm && !request.headers.has("next-action")) {
+      try {
+        const v = (await request.clone().formData()).get(SITE_GATE_FIELD);
+        submitted = typeof v === "string" ? v.slice(0, 200) : null;
+      } catch {
+        submitted = null;
+      }
+    }
+    const gate = await decideSiteGate(process.env.SITE_ACCESS_CODE, cookie, submitted);
+    if (gate.kind === "form") {
+      return new NextResponse(siteGateFormHtml(gate.wrong), {
+        status: 401,
+        headers: { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex, nofollow", "Cache-Control": "private, no-store" },
+      });
+    }
+    if (gate.kind === "unlock") {
+      // Back to the same address, query string included (a set-password link
+      // carries its token there).
+      const back = NextResponse.redirect(new URL(pathname + request.nextUrl.search, request.url), 303);
+      back.cookies.set(SITE_GATE_COOKIE, gate.token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: SITE_GATE_COOKIE_MAX_AGE,
+      });
+      return back;
+    }
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
 
   // ── Always-public paths ──────────────────────────────────────────────────
   if (
