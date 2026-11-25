@@ -3,7 +3,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "framework": "nextjs",
-  "regions": ["sin1"],
+  "regions": ["iad1"],
   "crons": [
     { "path": "/api/cron/deliverable-sweep", "schedule": "40 19 * * *" },
     { "path": "/api/cron/event-survey-send", "schedule": "5 * * * *" },
