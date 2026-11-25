@@ -138,6 +138,7 @@
     .brand { font-size: 0; gap: 0; }
     .top nav { white-space: nowrap; }
     .top nav a { margin-left: 10px; font-size: 12px; }
+    .top nav a.wide-only { display: none; }
     .surface { grid-template-columns: 1fr; }
     .surface .shot { order: -1; }
     section { padding: 52px 0; }
@@ -151,10 +152,11 @@
     <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>EO Chapter Manager</a>
     <nav>
       <a href="/tour">Tour</a>
+      <a href="/docs/playbook">Playbook</a>
       <a href="/docs/installation">Installation</a>
       <a href="/docs/maintenance">Maintenance</a>
       <a href="#contact">Support</a>
-      <a href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
+      <a class="wide-only" href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
     </nav>
   </div>
 </header>
@@ -313,6 +315,7 @@
     The demo uses a made-up chapter and resets every night.
     <a href="https://github.com/dhajdu/eo-chapter-manager">github.com/dhajdu/eo-chapter-manager</a>
     <p style="margin:14px 0 0">Documentation:
+      <a href="/docs/playbook">Chapter playbook</a> ·
       <a href="/docs/installation">Installation guide</a> ·
       <a href="/docs/maintenance">Maintenance guide</a> ·
       <a href="https://github.com/dhajdu/eo-chapter-manager#readme">README (setup runbook)</a> ·
