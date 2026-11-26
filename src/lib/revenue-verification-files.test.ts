@@ -48,7 +48,7 @@ test("storage paths are plain ASCII, stay in the folder and never collide", () =
   assert.match(storagePath("abc", 0, "a b/c\\d.pdf"), /^abc\/[A-Za-z0-9._-]+$/);
 });
 
-// The open-source copy has one schema file instead of numbered migrations.
+// The public copy has one schema file instead of numbered migrations.
 const hasMigrations = readdirSync(new URL("../../supabase/", import.meta.url)).some((f) => f.endsWith("_revenue_verification_files.sql"));
 
 test("the migration creates the same private bucket with the same limits", { skip: hasMigrations ? false : "numbered migrations are not in this copy" }, () => {

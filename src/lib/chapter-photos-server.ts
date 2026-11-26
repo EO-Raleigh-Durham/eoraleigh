@@ -1,22 +1,29 @@
 // Server-only data access for the chapter photo gallery. NEVER import from a
 // client component: it uses the secret-key client, which bypasses RLS. Every
-// caller must authorize first (requireMemberOrAbove()).
+// caller must authorize first (requireMemberOrAbove() on the website, the
+// connector's "photos" area in src/lib/mcp/photo-tools.ts).
 
 import { CHAPTER_NAME } from "../kernel/config/chapter.ts";
 import "server-only";
 import { createHash } from "node:crypto";
+import { revalidatePath } from "next/cache";
 import sharp from "sharp";
+import { roleAtLeast } from "./access";
+import type { SessionUser } from "./auth";
 import { supabase } from "./supabase";
 import { postgrestLikeLiteral } from "./postgrest-like";
 import {
   DISPLAY_MAX_DIMENSION,
   MAX_PHOTO_BYTES,
   CHAPTER_PHOTOS_BUCKET,
+  MARKETING_CONSENT_VERSION,
   PHOTO_CONTENT_TYPES,
   PUBLIC_MAX_PENDING,
   PUBLIC_UPLOAD_PREFIX,
   THUMB_MAX_DIMENSION,
+  cleanCaption,
   overHourlyCap,
+  ownsUploadPath,
   photoPaths,
   sniffImageType,
 } from "./chapter-photos";
@@ -48,15 +55,15 @@ export type GalleryPhoto = {
 const bucket = () => supabase.storage.from(CHAPTER_PHOTOS_BUCKET);
 
 export async function listGalleryPhotos(
-  { limit = 300, includeEmail = false }: { limit?: number; includeEmail?: boolean } = {},
+  { limit = 300, includeEmail = false, id }: { limit?: number; includeEmail?: boolean; id?: string } = {},
 ): Promise<GalleryPhoto[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from("chapter_photos")
     .select(
       "id, caption, uploaded_by, created_at, width, height, storage_path, thumb_path, uploader_email, email_matches_member, via_public_upload, marketing_consent_at, uploader:user_profiles(full_name), person:people(name)",
-    )
-    .order("created_at", { ascending: false })
-    .limit(limit);
+    );
+  if (id) query = query.eq("id", id);
+  const { data, error } = await query.order("created_at", { ascending: false }).limit(limit);
   if (error) {
     console.error("[photos] listing", error.message);
     return [];
@@ -180,6 +187,98 @@ export async function removeStoredPhoto(paths: string[]): Promise<boolean> {
   const { error } = await bucket().remove(paths);
   if (error) console.error("[photos] removing", error.message);
   return !error;
+}
+
+// ---------------------------------------------------------------------------
+// Changes. The website's actions (src/app/member/photos/actions.ts,
+// src/app/board/photos/actions.ts) and the connector (src/lib/mcp/photo-tools.ts)
+// both call these, after their own sign-in check, so both follow one set of rules.
+// ---------------------------------------------------------------------------
+
+type Uploader = Pick<SessionUser, "id" | "userId" | "email" | "personId" | "role">;
+type Outcome<T = object> = ({ ok: true } & T) | { ok: false; error: string };
+
+const UUID = /^[0-9a-f-]{36}$/;
+
+function revalidatePhotoPages() {
+  revalidatePath("/member/photos");
+  revalidatePath("/board/photos");
+}
+
+/**
+ * Saves a photo `user` uploaded to `path` (from uploadPath), with their
+ * marketing permission. The caller must already have their yes to
+ * MARKETING_CONSENT_TERMS.
+ */
+export async function saveUploadedPhoto(user: Uploader, path: string, caption: unknown): Promise<Outcome<{ id: string }>> {
+  if (typeof path !== "string" || !ownsUploadPath(user.userId, path)) {
+    return { ok: false, error: "That upload doesn't belong to you." };
+  }
+
+  const stored = await processUpload(path);
+  if (!stored.ok) return stored;
+
+  const { error } = await supabase.from("chapter_photos").insert({
+    id: stored.id,
+    uploaded_by: user.userId,
+    uploaded_by_profile: user.id,
+    uploader_email: user.email.toLowerCase(),
+    uploader_person_id: user.personId,
+    marketing_consent_at: new Date().toISOString(),
+    marketing_consent_version: MARKETING_CONSENT_VERSION,
+    caption: cleanCaption(caption),
+    storage_path: stored.storagePath,
+    thumb_path: stored.thumbPath,
+    width: stored.width,
+    height: stored.height,
+    size_bytes: stored.sizeBytes,
+  });
+  if (error) {
+    console.error("[photos] saving", error.message);
+    await removeStoredPhoto([stored.storagePath, stored.thumbPath]);
+    return { ok: false, error: "Could not save the photo. Try again." };
+  }
+  revalidatePhotoPages();
+  return { ok: true, id: stored.id };
+}
+
+/** Sets or (when empty) clears a photo's caption. Board or above only: the caller checks. */
+export async function setPhotoCaption(id: string, caption: unknown): Promise<Outcome<{ caption: string | null }>> {
+  if (typeof id !== "string" || !UUID.test(id)) return { ok: false, error: "Photo not found." };
+
+  const clean = cleanCaption(caption);
+  const { data, error } = await supabase
+    .from("chapter_photos")
+    .update({ caption: clean })
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+  if (error) return { ok: false, error: "Could not save the caption. Try again." };
+  if (!data) return { ok: false, error: "Photo not found." };
+  revalidatePhotoPages();
+  return { ok: true, caption: clean };
+}
+
+/** Deletes a photo and its files. Only its uploader or the board may. */
+export async function deleteChapterPhoto(user: Uploader, id: string): Promise<Outcome> {
+  if (typeof id !== "string" || !UUID.test(id)) return { ok: false, error: "Photo not found." };
+
+  const { data: row, error } = await supabase
+    .from("chapter_photos")
+    .select("id, uploaded_by, storage_path, thumb_path")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) return { ok: false, error: "Could not delete the photo. Try again." };
+  if (!row) return { ok: false, error: "Photo not found." };
+  if (row.uploaded_by !== user.userId && !roleAtLeast(user.role, "board")) {
+    return { ok: false, error: "Only the person who uploaded this photo, or the board, can delete it." };
+  }
+
+  const { error: deleteError } = await supabase.from("chapter_photos").delete().eq("id", id);
+  if (deleteError) return { ok: false, error: "Could not delete the photo. Try again." };
+  await removeStoredPhoto([row.storage_path, row.thumb_path]);
+  revalidatePhotoPages();
+  return { ok: true };
 }
 
 // ---------------------------------------------------------------------------

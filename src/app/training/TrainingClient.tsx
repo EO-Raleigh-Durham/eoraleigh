@@ -1,6 +1,6 @@
 "use client";
 
-// Neutral training page for the open-source copy. Replace it with your
+// Neutral training page for the public copy. Replace it with your
 // chapter's own programs, dates and testimonials.
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";

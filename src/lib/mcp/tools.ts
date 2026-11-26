@@ -20,6 +20,7 @@ import { membershipTools } from "./membership-tools.ts";
 import { workboardTools } from "./workboard-tools.ts";
 import { ownTools } from "./own-tools.ts";
 import { dataTools } from "./data-tools.ts";
+import { photoTools } from "./photo-tools.ts";
 
 export { NO_INPUT, untrusted, writeTool, type Preview, type Refusal, type Tool } from "./tools-core.ts";
 
@@ -61,6 +62,7 @@ function allTools(caller: McpCaller, origin: string): Tool[] {
     ...membershipTools(caller, origin),
     ...workboardTools(caller),
     ...dataTools(),
+    ...photoTools(caller, origin),
   ];
 }
 

@@ -27,11 +27,13 @@ export const AREAS = [
   "chapter",
   "workboards",
   "data",
+  "photos",
 ] as const;
 export type Area = (typeof AREAS)[number];
 
 // The board roles (board_roles.name) and what each may write. "Everyone on the
-// board" areas are added for every board member below.
+// board" areas are added for every board member below: their own records,
+// workboards, and the photo gallery (any board member edits it on /board/photos).
 const PORTFOLIO_WRITES: Record<string, Area[]> = {
   "Strategic Alliance Partner": ["sap"],
   Membership: ["membership"],
@@ -44,7 +46,7 @@ const PORTFOLIO_WRITES: Record<string, Area[]> = {
   "President-Elect": ["sap", "membership", "events", "surveys", "comms", "forum", "goals"],
 };
 
-const BOARD_WIDE_WRITES: Area[] = ["me", "workboards"];
+const BOARD_WIDE_WRITES: Area[] = ["me", "workboards", "photos"];
 
 // A contractor grant's area (access_grants.area) and the connector area it opens.
 const GRANT_AREAS: Record<string, Area> = { sap_pipeline: "sap" };
@@ -119,6 +121,7 @@ const FILTER_OF_AREA: Record<Area, PortfolioFilter> = {
   chapter: "chapter",
   workboards: "chapter",
   data: "chapter",
+  photos: "chapter",
 };
 
 /** Whether a tool in `area` (reading or writing) is handed to this reach under this filter. */

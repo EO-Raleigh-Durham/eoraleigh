@@ -19,7 +19,7 @@ export default async function BoardPreworkPage() {
       .map((s) => s.roleName)
       .join(", ") || null;
   const open = isPreworkOpen();
-  // "Tuesday 24 November": the last day the form is open, in the chapter's time zone.
+  // "Wednesday 25 November": the last day the form is open, in the chapter's time zone.
   const closes = new Date(new Date(PREWORK_DEADLINE).getTime() - 1).toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
@@ -41,7 +41,7 @@ export default async function BoardPreworkPage() {
 
       {!open && (
         <div className="admin-banner admin-banner--warn" role="status">
-          The worksheet closed at the end of {PREWORK_DEADLINE_LABEL}. Your answers below can no longer be
+          The worksheet closed at {PREWORK_DEADLINE_LABEL}. Your answers below can no longer be
           changed. <Link href="/board/pre-work/report">Read the combined view</Link>
         </div>
       )}
@@ -61,7 +61,7 @@ export default async function BoardPreworkPage() {
             and {CHAPTER_NAME} bylaws.
           </p>
           <p>
-            <strong>Due by the end of {PREWORK_DEADLINE_LABEL}, {CHAPTER_TIME_ZONE_LABEL}.</strong> Your answers save as
+            <strong>Due by {PREWORK_DEADLINE_LABEL}, {CHAPTER_TIME_ZONE_LABEL}.</strong> Your answers save as
             you type, and whatever is saved at the deadline is what counts. Nobody else can open your
             worksheet. After the deadline the board reads one{" "}
             <Link href="/board/pre-work/report">combined view</Link> of everyone&rsquo;s answers, without

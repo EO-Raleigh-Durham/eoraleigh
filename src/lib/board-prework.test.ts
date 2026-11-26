@@ -52,9 +52,9 @@ test("only worksheet questions count as an answer", () => {
   assert.equal(hasAnyAnswer({ final: "listens" }), true);
 });
 
-test("the form is open until the end of 24 November 2026 at UTC+7", () => {
-  assert.equal(isPreworkOpen(new Date("2026-11-24T23:59:59+07:00")), true);
-  assert.equal(isPreworkOpen(new Date("2026-11-25T00:00:00+07:00")), false);
+test("the form is open until 9 PM on 25 November 2026 at UTC+7", () => {
+  assert.equal(isPreworkOpen(new Date("2026-11-25T20:59:59+07:00")), true);
+  assert.equal(isPreworkOpen(new Date("2026-11-25T21:00:00+07:00")), false);
   const lastMoment = new Date(new Date(PREWORK_DEADLINE).getTime() - 1);
   const label = lastMoment.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -62,7 +62,7 @@ test("the form is open until the end of 24 November 2026 at UTC+7", () => {
     year: "numeric",
     timeZone: "Etc/GMT-7", // UTC+7
   });
-  assert.equal(label, PREWORK_DEADLINE_LABEL);
+  assert.equal(`9 PM on ${label}`, PREWORK_DEADLINE_LABEL);
 });
 
 test("the combined view groups answers by question", () => {

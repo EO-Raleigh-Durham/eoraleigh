@@ -228,9 +228,9 @@
     .brand-sub { display: none; }
     .brand-name { display: none; }
     .top-links { gap: 4px; }
+    .nav-link.wide-only { display: none; }
     .pill { display: none; }
     .nav-link { font-size: 12px; padding: 6px 3px; }
-    .nav-link.wide-only { display: none; }
     .wrap { padding: 12px 16px 32px; }
     .sections { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .section { padding: 8px; }
@@ -258,10 +258,10 @@
   </a>
   <nav class="top-links" aria-label="Site">
     <a class="nav-link" href="/tour" aria-current="page">Tour</a>
-    <a class="nav-link" href="/docs/playbook">Playbook</a>
     <a class="nav-link" href="/docs/installation">Installation</a>
     <a class="nav-link" href="/docs/maintenance">Maintenance</a>
     <a class="nav-link" href="/#contact">Support</a>
+    <a class="nav-link" href="https://www.davehajdu.com/projects/eo-chapter-manager/playbook">Playbook</a>
     <a class="nav-link wide-only" href="https://github.com/dhajdu/eo-chapter-manager">GitHub</a>
     <a class="pill pill--solid" href="https://app.eochapterdemo.com/login">Try the live demo</a>
   </nav>
@@ -484,7 +484,7 @@
     var el = document.createElement("div");
     el.className = "end";
     el.innerHTML =
-      '<div class="end-kicker">Open source and free</div>' +
+      '<div class="end-kicker">Free for every EO chapter</div>' +
       '<h2>Run it for <span>your chapter</span></h2>' +
       '<p>EO Chapter Manager is the external website, member portal and board portal in this tour. An AI agent installs it for your chapter from one README, on your own GitHub, Supabase and Vercel accounts.</p>' +
       '<div class="end-actions">' +
@@ -525,7 +525,7 @@
     $("title").textContent = st.title;
     $("who").textContent = st.end ? "For chapter boards" : "Used by: " + st.who;
     $("caption").textContent = st.end
-      ? "Everything you just saw ships in one open source repository. Read the setup guide on GitHub, or click around the live demo with the demo sign-ins."
+      ? "Everything you just saw ships in one repository, free for any EO chapter to run for itself. Read the setup guide on GitHub, or click around the live demo with the demo sign-ins."
       : st.cap;
 
     var tries = $("tries");

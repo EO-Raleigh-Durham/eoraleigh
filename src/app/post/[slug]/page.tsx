@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/Reveal";
 import { BlockRenderer } from "@/components/blog/BlockRenderer";
 import { BlogUpcomingEvents } from "@/components/blog/BlogUpcomingEvents";
+import { RiseRecapLinks, RiseRecapLinksInline, RiseRecapLinksTop, isRiseRecapSlug } from "@/components/blog/RiseRecapLinks";
 import "@/components/blog/blog-blocks.css";
 import {
   getBlogPostBySlug,
@@ -107,6 +108,24 @@ export default async function PostPage({ params }: { params: Params }) {
 function PostBody({ post, linkedEvent }: { post: BlogPost; linkedEvent: LinkedEvent | null }) {
   const readTime = post.read_time_minutes ? `${post.read_time_minutes} min read` : null;
 
+  // RISE recaps carry a one-line pointer to the other RISE recaps in the middle
+  // of the post: in front of the heading nearest the halfway block, and only
+  // where the block before it is a paragraph (never between a pull quote or
+  // figure and the heading it leads into).
+  let midIndex = -1;
+  if (isRiseRecapSlug(post.slug) && post.blocks && post.blocks.length > 3) {
+    const half = Math.floor(post.blocks.length / 2);
+    for (let d = 0; d < post.blocks.length && midIndex < 0; d++) {
+      for (const i of [half + d, half - d]) {
+        const tag = post.blocks[i]?.tag;
+        if (i > 0 && (tag === "h2" || tag === "h3") && post.blocks[i - 1]?.tag === "p") {
+          midIndex = i;
+          break;
+        }
+      }
+    }
+  }
+
   return (
     <article className="post-page">
       {/* HERO */}
@@ -156,6 +175,7 @@ function PostBody({ post, linkedEvent }: { post: BlogPost; linkedEvent: LinkedEv
                 </div>
               </div>
             )}
+            <RiseRecapLinksTop currentSlug={post.slug} />
           </Reveal>
         </div>
       </section>
@@ -185,7 +205,17 @@ function PostBody({ post, linkedEvent }: { post: BlogPost; linkedEvent: LinkedEv
       <section className="section">
         <div className="container">
           {post.blocks && post.blocks.length > 0 ? (
-            <BlockRenderer blocks={post.blocks} />
+            midIndex > 0 ? (
+              <>
+                <BlockRenderer blocks={post.blocks.slice(0, midIndex)} />
+                <div className="blog-prose">
+                  <RiseRecapLinksInline currentSlug={post.slug} />
+                </div>
+                <BlockRenderer blocks={post.blocks.slice(midIndex)} />
+              </>
+            ) : (
+              <BlockRenderer blocks={post.blocks} />
+            )
           ) : (
             <div className="container container--text">
               <p className="lead text-muted">This post has no content yet.</p>
@@ -193,6 +223,9 @@ function PostBody({ post, linkedEvent }: { post: BlogPost; linkedEvent: LinkedEv
           )}
         </div>
       </section>
+
+      {/* The other RISE recaps (renders only on the RISE recap posts) */}
+      <RiseRecapLinks currentSlug={post.slug} />
 
       {/* FROM THIS EVENT — the other half of the recap cross-link */}
       {linkedEvent && (

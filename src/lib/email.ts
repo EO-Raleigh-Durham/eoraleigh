@@ -436,6 +436,48 @@ export async function sendMemberConnectEmail(
   }
 }
 
+// ── Forum date set or changed (Plan 45) ──────────────────────────────────────
+// The moderator saved a monthly forum date: each member of that forum gets a
+// private email with the date and a calendar file. Sent one by one because
+// each carries an attachment. Dormant until RESEND_API_KEY is set; never
+// throws. Only ever pass the members of the one forum.
+
+export type ForumDateEmailInput = {
+  recipients: { email: string; name: string | null }[];
+  forumName: string;
+  month: string; // "March 2027"
+  when: string; // "Fri 12 Mar 2027, 6:00 PM"
+  place: string | null;
+  pageUrl: string;
+  ics: string;
+};
+
+export async function sendForumDateEmail(input: ForumDateEmailInput): Promise<number> {
+  if (!resend) return 0;
+  let sent = 0;
+  for (const r of input.recipients) {
+    try {
+      const { error } = await resend.emails.send({
+        from: FROM,
+        to: r.email,
+        subject: `Your forum date for ${input.month}`,
+        html: simpleMessageHtml(
+          `${input.forumName} forum`,
+          "Your moderator set the forum date. Open the attached file to add it to your calendar.",
+          r.name ? `Hi ${r.name},` : "Hi,",
+          `${input.when}${input.place ? `\n${input.place}` : ""}\n\nAll your forum dates: ${input.pageUrl}`,
+        ),
+        attachments: [{ filename: "forum.ics", content: Buffer.from(input.ics) }],
+      });
+      if (error) console.warn("sendForumDateEmail:", error.message ?? String(error));
+      else sent += 1;
+    } catch (err) {
+      console.warn("sendForumDateEmail threw:", err instanceof Error ? err.message : String(err));
+    }
+  }
+  return sent;
+}
+
 // ── Event participant broadcast (Overview > Messages) ────────────────────────
 // A chair messages everyone registered for an event: reminder, logistics
 // update, survey nudge, thank-you. Each recipient gets a private To (no shared

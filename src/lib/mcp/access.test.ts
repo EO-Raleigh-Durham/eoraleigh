@@ -39,6 +39,7 @@ test("board reads everything, writes only its portfolio plus board-wide areas", 
   const president = reachOf("board", ["President"], [])!;
   for (const a of ["sap", "membership", "events", "surveys", "comms", "forum", "goals"]) assert.ok(handed(president, write(a)), a);
   assert.ok(!handed(president, write("chapter")), "chapter-wide data has no write tools for the board");
+  assert.ok(handed(finance, write("photos")), "every board member edits the photo gallery, as on /board/photos");
 });
 
 test("contractor gets only an active grant's area; edit grants write", () => {
@@ -51,6 +52,7 @@ test("contractor gets only an active grant's area; edit grants write", () => {
   const ended = reachOf("contractor", [], [{ area: "sap_pipeline", canEdit: true, active: false }])!;
   assert.ok(!handed(ended, read("sap")));
   assert.ok(handed(ended, read("me")), "whoami still answers");
+  assert.ok(!handed(edit, read("photos")), "contractors never see the photo gallery");
 });
 
 test("the portfolio filter only narrows, and an unknown value hands nothing", () => {

@@ -1,7 +1,7 @@
 // The chapter this deployment runs for. Every place the code names the
 // chapter, its city, its timezone or its local currency reads it from here,
 // so any EO chapter can run the same code by setting environment
-// variables instead of editing files (Plan 40, open-source Chapter Manager).
+// variables instead of editing files (Plan 40, public EO Chapter Manager).
 //
 // All values are NEXT_PUBLIC so client components can read them; none is a
 // secret. Defaults are deliberately neutral: an unset variable shows

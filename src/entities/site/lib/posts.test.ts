@@ -59,7 +59,7 @@ describe("renderPostMarkdown", () => {
       String.fromCodePoint(parseInt(hex, 16)),
     );
 
-  // The snapshot fixtures are real posts and stay out of the open-source copy.
+  // The snapshot fixtures are real posts and stay out of the public copy.
   const hasFixtures = existsSync(new URL("./__fixtures__/posts/", import.meta.url));
   it.skipIf(!hasFixtures).each([
     "the-other-50-percent-of-leadership",
