@@ -52,6 +52,7 @@ const MEMBER_NAV: NavSection[] = [
       { label: "Newsletters", href: "/member/newsletters" },
       { label: "Blog", href: "/member/blog" },
       { label: "Directory", href: "/member/directory" },
+      { label: "My forum", href: "/member/forum" },
       { label: "Photos", href: "/member/photos" },
       { label: "Contact the board", href: "/member/contact-board" },
     ],

@@ -750,3 +750,62 @@
   font-size: 14px;
   line-height: 1.55;
 }
+
+/* Top-of-post row: links to the other RISE recaps (RiseRecapLinksTop) */
+.rise-recaps-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin-top: 28px;
+}
+.rise-recaps-top__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, #6b7280);
+}
+.rise-recaps-top__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--eo-blue, #3d46f2);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.rise-recaps-top__link:hover {
+  border-color: var(--eo-blue, #3d46f2);
+  background: rgba(61, 70, 242, 0.06);
+}
+.rise-recaps-top--dark .rise-recaps-top__label { color: rgba(255, 255, 255, 0.75); }
+.rise-recaps-top--dark .rise-recaps-top__link {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.rise-recaps-top--dark .rise-recaps-top__link:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* One-line pointer in the middle of a RISE recap (RiseRecapLinksInline) */
+.rise-recaps-inline {
+  margin: 32px 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--eo-blue, #3d46f2);
+  border-radius: 0 8px 8px 0;
+  background: var(--bg-alt, #f6f7fa);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text, #0c0c31);
+}
+.rise-recaps-inline a {
+  font-weight: 700;
+  color: var(--eo-blue, #3d46f2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

@@ -5,8 +5,12 @@
 //   https://www.example.com/auth/confirm?token_hash=...&type=recovery&next=/reset-password
 //
 // Because the link targets our domain (not Supabase's /auth/v1/verify endpoint),
-// it does NOT depend on Supabase's redirect allow-list. We verify the one-time
-// token_hash, which sets the session cookies, then redirect onward.
+// it does NOT depend on Supabase's redirect allow-list.
+//
+// Opening the link (GET) uses up nothing: it shows /auth/continue, whose
+// button POSTs back here to verify the one-time token_hash. Link previews
+// (WhatsApp, Lark) and email scanners fetch links with GET, and used to burn
+// the token before the person ever tapped it.
 //
 // This complements /api/auth/callback (which handles the PKCE ?code= flow).
 
@@ -18,14 +22,21 @@ import { cookies } from "next/headers";
 import { safeNextPath } from "@/lib/safe-next";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
-  const token_hash = searchParams.get("token_hash");
-  const type = searchParams.get("type") as EmailOtpType | null;
-  // Same-origin relative paths only, so this can't be an open redirect.
-  const next = safeNextPath(searchParams.get("next")) ?? "/member";
+  const { search, origin } = new URL(request.url);
+  return NextResponse.redirect(`${origin}/auth/continue${search}`);
+}
 
-  if (!token_hash || !type) {
-    return NextResponse.redirect(`${origin}/forgot-password?expired=1`);
+export async function POST(request: NextRequest) {
+  const { origin } = new URL(request.url);
+  const form = await request.formData();
+  const token_hash = form.get("token_hash");
+  const type = form.get("type") as EmailOtpType | null;
+  // Same-origin relative paths only, so this can't be an open redirect.
+  const next = safeNextPath(String(form.get("next") ?? "")) ?? "/member";
+
+  // 303 so the browser follows with GET, not a re-POST.
+  if (typeof token_hash !== "string" || !token_hash || !type) {
+    return NextResponse.redirect(`${origin}/forgot-password?expired=1`, 303);
   }
 
   const cookieStore = await cookies();
@@ -53,8 +64,8 @@ export async function GET(request: NextRequest) {
 
   const { error } = await supabase.auth.verifyOtp({ type, token_hash });
   if (error) {
-    return NextResponse.redirect(`${origin}/forgot-password?expired=1`);
+    return NextResponse.redirect(`${origin}/forgot-password?expired=1`, 303);
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  return NextResponse.redirect(`${origin}${next}`, 303);
 }

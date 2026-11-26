@@ -3146,6 +3146,39 @@
 }
 .frm-const--over .frm-const-drop { border-color: #3D46F2; }
 .frm-const-drop-title { font-weight: 600; font-size: 15px; color: #04102D; }
+/* Forum page: moderator and forum dates (Plan 45) */
+.frm-mod { display: flex; flex-direction: column; gap: 12px; }
+.frm-mod-pick { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.frm-mod-pick .admin-field { flex: 1; min-width: 220px; max-width: 360px; }
+.frm-mod-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.frm-mod-line + .frm-roster, .frm-mod-line + .frm-empty { margin-top: 14px; }
+.frm-mod-year { display: flex; flex-direction: column; gap: 8px; }
+.frm-mod-year + .frm-mod-year { padding-top: 14px; border-top: 1px solid #F3F4F6; }
+.frm-mod-name { font-weight: 600; font-size: 14px; color: #04102D; }
+.frm-mod-tag { width: fit-content; }
+.frm-mod-log { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid #F3F4F6; display: flex; flex-direction: column; gap: 4px; }
+.frm-dates { max-width: 720px; display: flex; flex-direction: column; gap: 24px; }
+.frm-next { display: flex; flex-direction: column; gap: 6px; }
+.frm-next-when { font-weight: 700; font-size: 22px; color: #04102D; letter-spacing: -0.01em; }
+.frm-month { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 0; border-top: 1px solid #F3F4F6; }
+.frm-month:first-child { border-top: 0; padding-top: 0; }
+.frm-month-name { flex: 0 0 140px; font-weight: 600; font-size: 14px; color: #04102D; }
+.frm-month-when { flex: 1; min-width: 180px; font-size: 14px; color: #04102D; }
+.frm-month-form { flex-basis: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 4px; }
+.frm-month-form .frm-month-wide { grid-column: 1 / -1; }
+.frm-month-form input[type="date"],
+.frm-month-form input[type="time"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #D4D9E0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
+  color: #04102D;
+  background: #fff;
+}
+.frm-month-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 520px) { .frm-month-form { grid-template-columns: 1fr; } }
 .frm-const-uploading { display: flex; flex-direction: column; gap: 10px; }
 .frm-const-bar { height: 6px; border-radius: 3px; background: #E5E7EB; overflow: hidden; }
 .frm-const-bar > div { height: 100%; background: #3D46F2; transition: width 0.2s ease; }

@@ -61,7 +61,7 @@ describe("the type a file is held to (B3)", () => {
 
 describe("the app's accepted types and the bucket's (K3)", () => {
   it("are the same list", () => {
-    // The open-source copy creates its buckets in supabase/02-starter.sql
+    // The public copy creates its buckets in supabase/02-starter.sql
     // instead of the numbered migration.
     const migration = new URL("../../../../supabase/102_edge8_workboards.sql", import.meta.url);
     const starter = new URL("../../../../supabase/02-starter.sql", import.meta.url);

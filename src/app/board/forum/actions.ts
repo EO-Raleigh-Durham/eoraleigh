@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { requireBoardOrAbove } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { chapterToday } from "@/kernel/config/dates";
+import { fyStartForDate } from "@/lib/fiscal-year";
 import { getForumConstitution } from "@/lib/forum-constitutions";
 import {
   FORUM_CONSTITUTIONS_BUCKET,
@@ -101,5 +103,65 @@ export async function deleteConstitution(forumId: string): Promise<{ ok: true } 
   if (error) return { ok: false, error: `Could not delete the constitution: ${error.message}` };
 
   revalidatePath("/board/forum");
+  return { ok: true };
+}
+
+// Name (or remove) a forum's moderator for a fiscal year (`year` is the year
+// it starts in): this fiscal year or the next, since moderators change on
+// 1 July. The moderator must be a member
+// placed in that forum. Every change is kept in forum_moderator_log
+// (migration 133).
+export async function setForumModerator(
+  forumId: string,
+  year: number,
+  personId: string | null,
+): Promise<{ ok: true } | Refused> {
+  const user = await requireBoardOrAbove();
+  if (!(await forumExists(forumId))) return { ok: false, error: "Unknown forum." };
+  const thisYear = fyStartForDate(chapterToday());
+  if (year !== thisYear && year !== thisYear + 1) {
+    return { ok: false, error: "Pick this year or next year." };
+  }
+
+  let personName: string | null = null;
+  if (personId !== null) {
+    if (!UUID.test(personId)) return { ok: false, error: "Pick a member of this forum." };
+    const { data: person } = await supabase
+      .from("people")
+      .select("name, email")
+      .eq("id", personId)
+      .eq("forum_id", forumId)
+      .maybeSingle();
+    if (!person) return { ok: false, error: "Pick a member of this forum." };
+    personName = (person.name as string | null) ?? (person.email as string);
+  }
+
+  const setByName = user.fullName ?? user.email;
+  const setAt = new Date().toISOString();
+  const { error } = personId
+    ? await supabase.from("forum_moderators").upsert({
+        forum_id: forumId,
+        fiscal_year_start: year,
+        person_id: personId,
+        set_by: user.id,
+        set_by_name: setByName,
+        set_at: setAt,
+      })
+    : await supabase.from("forum_moderators").delete().eq("forum_id", forumId).eq("fiscal_year_start", year);
+  if (error) return { ok: false, error: `Could not save the moderator: ${error.message}` };
+
+  const { error: logError } = await supabase.from("forum_moderator_log").insert({
+    forum_id: forumId,
+    fiscal_year_start: year,
+    person_id: personId,
+    person_name: personName,
+    set_by: user.id,
+    set_by_name: setByName,
+    set_at: setAt,
+  });
+  if (logError) console.warn("setForumModerator: log not written:", logError.message);
+
+  revalidatePath("/board/forum");
+  revalidatePath("/member/forum");
   return { ok: true };
 }

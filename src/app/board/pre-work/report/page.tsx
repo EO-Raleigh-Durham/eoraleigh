@@ -26,7 +26,7 @@ export default async function BoardPreworkReportPage() {
     const progress = await getPreworkProgress();
     return (
       <div className="bpw">
-        {head(`${PREWORK_TITLE}. Everyone's answers appear here, without names, after the end of ${PREWORK_DEADLINE_LABEL} (${CHAPTER_TIME_ZONE_LABEL}).`)}
+        {head(`${PREWORK_TITLE}. Everyone's answers appear here, without names, after ${PREWORK_DEADLINE_LABEL} (${CHAPTER_TIME_ZONE_LABEL}).`)}
         <div className="admin-section-title">Finished so far</div>
         <section className="frm-group">
           {progress.finished.length === 0 ? (

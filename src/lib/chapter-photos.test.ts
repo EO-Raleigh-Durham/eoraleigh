@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { CHAPTER_NAME } from "../kernel/config/chapter.ts";
 
-// The open-source copy builds its database from one schema file, without the
+// The public copy builds its database from one schema file, without the
 // numbered migrations these tests read.
 const migration = (name: string) => new URL(`../../supabase/${name}`, import.meta.url);
 const noMigration = (name: string) => (existsSync(migration(name)) ? false : "numbered migrations are not in this copy");

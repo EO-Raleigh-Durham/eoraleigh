@@ -17,7 +17,7 @@ const BASE_BLUE = "#0C0C31";
 const EO_BLUE = "#3D46F2";
 const STRIPE = ["#3D46F2", "#FF346E", "#1EA691", "#FA653C"];
 
-// "Tuesday 24 November": the last day the form is open, in the chapter's time zone.
+// "Wednesday 25 November": the last day the form is open, in the chapter's time zone.
 const dueDay = new Date(new Date(PREWORK_DEADLINE).getTime() - 1).toLocaleDateString("en-GB", {
   weekday: "long",
   day: "numeric",

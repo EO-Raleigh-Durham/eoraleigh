@@ -77,6 +77,9 @@ const OWN_READS = ["my_commitments", "my_boards"];
 const OWN_WRITES = ["goal_check_in", "card_update", "card_add", "meeting_update_write", "issue_file", "issue_update"];
 const OWN = [...OWN_READS, ...OWN_WRITES];
 const DATA_READS = ["database_schema", "query_database"];
+const PHOTO_READS = ["photos_list", "photo", "photo_upload_link"];
+const PHOTO_WRITES = ["photo_add", "photo_set_caption", "photo_remove"];
+const PHOTOS = [...PHOTO_READS, ...PHOTO_WRITES];
 
 function names(c: McpCaller, filter?: Parameters<typeof toolsFor>[2]): string[] {
   return toolsFor(c, "https://x", filter).map((t) => t.name).sort();
@@ -91,12 +94,12 @@ test("whoami is handed to every level; nothing to a filter that names no group",
 });
 
 test("a board member reads SAP and membership but writes only their portfolio", () => {
-  assert.deepEqual(names(caller("board", ["Finance"])), sorted(["whoami"], OWN, SAP_READS, MEMBERSHIP_READS, DATA_READS));
-  assert.deepEqual(names(caller("board", ["Strategic Alliance Partner"])), sorted(["whoami"], OWN, SAP_READS, SAP_WRITES, MEMBERSHIP_READS, DATA_READS));
-  assert.deepEqual(names(caller("board", ["Membership"])), sorted(["whoami"], OWN, SAP_READS, MEMBERSHIP_READS, MEMBERSHIP_WRITES, DATA_READS));
+  assert.deepEqual(names(caller("board", ["Finance"])), sorted(["whoami"], OWN, SAP_READS, MEMBERSHIP_READS, DATA_READS, PHOTOS));
+  assert.deepEqual(names(caller("board", ["Strategic Alliance Partner"])), sorted(["whoami"], OWN, SAP_READS, SAP_WRITES, MEMBERSHIP_READS, DATA_READS, PHOTOS));
+  assert.deepEqual(names(caller("board", ["Membership"])), sorted(["whoami"], OWN, SAP_READS, MEMBERSHIP_READS, MEMBERSHIP_WRITES, DATA_READS, PHOTOS));
   assert.deepEqual(
     names(caller("board", ["President"])),
-    sorted(["whoami"], OWN, SAP_READS, SAP_WRITES, MEMBERSHIP_READS, MEMBERSHIP_WRITES, DATA_READS),
+    sorted(["whoami"], OWN, SAP_READS, SAP_WRITES, MEMBERSHIP_READS, MEMBERSHIP_WRITES, DATA_READS, PHOTOS),
   );
   assert.deepEqual(names(caller("super_admin")), names(caller("board", ["President"])));
 });
@@ -105,7 +108,7 @@ test("?portfolio= narrows to one group and never adds", () => {
   assert.deepEqual(names(caller("super_admin"), "sap"), sorted(["whoami"], OWN, SAP_READS, SAP_WRITES));
   assert.deepEqual(names(caller("board", ["Strategic Alliance Partner"]), "membership"), sorted(["whoami"], OWN, MEMBERSHIP_READS));
   assert.deepEqual(names(caller("board", ["Finance"]), "sap"), sorted(["whoami"], OWN, SAP_READS));
-  assert.deepEqual(names(caller("board", ["Finance"]), "chapter"), sorted(["whoami"], OWN, DATA_READS));
+  assert.deepEqual(names(caller("board", ["Finance"]), "chapter"), sorted(["whoami"], OWN, DATA_READS, PHOTOS));
 });
 
 test("a contractor gets SAP only with a live grant, writes only with an edit grant", () => {
@@ -126,7 +129,7 @@ test("every write tool previews first and every tool has a schema", () => {
     if (!t.readOnly) assert.match(t.description, /Previews first/, t.name);
   }
   const destructive = toolsFor(caller("super_admin"), "https://x").filter((t) => t.destructive).map((t) => t.name).sort();
-  assert.deepEqual(destructive, ["prospects_close_lost", "sap_close_deal"]);
+  assert.deepEqual(destructive, ["photo_remove", "prospects_close_lost", "sap_close_deal"]);
 });
 
 test("writes refuse bad input before touching anything", async () => {
@@ -161,4 +164,42 @@ test("an issue is yours when assigned to you or filed by you", async () => {
   assert.ok(ownsIssue({ assignee_person_id: null, filed_by: "A@B.c" }, "p1", "a@b.c"));
   assert.ok(!ownsIssue({ assignee_person_id: "p2", filed_by: "x@y.z" }, "p1", "a@b.c"));
   assert.ok(!ownsIssue({ assignee_person_id: null, filed_by: "x@y.z" }, null, "a@b.c"));
+});
+
+test("photo tools refuse bad input, a missing permission and someone else's upload before touching anything", async () => {
+  const tools = toolsFor(caller("board"), "https://x");
+  const run = (name: string, input: Record<string, unknown>) => tools.find((t) => t.name === name)!.run(input);
+  const id = "00000000-0000-4000-8000-000000000000";
+  const mine = `uploads/u1/${id}.jpg`;
+  const err = async (name: string, input: Record<string, unknown>) => ((await run(name, input)) as { error: string }).error;
+
+  assert.match(await err("photo", { photoId: "nope" }), /Invalid arguments/);
+  assert.match(await err("photo_set_caption", { photoId: "nope", caption: "x" }), /Invalid arguments/);
+  assert.match(await err("photo_set_caption", { photoId: id, caption: "x".repeat(501) }), /Invalid arguments/);
+  assert.match(await err("photo_remove", { photoId: "nope" }), /Invalid arguments/);
+  assert.match(await err("photo_upload_link", { fileName: "deck.pdf", contentType: "application/pdf", sizeBytes: 10 }), /Invalid arguments/);
+  assert.match(await err("photo_upload_link", { fileName: "huge.jpg", contentType: "image/jpeg", sizeBytes: 26 * 1024 * 1024 }), /larger than 25 MB/);
+  assert.match(await err("photo_add", { path: mine }), /marketing permission/);
+  assert.match(await err("photo_add", { path: mine, marketingConsent: false }), /marketing permission/);
+  assert.match(await err("photo_add", { path: `uploads/someone-else/${id}.jpg`, marketingConsent: true }), /doesn't belong to you/);
+  assert.match(await err("photo_add", { path: `photos/${id}.jpg`, marketingConsent: true }), /doesn't belong to you/);
+});
+
+test("adding a photo previews the marketing permission, and runs only with that preview's receipt", async () => {
+  const tool = toolsFor(caller("board"), "https://x").find((t) => t.name === "photo_add")!;
+  const fields = { path: "uploads/u1/00000000-0000-4000-8000-000000000000.jpg", caption: "  Gala   night ", marketingConsent: true };
+  const preview = (await tool.run(fields)) as { preview: boolean; summary: string; warnings: string[]; details: { terms: string[] }; receipt: string };
+  assert.equal(preview.preview, true);
+  assert.match(preview.summary, /uploaded by A, captioned "Gala night"/);
+  assert.match(preview.warnings[0], /permission to use these photos in its marketing/);
+  assert.ok(preview.details.terms.length >= 3);
+  assert.match(((await tool.run({ ...fields, caption: "Other", receipt: preview.receipt })) as { error: string }).error, /does not match/);
+});
+
+test("contractors never get photo tools, even with a live edit grant", () => {
+  const contractor: McpCaller = {
+    ...caller("contractor"),
+    reach: reachOf("contractor", [], [{ area: "sap_pipeline", canEdit: true, active: true }])!,
+  };
+  assert.ok(!names(contractor).some((n) => n.startsWith("photo")));
 });

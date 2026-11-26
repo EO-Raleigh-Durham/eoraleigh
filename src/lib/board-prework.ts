@@ -7,9 +7,9 @@ import { CHAPTER_NAME } from "../kernel/config/chapter.ts";
 export const PREWORK_CYCLE = "fy2027-28";
 export const PREWORK_TITLE = "Board pre-work FY2027–2028";
 
-// The form locks at the end of 24 November 2026 in the chapter's time zone (UTC+7).
-export const PREWORK_DEADLINE = "2026-11-24T17:00:00.000Z";
-export const PREWORK_DEADLINE_LABEL = "24 November 2026";
+// The form locks at 9 PM on 25 November 2026 in the chapter's time zone (UTC+7).
+export const PREWORK_DEADLINE = "2026-11-25T14:00:00.000Z";
+export const PREWORK_DEADLINE_LABEL = "9 PM on 25 November 2026";
 
 export const MAX_ANSWER_CHARS = 4000;
 

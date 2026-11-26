@@ -2,7 +2,7 @@
 
 Run your EO chapter on one platform: a public website, events and ticketing, a member portal and directory, a board workspace with goals and workboards, a membership and partner CRM, dues, surveys, and an optional AI board assistant.
 
-Next.js 16 · Supabase · Vercel · Stripe · Resend. MIT licence. Built by an EO chapter and shared with every chapter.
+Next.js 16 · Supabase · Vercel · Stripe · Resend. Free for any EO chapter to run and change for its own chapter; not for resale (see [Licence](#licence)). Built by an EO chapter and shared with every chapter.
 
 - **See it running:** https://eochapterdemo.com explains it, with a two-minute video and a click-through tour. The live demo of a made-up chapter is at https://app.eochapterdemo.com; its login page signs you in to the member portal or the board portal with one click.
 - **Not an official EO Global product.** It uses the EO brand guidelines so it looks right for a chapter. Check with your region before you launch.
@@ -214,6 +214,10 @@ Then `CHATBOT_DB_URL=postgres://chatbot_reader.<ref>:<that password>@aws-1-<regi
 ## Updating later
 
 New versions of EO Chapter Manager are published to this repo. To take one, merge it into your copy (`git remote add upstream https://github.com/dhajdu/eo-chapter-manager && git fetch upstream && git merge upstream/main`), then apply any new files in `supabase/upgrades/` in number order. Your `src/content/` files and logo are yours; resolve merge conflicts there in your favour.
+
+## Licence
+
+EO Chapter Manager is free for any EO chapter to run and change for its own chapter; not for resale. The terms are the [PolyForm Internal Use License 1.0.0](LICENSE). Reselling it, white-labelling it, or hosting it for other chapters as a paid service needs written permission from <!-- public-contact:start -->Dave Hajdu<!-- public-contact:end -->.
 
 ## Guides
 

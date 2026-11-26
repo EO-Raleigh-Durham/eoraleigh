@@ -6,6 +6,8 @@ import {
   type ForumPlacement,
 } from "@/lib/forums";
 import { CHAPTER_NAME, CHAPTER_SHORT_NAME } from "@/kernel/config/chapter";
+import { chapterToday } from "@/kernel/config/dates";
+import { fyLabel } from "@/lib/fiscal-year";
 
 export const metadata = {
   title: "Forum",
@@ -50,6 +52,10 @@ const PLACEMENT_GROUPS: { key: ForumPlacement; badge: string; note: string }[] =
 
 export default async function ForumAdminPage() {
   const { forums, unplaced, totals } = await getForumOverview();
+  // Moderators change with the fiscal year on 1 July: from April, flag forums
+  // that have not named next year's moderator yet.
+  const month = Number(chapterToday().slice(5, 7));
+  const namingNextYear = month >= 4 && month <= 6;
 
   return (
     <div>
@@ -83,6 +89,24 @@ export default async function ForumAdminPage() {
                 {f.members.length} {f.members.length === 1 ? "member" : "members"}
               </span>
             </div>
+            <div className="frm-mod-line">
+              <span className="frm-person-meta">Moderator {fyLabel(f.moderatorYear)}</span>
+              {f.moderator ? (
+                <span className="frm-mod-name">{f.moderator.name ?? f.moderator.email}</span>
+              ) : (
+                <span className="admin-badge admin-badge--err">No moderator</span>
+              )}
+            </div>
+            {(f.nextModerator || namingNextYear) && (
+              <div className="frm-mod-line">
+                <span className="frm-person-meta">Moderator {fyLabel(f.moderatorYear + 1)}</span>
+                {f.nextModerator ? (
+                  <span className="frm-mod-name">{f.nextModerator.name ?? f.nextModerator.email}</span>
+                ) : (
+                  <span className="admin-badge admin-badge--err">Not named yet</span>
+                )}
+              </div>
+            )}
             {f.members.length === 0 ? (
               <p className="frm-empty">No members yet</p>
             ) : (

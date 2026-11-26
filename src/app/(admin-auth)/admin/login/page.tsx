@@ -19,7 +19,7 @@ export async function generateMetadata({
   if (path !== "/board/pre-work" && !path.startsWith("/board/pre-work/")) return {};
   return pageMeta({
     title: PREWORK_TITLE,
-    description: `For ${CHAPTER_NAME} board members: ten questions on what we expect from our Board and our President. 20 to 25 minutes, due by the end of ${PREWORK_DEADLINE_LABEL}.`,
+    description: `For ${CHAPTER_NAME} board members: ten questions on what we expect from our Board and our President. 20 to 25 minutes, due by ${PREWORK_DEADLINE_LABEL}.`,
     path: "/board/pre-work",
     image: "/og/board-pre-work",
     robots: { index: false, follow: false },

@@ -12,7 +12,7 @@ type Result = { ok: true; savedAt: string; submittedAt: string | null } | { ok: 
 export async function savePrework(input: unknown, finished?: boolean): Promise<Result> {
   const user = await requireBoardOrAbove();
   if (!isPreworkOpen()) {
-    return { ok: false, error: `The worksheet closed at the end of ${PREWORK_DEADLINE_LABEL}.` };
+    return { ok: false, error: `The worksheet closed at ${PREWORK_DEADLINE_LABEL}.` };
   }
   try {
     const saved = await saveMyPrework(

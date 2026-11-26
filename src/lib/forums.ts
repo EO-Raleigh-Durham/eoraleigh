@@ -1,4 +1,6 @@
 import { supabase } from "./supabase";
+import { chapterToday } from "@/kernel/config/dates";
+import { fyStartForDate } from "./fiscal-year";
 
 // Server-only data layer for the Forum rosters admin view.
 //
@@ -35,7 +37,16 @@ export type ForumRoster = {
   id: string;
   name: string;
   members: ForumPerson[];
+  // Moderators are named per EO fiscal year (migration 133) and count only
+  // while still on this forum's roster. `moderatorYear` is the current fiscal
+  // year's start (2026 = FY2026/27). `moderator` is this year's;
+  // `nextModerator` is next year's, who takes over on 1 July.
+  moderatorYear: number;
+  moderator: ForumModerator | null;
+  nextModerator: ForumModerator | null;
 };
+
+export type ForumModerator = ForumPerson & { setByName: string | null; setAt: string | null };
 
 export type ForumOverview = {
   forums: ForumRoster[];
@@ -101,12 +112,35 @@ export async function listForums(): Promise<{ id: string; name: string }[]> {
   return (data ?? []) as { id: string; name: string }[];
 }
 
+type ForumModeratorRow = {
+  forum_id: string;
+  fiscal_year_start: number;
+  person_id: string;
+  set_by_name: string | null;
+  set_at: string | null;
+};
+
+// Who moderates each forum this year and next. A failed read (migration 133
+// not applied yet) leaves the forum pages working with no moderators shown.
+async function listForumModerators(year: number): Promise<ForumModeratorRow[]> {
+  const { data, error } = await supabase
+    .from("forum_moderators")
+    .select("forum_id, fiscal_year_start, person_id, set_by_name, set_at")
+    .in("fiscal_year_start", [year, year + 1]);
+  if (error) {
+    console.warn("listForumModerators:", error.message);
+    return [];
+  }
+  return data as ForumModeratorRow[];
+}
+
 // Every forum with its roster, plus the active members who still need placing,
 // grouped by why they are unplaced. Members on leave are excluded: the forum
 // view is about who is actively in (or needs) a peer group. One DB round per
 // resource (forums, memberships+people, companies), joined in memory.
 export async function getForumOverview(): Promise<ForumOverview> {
-  const forums = await listForums();
+  const year = fyStartForDate(chapterToday());
+  const [forums, moderators] = await Promise.all([listForums(), listForumModerators(year)]);
 
   const { data: memRows, error: memErr } = await supabase
     .from("chapter_memberships")
@@ -166,11 +200,22 @@ export async function getForumOverview(): Promise<ForumOverview> {
   const byName = (a: ForumPerson, b: ForumPerson) =>
     (a.name ?? a.email).localeCompare(b.name ?? b.email);
 
-  const forumRosters: ForumRoster[] = forums.map((f) => ({
-    id: f.id,
-    name: f.name,
-    members: (byForum.get(f.id) ?? []).sort(byName),
-  }));
+  const forumRosters: ForumRoster[] = forums.map((f) => {
+    const members = (byForum.get(f.id) ?? []).sort(byName);
+    const moderatorFor = (y: number): ForumModerator | null => {
+      const row = moderators.find((r) => r.forum_id === f.id && r.fiscal_year_start === y);
+      const person = members.find((m) => m.id === row?.person_id);
+      return row && person ? { ...person, setByName: row.set_by_name, setAt: row.set_at } : null;
+    };
+    return {
+      id: f.id,
+      name: f.name,
+      members,
+      moderatorYear: year,
+      moderator: moderatorFor(year),
+      nextModerator: moderatorFor(year + 1),
+    };
+  });
 
   unplaced.sort((a, b) => {
     const order = PLACEMENT_ORDER[a.placement] - PLACEMENT_ORDER[b.placement];

@@ -20,7 +20,7 @@ type Props = {
   initialAnswers: PreworkAnswers;
   initialFinished: boolean;
   open: boolean;
-  // "Tuesday 24 November": the last day the form is open.
+  // "Wednesday 25 November": the last day the form is open.
   closes: string;
   // The instructions shown above the form while it is being filled in.
   children: React.ReactNode;
@@ -190,7 +190,7 @@ export default function PreworkForm({ name, role, initialAnswers, initialFinishe
           you at the Board workshop.
         </p>
         <p className="bpw-done-text">
-          Want to change something? You can reopen your worksheet until 11:59 PM on {closes}, {CHAPTER_TIME_ZONE_LABEL}.
+          Want to change something? You can reopen your worksheet until 9 PM on {closes}, {CHAPTER_TIME_ZONE_LABEL}.
         </p>
         <div className="bpw-done-actions">
           <button type="button" className="admin-btn admin-btn--primary" disabled={busy} onClick={() => void save(false)}>
