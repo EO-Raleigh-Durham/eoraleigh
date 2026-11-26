@@ -119,9 +119,91 @@ function fyStart(today) {
 
 const sql = postgres(process.env.SUPABASE_DB_URL, { max: 1, onnotice: () => {} });
 
+// Events this script created carry this slug prefix, so a wipe finds them.
+// An event the chapter has since given its own slug is no longer ours to
+// delete; on the next run it is matched by title and date instead.
+const EVENT_SLUG = "tracker-";
+
+// Tracker event type -> this system's event type. Unknown chapter events are social.
+const EVENT_TYPE = {
+  LEARNING: "learning",
+  WEBINAR: "learning",
+  GLOBAL: "learning",
+  REGIONAL: "learning",
+  SOCIAL: "social",
+  SAP: "social",
+  CHAPTER: "social",
+  MYEO: "my_eo",
+};
+
+// Tracker board position key -> board_roles.key
+const BOARD_ROLE = {
+  president: "president",
+  membership: "membership",
+  marcomm: "marcoms",
+  strategic_alliances: "sap",
+  finance: "finance",
+  governance: "governance",
+  forum: "forum",
+  learning: "learning",
+  member_engagement: "member-engagement",
+  chapter_staff: "chapter-staff",
+};
+
+/** Events run by this chapter (registrations) vs elsewhere (global participation). */
+function isLocalEvent(e) {
+  return e.scope === "chapter" || e.scope === "myeo";
+}
+
+function slugify(s) {
+  return String(s ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+async function tableExists(tx, name) {
+  const [r] = await tx`select to_regclass(${"public." + name}) is not null as ok`;
+  return r.ok;
+}
+
 async function wipe(tx) {
+  // Board-sheet rows point at imported people with ON DELETE RESTRICT keys
+  // (tasks, key results). They must be wiped first, by their own script.
+  const [{ n: sheetRows }] = await tx`
+    select (select count(*) from public.board_meetings where source = 'sheet_import')
+         + (select count(*) from public.tasks where metadata->>'import' = 'board-sheet') as n`;
+  if (Number(sheetRows) > 0) {
+    throw new Error("Board-sheet rows exist. Run scripts/import-board-sheet.mjs --wipe first, then re-run it after this.");
+  }
+
   const people = await tx`select id from public.people where source_site = ${MARK}`;
   const ids = people.map((p) => p.id);
+
+  const ourEvents = (await tx`select id from public.events where slug like ${EVENT_SLUG + "%"}`).map((r) => r.id);
+  let registrations = 0;
+  let globalParticipation = 0;
+  if (ourEvents.length || ids.length) {
+    registrations = (
+      await tx`delete from public.event_registrations
+                where event_id = any(${ourEvents}) or person_id = any(${ids}) returning id`
+    ).length;
+    globalParticipation = (
+      await tx`delete from public.global_event_participation
+                where event_id = any(${ourEvents}) or person_id = any(${ids}) returning id`
+    ).length;
+  }
+  const events = (await tx`delete from public.events where id = any(${ourEvents}) returning id`).length;
+
+  let moderators = 0;
+  if (ids.length && (await tableExists(tx, "forum_moderators"))) {
+    moderators = (await tx`delete from public.forum_moderators where person_id = any(${ids}) returning forum_id`).length;
+  }
+  const appointments = ids.length
+    ? (await tx`delete from public.board_appointments where person_id = any(${ids}) returning id`).length
+    : 0;
   const deals = ids.length
     ? await tx`delete from public.deals where person_id = any(${ids}) or description like ${DEAL_NOTE + "%"} returning id`
     : await tx`delete from public.deals where description like ${DEAL_NOTE + "%"} returning id`;
@@ -136,7 +218,205 @@ async function wipe(tx) {
      where f.updated_at = f.created_at
        and not exists (select 1 from public.people p where p.forum_id = f.id)
     returning id`;
-  return { people: gone.length, deals: deals.length, companies: companies.length, forums: forums.length };
+  return {
+    people: gone.length,
+    deals: deals.length,
+    companies: companies.length,
+    forums: forums.length,
+    events,
+    registrations,
+    global_participation: globalParticipation,
+    board_appointments: appointments,
+    forum_moderators: moderators,
+  };
+}
+
+/** Events, attendance, board seats and forum moderators (optional parts of the export). */
+async function importHistory(tx, data, personId, forumId) {
+  const out = {};
+  const now = new Date();
+
+  // ── Events ──
+  const eventId = new Map();
+  const eventStart = new Map();
+  let reused = 0;
+  for (const e of data.events ?? []) {
+    const startsAt = new Date(`${String(e.starts_at).replace(" ", "T")}Z`); // tracker stores UTC
+    const local = isLocalEvent(e);
+    const past = startsAt < now;
+    // A matching event already here (the chapter created it, or re-slugged ours): reuse it.
+    const [existing] = await tx`
+      select id from public.events
+       where lower(title) = lower(${e.name})
+         and (starts_at at time zone 'UTC')::date = ${startsAt.toISOString().slice(0, 10)}::date
+       limit 1`;
+    if (existing) {
+      eventId.set(e.id, existing.id);
+      eventStart.set(e.id, startsAt);
+      reused++;
+      continue;
+    }
+    const location = [e.location_name || e.venue, e.address].filter(Boolean).join(", ") || null;
+    const [row] = await tx`
+      insert into public.events ${tx({
+        type: local ? EVENT_TYPE[e.event_type_code] ?? "social" : "learning",
+        scope: local ? "local" : "global",
+        // History stays members-only so it does not flood the public archive.
+        // Upcoming events stay draft until the chapter (or the website merge) publishes them.
+        status: past ? "completed" : "draft",
+        visibility: "members_only",
+        audience: "member",
+        title: e.name,
+        location,
+        starts_at: startsAt.toISOString(),
+        slug: `${EVENT_SLUG}${e.id}-${slugify(e.name)}`,
+        tag_label: local ? null : e.host_chapter || null,
+        survey_enabled: false,
+        recap_status: "none",
+      })}
+      returning id`;
+    eventId.set(e.id, row.id);
+    eventStart.set(e.id, startsAt);
+  }
+  out.events = { created: eventId.size - reused, matched_existing: reused };
+
+  // ── Attendance ──
+  const localEvent = new Map((data.events ?? []).map((e) => [e.id, isLocalEvent(e)]));
+  // Global participation rows need an audit actor (a user_profiles id) and may
+  // only name current (active or on-leave) members; former members' history
+  // elsewhere has no home here and is counted instead.
+  const [actor] = await tx`
+    select id from public.user_profiles where role = 'super_admin' order by created_at limit 1`;
+  const current = new Set(
+    (
+      await tx`select person_id from public.chapter_memberships
+                where status in ('active', 'on_leave')
+                  and membership_type in ('Primary Membership', 'Secondary Membership')`
+    ).map((r) => r.person_id),
+  );
+  const seen = new Set();
+  let regs = 0;
+  let globals = 0;
+  let skipped = 0;
+  let globalNotCurrent = 0;
+  for (const p of data.participations ?? []) {
+    const ev = eventId.get(p.event_id);
+    const person = personId.get(p.contact_id);
+    if (!ev || !person || p.declined) {
+      skipped++;
+      continue;
+    }
+    const key = `${ev}:${person}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const past = eventStart.get(p.event_id) < now;
+
+    if (localEvent.get(p.event_id)) {
+      let status = null;
+      if (p.attended) status = "attended";
+      else if (p.cancelled) status = "cancelled";
+      else if (p.registered) status = past ? "no_show" : "registered";
+      if (!status) {
+        skipped++;
+        continue;
+      }
+      const at = p.registered_at || p.checked_in_at || eventStart.get(p.event_id).toISOString();
+      await tx`
+        insert into public.event_registrations ${tx({
+          event_id: ev,
+          person_id: person,
+          status,
+          guest_count: 0,
+          confirmed_at: status === "cancelled" ? null : at,
+          cancelled_at: status === "cancelled" ? at : null,
+          checked_in_at: p.checked_in_at || null,
+          notes: "Imported from the EO membership tracker (trial).",
+          created_at: at,
+        })}`;
+      regs++;
+    } else {
+      if (!p.attended && !(p.registered && !past)) {
+        skipped++;
+        continue;
+      }
+      if (!actor || !current.has(person)) {
+        globalNotCurrent++;
+        continue;
+      }
+      await tx`
+        insert into public.global_event_participation ${tx({
+          event_id: ev,
+          person_id: person,
+          status: p.attended && past ? "attended" : "going",
+          created_by_profile_id: actor.id,
+          updated_by_profile_id: actor.id,
+        })}`;
+      globals++;
+    }
+  }
+  out.attendance = {
+    registrations: regs,
+    global_participation: globals,
+    global_skipped_not_current_member: globalNotCurrent,
+    skipped,
+  };
+
+  // ── Board seats ──
+  const roleId = new Map((await tx`select id, key from public.board_roles`).map((r) => [r.key, r.id]));
+  let seats = 0;
+  const unmappedRoles = new Set();
+  for (const r of data.member_roles ?? []) {
+    if (r.role_code !== "board") continue;
+    const person = personId.get(r.contact_id);
+    if (!person) continue;
+    // "President Elect Elect" has no seat here; the tracker also records them
+    // as President-Elect the following year, so it is reported, not mapped.
+    const key = r.board_position === "President-Elect" ? "president-elect" : BOARD_ROLE[r.board_position_key];
+    const role = key && roleId.get(key);
+    if (!role) {
+      unmappedRoles.add(r.board_position ?? r.board_position_key ?? "?");
+      continue;
+    }
+    const inserted = await tx`
+      insert into public.board_appointments ${tx({
+        person_id: person,
+        board_role_id: role,
+        position: r.seat_role === "co_chair" ? "Co-Chair" : "Chair",
+        scope: "Local",
+        fiscal_year_start: r.fiscal_year,
+      })}
+      on conflict do nothing
+      returning id`;
+    seats += inserted.length;
+  }
+  out.board_appointments = seats;
+  if (unmappedRoles.size) out.board_roles_not_mapped = [...unmappedRoles];
+
+  // ── Forum moderators (needs supabase/upgrades/002) ──
+  if (await tableExists(tx, "forum_moderators")) {
+    let mods = 0;
+    for (const r of data.member_roles ?? []) {
+      if (r.role_code !== "moderator" || !r.forum_id) continue;
+      const person = personId.get(r.contact_id);
+      const forum = forumId.get(r.forum_id);
+      if (!person || !forum) continue;
+      const inserted = await tx`
+        insert into public.forum_moderators ${tx({
+          forum_id: forum,
+          fiscal_year_start: r.fiscal_year,
+          person_id: person,
+          set_by_name: "EO membership tracker import",
+        })}
+        on conflict (forum_id, fiscal_year_start) do nothing
+        returning forum_id`;
+      mods += inserted.length;
+    }
+    out.forum_moderators = mods;
+  } else {
+    out.forum_moderators = "skipped: run supabase/upgrades/002_forum_moderators_and_meetings.sql first";
+  }
+
+  return out;
 }
 
 async function run() {
@@ -290,6 +570,7 @@ async function run() {
         slp_partner_links: partners,
         memberships,
         deals: dealCounts,
+        ...(await importHistory(tx, data, personId, forumId)),
       };
 
       if (dryRun) throw new DryRun();
